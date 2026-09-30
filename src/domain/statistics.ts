@@ -48,7 +48,26 @@ export type PlayerStatistics = {
   longestWinStreak: Streak;
   longestLossStreak: Streak;
   playingDayStreak: { current: number; longest: number };
+  monthlyComparison: {
+    currentMonth: string;
+    previousMonth: string;
+    current: MonthlyStatistics;
+    previous: MonthlyStatistics;
+  };
 };
+
+export type MonthlyStatistics = Pick<
+  PlayerStatistics,
+  | "matchWinRate"
+  | "matchesPlayed"
+  | "roundCredits"
+  | "totalPlayedSeconds"
+  | "maps"
+  | "opponents"
+  | "partnerships"
+>;
+
+type StatisticsOptions = { timeZone: string; now?: Date };
 
 type MapDetails = {
   id: string;
@@ -206,12 +225,12 @@ function getPartnershipStats(playerId: string, matches: CompletedMatch[]): Partn
     );
 }
 
-export function calculateStatistics(
+function calculateBaseStatistics(
   playerId: string,
   completedMatches: CompletedMatch[],
   mapDetails: MapDetails[],
-  options: { timeZone: string; now?: Date } = { timeZone: "UTC" },
-): PlayerStatistics {
+  options: StatisticsOptions,
+): Omit<PlayerStatistics, "monthlyComparison"> {
   const matches = completedMatches
     .filter((match) => match.competitors.some(({ playerIds }) => playerIds.includes(playerId)))
     .sort(
@@ -320,5 +339,99 @@ export function calculateStatistics(
     longestWinStreak: streakFrom(outcomes, true),
     longestLossStreak: streakFrom(outcomes, false),
     playingDayStreak: getPlayingDayStreak(matches, options.timeZone, options.now ?? new Date()),
+  };
+}
+
+export function calculateStatistics(
+  playerId: string,
+  completedMatches: CompletedMatch[],
+  mapDetails: MapDetails[],
+  options: StatisticsOptions = { timeZone: "UTC" },
+): PlayerStatistics {
+  const now = options.now ?? new Date();
+  const calendar = new Intl.DateTimeFormat("en-US", {
+    timeZone: options.timeZone,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hourCycle: "h23",
+  });
+  function localTimestamp(date: Date): number {
+    // Encode local calendar fields as UTC values to compare matching wall-clock cutoffs.
+    const parts = Object.fromEntries(
+      calendar.formatToParts(date).map(({ type, value }) => [type, value]),
+    );
+    return Date.UTC(
+      Number(parts.year),
+      Number(parts.month) - 1,
+      Number(parts.day),
+      Number(parts.hour),
+      Number(parts.minute),
+      Number(parts.second),
+      date.getUTCMilliseconds(),
+    );
+  }
+  const localNow = new Date(localTimestamp(now));
+  const year = localNow.getUTCFullYear();
+  const month = localNow.getUTCMonth();
+  const currentStart = Date.UTC(year, month, 1);
+  const previousStart = Date.UTC(year, month - 1, 1);
+  const previousMonthDays = new Date(Date.UTC(year, month, 0)).getUTCDate();
+  const previousEnd =
+    localNow.getUTCDate() > previousMonthDays
+      ? currentStart
+      : Date.UTC(
+          year,
+          month - 1,
+          localNow.getUTCDate(),
+          localNow.getUTCHours(),
+          localNow.getUTCMinutes(),
+          localNow.getUTCSeconds(),
+          localNow.getUTCMilliseconds(),
+        );
+  const currentMatches: CompletedMatch[] = [];
+  const previousMatches: CompletedMatch[] = [];
+  for (const match of completedMatches) {
+    const completedAt = new Date(match.completedAt);
+    if (completedAt.getTime() > now.getTime()) continue;
+    const localTime = localTimestamp(completedAt);
+    if (localTime >= currentStart) {
+      currentMatches.push(match);
+    } else if (
+      localTime >= previousStart &&
+      (previousEnd === currentStart || localTime <= previousEnd)
+    ) {
+      previousMatches.push(match);
+    }
+  }
+  const monthLabel = new Intl.DateTimeFormat("en-US", {
+    timeZone: "UTC",
+    month: "long",
+    year: "numeric",
+  });
+  const fixedOptions = { ...options, now };
+  function monthlyStatistics(matches: CompletedMatch[]): MonthlyStatistics {
+    const stats = calculateBaseStatistics(playerId, matches, mapDetails, fixedOptions);
+    return {
+      matchWinRate: stats.matchWinRate,
+      matchesPlayed: stats.matchesPlayed,
+      roundCredits: stats.roundCredits,
+      totalPlayedSeconds: stats.totalPlayedSeconds,
+      maps: stats.maps,
+      opponents: stats.opponents,
+      partnerships: stats.partnerships,
+    };
+  }
+  return {
+    ...calculateBaseStatistics(playerId, completedMatches, mapDetails, fixedOptions),
+    monthlyComparison: {
+      currentMonth: monthLabel.format(new Date(currentStart)),
+      previousMonth: monthLabel.format(new Date(previousStart)),
+      current: monthlyStatistics(currentMatches),
+      previous: monthlyStatistics(previousMatches),
+    },
   };
 }

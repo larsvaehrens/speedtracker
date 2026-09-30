@@ -6,7 +6,7 @@ export function StatisticsHeading() {
       <div>
         <p className="eyebrow">Completed Matches only</p>
         <h1>Statistics</h1>
-        <p className="muted">Match results and individual Round credits are counted separately.</p>
+        <p className="muted">All-time statistics</p>
       </div>
     </div>
   );
@@ -31,8 +31,13 @@ export function StatisticsSkeleton({ hasMatches }: { hasMatches: boolean }) {
           ].map((label, index) => (
             <article className={`stat-card${index === 0 ? " stat-featured" : ""}`} key={label}>
               <span className="muted">{label}</span>
-              <strong>
-                <Skeleton width="65%" />
+              <strong className="stat-value">
+                <Skeleton width="55%" />
+                {index !== 2 && (
+                  <span className="stat-trend">
+                    <Skeleton width={45} />
+                  </span>
+                )}
               </strong>
               <span>
                 <Skeleton height="1.45em" />
@@ -86,9 +91,14 @@ export function StatisticsSkeleton({ hasMatches }: { hasMatches: boolean }) {
                             </small>
                           </span>
                         </span>
-                        <strong>
-                          <Skeleton width={40} />
-                        </strong>
+                        <div className="stat-row-metric">
+                          <strong>
+                            <Skeleton width={40} />
+                          </strong>
+                          <span className="stat-trend">
+                            <Skeleton width={50} />
+                          </span>
+                        </div>
                       </div>
                       {panel.partnership && (
                         <>

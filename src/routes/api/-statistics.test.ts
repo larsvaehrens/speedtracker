@@ -77,7 +77,15 @@ describe("statistics timezone API", () => {
   it("defaults older clients to UTC", async () => {
     const response = await mocks.get({ request: new Request("http://localhost/api/statistics") });
     expect(await response.json()).toMatchObject({
-      statistics: { playingDayStreak: { current: 2, longest: 2 } },
+      statistics: {
+        playingDayStreak: { current: 2, longest: 2 },
+        monthlyComparison: {
+          currentMonth: "January 2026",
+          previousMonth: "December 2025",
+          current: { matchesPlayed: 2, matchWinRate: 1 },
+          previous: { matchesPlayed: 0, matchWinRate: null },
+        },
+      },
     });
   });
 

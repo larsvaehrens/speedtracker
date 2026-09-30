@@ -111,6 +111,12 @@ manual edits.
 - Current and longest daily play streaks count distinct local calendar days
   with completed Matches. The current streak remains active if the last
   played day was yesterday, and resets after a missed day.
+- Monthly trends compare the current month so far with the same local calendar
+  day and time in the previous month, capped at month-end for shorter months.
+  Main values remain all-time, with compact percentage-change arrows: green
+  for increases and red for decreases. Unchanged values and comparisons with
+  missing data or a zero baseline have no indicator. Period details and sample
+  sizes are available in the indicator tooltip.
 
 The map label is **Casino**. Its existing image filename is
 `public/ressources/maps/12_Casion.png`; the asset is intentionally not renamed.

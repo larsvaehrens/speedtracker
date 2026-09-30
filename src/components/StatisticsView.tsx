@@ -5,6 +5,7 @@ import { formatPlayedTime } from "#/lib/time";
 import { PlayerAvatar } from "./PlayerAvatar";
 import { MapThumbnail } from "./MapThumbnail";
 import { StatisticsHeading, StatisticsSkeleton } from "./StatisticsSkeleton";
+import { StatTrend, WinRateTrend } from "./StatTrend";
 
 type StatisticsViewProps = {
   playerNames: Record<string, string>;
@@ -69,6 +70,20 @@ export function StatisticsView({ playerNames, hasMatches }: StatisticsViewProps)
   }
   if (!stats) return null;
 
+  return <StatisticsContent stats={stats} names={names} avatars={avatars} />;
+}
+
+export function StatisticsContent({
+  stats,
+  names,
+  avatars,
+}: {
+  stats: PlayerStatistics;
+  names: Record<string, string>;
+  avatars: Record<string, string | null>;
+}) {
+  const comparison = stats.monthlyComparison;
+
   return (
     <section className="page-section">
       <StatisticsHeading />
@@ -76,14 +91,37 @@ export function StatisticsView({ playerNames, hasMatches }: StatisticsViewProps)
       <div className="stats-overview">
         <article className="stat-card stat-featured">
           <span className="muted">Match win rate</span>
-          <strong>{percent(stats.matchWinRate)}</strong>
+          <strong className="stat-value">
+            {percent(stats.matchWinRate)}
+            <StatTrend
+              current={comparison.current.matchWinRate}
+              previous={comparison.previous.matchWinRate}
+              unit="rate"
+              label="win rate"
+              currentSamples={comparison.current.matchesPlayed}
+              previousSamples={comparison.previous.matchesPlayed}
+            />
+          </strong>
           <span>
-            {stats.matchWins} wins · {stats.matchesPlayed} played
+            {stats.matchWins} wins · {stats.matchesPlayed} played{" "}
+            <StatTrend
+              current={comparison.current.matchesPlayed}
+              previous={comparison.previous.matchesPlayed}
+              unit="count"
+              label="matches"
+            />
           </span>
         </article>
         <article className="stat-card">
           <span className="muted">Individual Round credits</span>
-          <strong>{stats.roundCredits}</strong>
+          <strong className="stat-value">
+            {stats.roundCredits}
+            <StatTrend
+              current={comparison.current.roundCredits}
+              previous={comparison.previous.roundCredits}
+              unit="count"
+            />
+          </strong>
           <span>Points credited to you</span>
         </article>
         <article className="stat-card">
@@ -99,7 +137,14 @@ export function StatisticsView({ playerNames, hasMatches }: StatisticsViewProps)
         </article>
         <article className="stat-card">
           <span className="muted">Total time played</span>
-          <strong>{formatPlayedTime(stats.totalPlayedSeconds)}</strong>
+          <strong className="stat-value">
+            {formatPlayedTime(stats.totalPlayedSeconds)}
+            <StatTrend
+              current={comparison.current.totalPlayedSeconds}
+              previous={comparison.previous.totalPlayedSeconds}
+              unit="duration"
+            />
+          </strong>
           <span style={{ visibility: "hidden" }}>Time in completed Matches</span>
         </article>
       </div>
@@ -135,7 +180,13 @@ export function StatisticsView({ playerNames, hasMatches }: StatisticsViewProps)
                         </small>
                       </span>
                     </span>
-                    <strong>{percent(map.winRate)}</strong>
+                    <div className="stat-row-metric">
+                      <strong>{percent(map.winRate)}</strong>
+                      <WinRateTrend
+                        current={comparison.current.maps.find(({ mapId }) => mapId === map.mapId)}
+                        previous={comparison.previous.maps.find(({ mapId }) => mapId === map.mapId)}
+                      />
+                    </div>
                   </div>
                 ))}
               </div>
@@ -165,7 +216,17 @@ export function StatisticsView({ playerNames, hasMatches }: StatisticsViewProps)
                         </small>
                       </span>
                     </span>
-                    <strong>{percent(opponent.winRate)}</strong>
+                    <div className="stat-row-metric">
+                      <strong>{percent(opponent.winRate)}</strong>
+                      <WinRateTrend
+                        current={comparison.current.opponents.find(
+                          ({ playerId }) => playerId === opponent.playerId,
+                        )}
+                        previous={comparison.previous.opponents.find(
+                          ({ playerId }) => playerId === opponent.playerId,
+                        )}
+                      />
+                    </div>
                   </div>
                 ))}
               </div>
@@ -197,7 +258,17 @@ export function StatisticsView({ playerNames, hasMatches }: StatisticsViewProps)
                           </small>
                         </span>
                       </span>
-                      <strong>{percent(pair.winRate)}</strong>
+                      <div className="stat-row-metric">
+                        <strong>{percent(pair.winRate)}</strong>
+                        <WinRateTrend
+                          current={comparison.current.partnerships.find(
+                            ({ teammateId }) => teammateId === pair.teammateId,
+                          )}
+                          previous={comparison.previous.partnerships.find(
+                            ({ teammateId }) => teammateId === pair.teammateId,
+                          )}
+                        />
+                      </div>
                     </div>
                     <div className="contribution-bar" aria-hidden="true">
                       <span
