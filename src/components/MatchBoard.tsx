@@ -493,7 +493,22 @@ export function MatchBoard({
             onClick={() => void undoLast()}
             type="button"
           >
-            ↶ Undo last result
+            <svg
+              aria-hidden="true"
+              fill="none"
+              focusable="false"
+              height={20}
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              viewBox="0 0 24 24"
+              width={20}
+            >
+              <path d="m9 4-5 5 5 5" />
+              <path d="M4 9h10a6 6 0 0 1 0 12h-3" />
+            </svg>
+            Undo last result
           </button>
           {match.status === "completed" && match.rounds.some((round) => !round.undone) && (
             <button
