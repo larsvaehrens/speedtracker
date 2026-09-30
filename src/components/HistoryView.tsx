@@ -86,40 +86,42 @@ export function HistoryView({ matches, viewerId, onOpen }: HistoryViewProps) {
                   </div>
                 ))}
               </div>
-              <details className="history-rounds">
-                <summary>
-                  Round breakdown · {match.rounds.filter((round) => !round.undone).length} credited
-                </summary>
-                <ol className="round-list">
-                  {match.rounds.map((round) => {
-                    const winner = match.competitors.find(
-                      ({ id }) => id === round.winnerCompetitorId,
-                    );
-                    return (
-                      <li className={round.undone ? "round-undone" : ""} key={round.id}>
-                        <span className="round-number">R{round.sequence}</span>
-                        <span className="history-round-players">
-                          {winner?.players.map((player) => (
-                            <PlayerIdentity key={player.id} player={player}>
-                              {player.screenName}
-                              {` +${round.attributions.find(({ playerId }) => playerId === player.id)?.points ?? 0}`}
-                            </PlayerIdentity>
-                          ))}
-                          <span>won</span>
-                        </span>
-                        {round.undone && <span className="muted">Undone</span>}
-                      </li>
-                    );
-                  })}
-                </ol>
-              </details>
-              <button
-                className="button button-quiet history-open"
-                onClick={() => onOpen(match)}
-                type="button"
-              >
-                View Match
-              </button>
+              <div className="history-rounds-container">
+                <details className="history-rounds">
+                  <summary>
+                    Round breakdown · {match.rounds.filter((round) => !round.undone).length} credited
+                  </summary>
+                  <ol className="round-list">
+                    {match.rounds.map((round) => {
+                      const winner = match.competitors.find(
+                        ({ id }) => id === round.winnerCompetitorId,
+                      );
+                      return (
+                        <li className={round.undone ? "round-undone" : ""} key={round.id}>
+                          <span className="round-number">R{round.sequence}</span>
+                          <span className="history-round-players">
+                            {winner?.players.map((player) => (
+                              <PlayerIdentity key={player.id} player={player}>
+                                {player.screenName}
+                                {` +${round.attributions.find(({ playerId }) => playerId === player.id)?.points ?? 0}`}
+                              </PlayerIdentity>
+                            ))}
+                            <span>won</span>
+                          </span>
+                          {round.undone && <span className="muted">Undone</span>}
+                        </li>
+                      );
+                    })}
+                  </ol>
+                </details>
+                <button
+                  className="button button-quiet history-open"
+                  onClick={() => onOpen(match)}
+                  type="button"
+                >
+                  View Match
+                </button>
+              </div>
             </article>
           );
         })}

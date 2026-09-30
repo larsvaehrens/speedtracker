@@ -1147,8 +1147,13 @@ input[readonly] {
   grid-column: 1 / -1;
 }
 
+.history-rounds-container {
+  display: flex;
+}
+
 .history-rounds {
   margin-top: 12px;
+  flex-grow: 1;
 }
 
 .history-rounds summary {
@@ -1162,6 +1167,7 @@ input[readonly] {
 
 .history-open {
   margin-top: 12px;
+  max-height: 42px;
 }
 
 .stats-overview {
