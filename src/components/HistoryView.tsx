@@ -1,6 +1,7 @@
 import type { MatchView } from "#/domain/views";
 import { formatDuration } from "#/lib/time";
 import { PlayerIdentity } from "./PlayerIdentity";
+import { MapThumbnail } from "./MapThumbnail";
 
 type HistoryViewProps = {
   matches: MatchView[];
@@ -54,11 +55,14 @@ export function HistoryView({ matches, viewerId, onOpen }: HistoryViewProps) {
           return (
             <article className="history-card panel" key={match.id}>
               <div className="history-top">
-                <div>
-                  <p className={`result-label ${won ? "result-win" : "result-loss"}`}>
-                    {won ? "Match win" : "Match loss"}
-                  </p>
-                  <h2>{match.map?.name ?? "Map missing"}</h2>
+                <div className="history-map">
+                  {match.map && <MapThumbnail imagePath={match.map.imagePath} />}
+                  <div>
+                    <p className={`result-label ${won ? "result-win" : "result-loss"}`}>
+                      {won ? "Match win" : "Match loss"}
+                    </p>
+                    <h2>{match.map?.name ?? "Map missing"}</h2>
+                  </div>
                 </div>
                 <span className="duration-pill">{formatDuration(match.durationSeconds ?? 0)}</span>
               </div>

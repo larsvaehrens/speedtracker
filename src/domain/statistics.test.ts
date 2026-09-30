@@ -47,8 +47,8 @@ function completedMatch(fixture: MatchFixture): CompletedMatch {
 }
 
 const mapDetails = [
-  { id: "metro", name: "Metro", order: 0 },
-  { id: "plaza", name: "Plaza", order: 3 },
+  { id: "metro", name: "Metro", imagePath: "/ressources/maps/metro.png", order: 0 },
+  { id: "plaza", name: "Plaza", imagePath: "/ressources/maps/plaza.png", order: 3 },
 ];
 
 describe("player statistics", () => {
@@ -143,6 +143,7 @@ describe("player statistics", () => {
       {
         mapId: "metro",
         name: "Metro",
+        imagePath: "/ressources/maps/metro.png",
         order: 0,
         wins: 1,
         matches: 1,
@@ -151,6 +152,7 @@ describe("player statistics", () => {
       {
         mapId: "plaza",
         name: "Plaza",
+        imagePath: "/ressources/maps/plaza.png",
         order: 3,
         wins: 0,
         matches: 1,

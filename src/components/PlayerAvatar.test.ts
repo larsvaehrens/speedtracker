@@ -119,12 +119,25 @@ describe("player profile pictures", () => {
         onOpen: () => {},
       }),
     );
-    expect(markup.match(/<img /g)).toHaveLength(5);
+    expect(markup.match(/class="player-avatar"/g)).toHaveLength(5);
+    expect(markup).toContain('src="/map.png"');
     expect(markup).toContain('src="/me.png"');
     expect(markup).toContain('src="/friend.png"');
     expect(markup).toContain('src="/ressources/heroes/SpeedRunner/SpeedRunner_Original.png"');
     expect(markup).toContain("1 round credits");
     expect(markup).toContain("Round breakdown");
+  });
+
+  it("keeps the missing map label without rendering a broken thumbnail", () => {
+    const markup = renderToStaticMarkup(
+      createElement(HistoryView, {
+        matches: [{ ...match, map: null }],
+        viewerId: "me",
+        onOpen: () => {},
+      }),
+    );
+    expect(markup).toContain("Map missing");
+    expect(markup).not.toContain('class="map-thumbnail"');
   });
 
   it("includes each player's picture in open matches on the setup screen", () => {

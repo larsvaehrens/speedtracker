@@ -3,6 +3,7 @@ import type { PlayerStatistics } from "#/domain/statistics";
 import { apiRequest, apiMessage } from "#/lib/api";
 import { formatPlayedTime } from "#/lib/time";
 import { PlayerAvatar } from "./PlayerAvatar";
+import { MapThumbnail } from "./MapThumbnail";
 
 type StatisticsViewProps = {
   playerNames: Record<string, string>;
@@ -131,11 +132,14 @@ export function StatisticsView({ playerNames }: StatisticsViewProps) {
               <div className="stat-list">
                 {stats.maps.map((map) => (
                   <div className="stat-row" key={map.mapId}>
-                    <span className="stat-row-title">
-                      <strong>{map.name}</strong>
-                      <small>
-                        {map.wins} wins · {map.matches} played
-                      </small>
+                    <span className="stat-map">
+                      <MapThumbnail imagePath={map.imagePath} />
+                      <span className="stat-row-title">
+                        <strong>{map.name}</strong>
+                        <small>
+                          {map.wins} wins · {map.matches} played
+                        </small>
+                      </span>
                     </span>
                     <strong>{percent(map.winRate)}</strong>
                   </div>

@@ -611,10 +611,25 @@ input[readonly] {
 }
 
 .player-identity,
-.stat-player {
+.stat-player,
+.stat-map,
+.history-map {
   display: inline-flex;
   align-items: center;
   gap: 9px;
+  min-width: 0;
+}
+
+.map-thumbnail {
+  width: 80px;
+  height: 50px;
+  flex: 0 0 auto;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.history-map > div {
   min-width: 0;
 }
 
@@ -1068,6 +1083,7 @@ input[readonly] {
 
 .history-top h2 {
   margin-bottom: 0;
+  overflow-wrap: anywhere;
 }
 
 .result-label {

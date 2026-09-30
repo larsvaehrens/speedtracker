@@ -3,6 +3,7 @@ import type { CompletedMatch } from "./types";
 export type MapStat = {
   mapId: string;
   name: string;
+  imagePath: string;
   order: number;
   wins: number;
   matches: number;
@@ -52,6 +53,7 @@ export type PlayerStatistics = {
 type MapDetails = {
   id: string;
   name: string;
+  imagePath: string;
   order: number;
 };
 
@@ -239,6 +241,7 @@ export function calculateStatistics(
       const stat = mapStats.get(map.id) ?? {
         mapId: map.id,
         name: map.name,
+        imagePath: map.imagePath,
         order: map.order,
         wins: 0,
         matches: 0,

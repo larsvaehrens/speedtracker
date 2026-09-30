@@ -103,7 +103,8 @@ manual edits.
 - The statistics page shows match win rates, map and opponent performance,
   teammate partnerships and point contribution, streaks, and total time in
   completed Matches (displayed in minutes, hours, or days). Each rate shows
-  its sample size; maps with no completed matches are omitted.
+  its sample size; maps with no completed matches are omitted. Map pictures
+  appear alongside map names in statistics and Match history.
 - Current and longest daily play streaks count distinct local calendar days
   with completed Matches. The current streak remains active if the last
   played day was yesterday, and resets after a missed day.
