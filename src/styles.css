@@ -935,6 +935,7 @@ input[readonly] {
 .round-log {
   margin-top: 14px;
   padding: 16px;
+  margin-bottom: 14px;
 }
 
 .round-log summary {
