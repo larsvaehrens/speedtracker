@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { calculateStatistics } from "#/domain/statistics";
 import type { CompletedMatch, MatchState } from "#/domain/types";
 import { currentUser, json, unauthorized } from "#/server/http";
-import { getCompletedMatchPlayerNames, getCompletedMatches, getMaps } from "#/server/data";
+import { getCompletedMatchPlayers, getCompletedMatches, getMaps } from "#/server/data";
 
 function isCompletedMatch(match: MatchState): match is CompletedMatch {
   return (
@@ -20,17 +20,22 @@ export const Route = createFileRoute("/api/statistics")({
         const user = await currentUser(request);
         if (!user) return unauthorized();
 
-        const [matches, maps, playerNames] = await Promise.all([
+        const [matches, maps, players] = await Promise.all([
           getCompletedMatches(user.id),
           getMaps(),
-          getCompletedMatchPlayerNames(user.id),
+          getCompletedMatchPlayers(user.id),
         ]);
         const completedMatches = matches.filter(isCompletedMatch);
-        playerNames[user.id] = user.name ?? "";
+        players[user.id] = { screenName: user.name ?? "", avatar: user.image ?? null };
 
         return json({
           statistics: calculateStatistics(user.id, completedMatches, maps),
-          playerNames,
+          playerNames: Object.fromEntries(
+            Object.entries(players).map(([id, player]) => [id, player.screenName]),
+          ),
+          playerAvatars: Object.fromEntries(
+            Object.entries(players).map(([id, player]) => [id, player.avatar]),
+          ),
         });
       },
     },

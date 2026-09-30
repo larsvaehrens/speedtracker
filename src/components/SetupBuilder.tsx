@@ -3,6 +3,8 @@ import { arrangementKey, validateSetup, type CompetitorSetup } from "#/domain/se
 import type { FriendView, MapView, MatchView } from "#/domain/views";
 import { apiRequest, apiMessage } from "#/lib/api";
 import { MapPicker } from "./MapPicker";
+import { PlayerSelect } from "./PlayerSelect";
+import { PlayerIdentity } from "./PlayerIdentity";
 
 const formats = [
   { key: "1-1", label: "1 vs. 1", sizes: [1, 1] },
@@ -51,15 +53,6 @@ function roundCredits(match: MatchView, playerId: string): number {
     .flatMap((round) => round.attributions)
     .filter((attribution) => attribution.playerId === playerId)
     .reduce((total, attribution) => total + attribution.points, 0);
-}
-
-function matchSummary(match: MatchView): string {
-  return match.competitors
-    .map(
-      (competitor) =>
-        `${competitor.players.map(({ screenName }) => screenName).join(" + ")} ${competitor.score}`,
-    )
-    .join("  ·  ");
 }
 
 export function SetupBuilder({
@@ -256,27 +249,17 @@ export function SetupBuilder({
                 {members.length === 2 ? " · Team" : " · Solo"}
               </legend>
               {members.map((playerId, memberIndex) => (
-                <label className="player-select" key={memberIndex}>
-                  {members.length === 2 ? `Team member ${memberIndex + 1}` : "Player"}
-                  <select
-                    value={playerId}
-                    onChange={(event) =>
-                      updatePlayer(competitorIndex, memberIndex, event.currentTarget.value)
-                    }
-                  >
-                    <option value="">Select a Player</option>
-                    {players.map((player) => (
-                      <option
-                        disabled={selectedPlayers.has(player.id) && player.id !== playerId}
-                        key={player.id}
-                        value={player.id}
-                      >
-                        {player.screenName} (@{player.username})
-                        {player.id === user.id ? " · you" : ""}
-                      </option>
-                    ))}
-                  </select>
-                </label>
+                <PlayerSelect
+                  key={memberIndex}
+                  label={members.length === 2 ? `Team member ${memberIndex + 1}` : "Player"}
+                  players={players}
+                  selectedPlayers={selectedPlayers}
+                  userId={user.id}
+                  value={playerId}
+                  onChange={(nextPlayerId) =>
+                    updatePlayer(competitorIndex, memberIndex, nextPlayerId)
+                  }
+                />
               ))}
             </fieldset>
           ))}
@@ -330,17 +313,20 @@ export function SetupBuilder({
                   {match.map?.name ?? "Map not selected"}
                   {match.status === "awaiting-map" && " · Map needed"}
                 </span>
-                <span className="muted">{matchSummary(match)}</span>
-                <span className="round-credit-line">
-                  {match.competitors
-                    .map((competitor) =>
-                      competitor.players
-                        .map(
-                          (player) => `${player.screenName} ${roundCredits(match, player.id)} pts`,
-                        )
-                        .join(" · "),
-                    )
-                    .join("   /   ")}
+                <span className="open-match-competitors">
+                  {match.competitors.map((competitor) => (
+                    <span className="open-match-competitor" key={competitor.id}>
+                      {competitor.players.map((player) => (
+                        <PlayerIdentity key={player.id} player={player}>
+                          {player.screenName}
+                          <small className="round-credit-line">
+                            {roundCredits(match, player.id)} pts
+                          </small>
+                        </PlayerIdentity>
+                      ))}
+                      <strong>{competitor.score}</strong>
+                    </span>
+                  ))}
                 </span>
               </button>
             ))}

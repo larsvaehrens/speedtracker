@@ -52,6 +52,7 @@ type MatchListRow = {
 type PlayerNameRow = {
   id: string;
   screen_name: string;
+  avatar: string | null;
 };
 
 type EligiblePlayerRow = PlayerView & {
@@ -378,11 +379,11 @@ export async function getCompletedMatches(playerId: string): Promise<MatchState[
   return matches;
 }
 
-export async function getCompletedMatchPlayerNames(
+export async function getCompletedMatchPlayers(
   playerId: string,
-): Promise<Record<string, string>> {
+): Promise<Record<string, Pick<PlayerView, "screenName" | "avatar">>> {
   const { results } = await env.DB.prepare(
-    `SELECT DISTINCT participant.id, participant.name AS screen_name
+    `SELECT DISTINCT participant.id, participant.name AS screen_name, participant.image AS avatar
      FROM matches m
      JOIN competitor_members member ON member.match_id = m.id
      JOIN user participant ON participant.id = member.player_id
@@ -395,7 +396,9 @@ export async function getCompletedMatchPlayerNames(
     .bind(playerId)
     .all<PlayerNameRow>();
 
-  return Object.fromEntries(results.map((player) => [player.id, player.screen_name]));
+  return Object.fromEntries(
+    results.map((player) => [player.id, { screenName: player.screen_name, avatar: player.avatar }]),
+  );
 }
 
 export function setupEligibility(playerId: string, players: FriendView[]): ReadonlySet<string> {

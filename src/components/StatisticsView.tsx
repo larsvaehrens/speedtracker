@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import type { PlayerStatistics } from "#/domain/statistics";
 import { apiRequest, apiMessage } from "#/lib/api";
+import { PlayerAvatar } from "./PlayerAvatar";
 
 type StatisticsViewProps = {
   playerNames: Record<string, string>;
@@ -9,6 +10,7 @@ type StatisticsViewProps = {
 type StatisticsResponse = {
   statistics: PlayerStatistics;
   playerNames: Record<string, string>;
+  playerAvatars: Record<string, string | null>;
 };
 
 function percent(value: number | null): string {
@@ -22,6 +24,7 @@ function displayName(names: Record<string, string>, id: string): string {
 export function StatisticsView({ playerNames }: StatisticsViewProps) {
   const [stats, setStats] = useState<PlayerStatistics | null>(null);
   const [names, setNames] = useState(playerNames);
+  const [avatars, setAvatars] = useState<Record<string, string | null>>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -32,6 +35,7 @@ export function StatisticsView({ playerNames }: StatisticsViewProps) {
         if (cancelled) return;
         setStats(result.statistics);
         setNames(result.playerNames);
+        setAvatars(result.playerAvatars);
         setError("");
       })
       .catch((loadError) => {
@@ -146,11 +150,15 @@ export function StatisticsView({ playerNames }: StatisticsViewProps) {
               <div className="stat-list">
                 {stats.opponents.map((opponent) => (
                   <div className="stat-row" key={opponent.playerId}>
-                    <span className="stat-row-title">
-                      <strong>{displayName(names, opponent.playerId)}</strong>
-                      <small>
-                        {opponent.wins} wins · {opponent.losses} losses · {opponent.matches} played
-                      </small>
+                    <span className="stat-player">
+                      <PlayerAvatar avatar={avatars[opponent.playerId] ?? null} />
+                      <span className="stat-row-title">
+                        <strong>{displayName(names, opponent.playerId)}</strong>
+                        <small>
+                          {opponent.wins} wins · {opponent.losses} losses · {opponent.matches}{" "}
+                          played
+                        </small>
+                      </span>
                     </span>
                     <strong>{percent(opponent.winRate)}</strong>
                   </div>
@@ -175,11 +183,14 @@ export function StatisticsView({ playerNames }: StatisticsViewProps) {
                 {stats.partnerships.map((pair) => (
                   <div className="partnership-row" key={pair.teammateId}>
                     <div className="stat-row">
-                      <span className="stat-row-title">
-                        <strong>{displayName(names, pair.teammateId)}</strong>
-                        <small>
-                          {pair.wins} team wins · {pair.matches} Matches
-                        </small>
+                      <span className="stat-player">
+                        <PlayerAvatar avatar={avatars[pair.teammateId] ?? null} />
+                        <span className="stat-row-title">
+                          <strong>{displayName(names, pair.teammateId)}</strong>
+                          <small>
+                            {pair.wins} team wins · {pair.matches} Matches
+                          </small>
+                        </span>
                       </span>
                       <strong>{percent(pair.winRate)}</strong>
                     </div>

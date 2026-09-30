@@ -73,6 +73,8 @@ manual edits.
 - A Player is an account. A Competitor is a solo Player or a two-Player team.
 - Setup supports 1 vs. 1, 1 vs. 1 vs. 1, 1 vs. 1 vs. 1 vs. 1, 2 vs. 2, 1 vs.
   2, and 1 vs. 1 vs. 2. A Player cannot be in more than one Competitor.
+- Player profile pictures appear in the Setup picker, open Matches, Match
+  history, and opponent/teammate statistics.
 - A solo Competitor needs three points to win a Match. A team needs four.
 - A winning solo Round adds one point. For a team Round, the sole survivor gets
   one individual point and the team one point; if both survive, each gets one

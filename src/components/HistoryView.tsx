@@ -1,5 +1,6 @@
 import type { MatchView } from "#/domain/views";
 import { formatDuration } from "#/lib/time";
+import { PlayerIdentity } from "./PlayerIdentity";
 
 type HistoryViewProps = {
   matches: MatchView[];
@@ -68,17 +69,16 @@ export function HistoryView({ matches, viewerId, onOpen }: HistoryViewProps) {
                     key={competitor.id}
                   >
                     <span className="history-player-names">
-                      {competitor.players.map(({ screenName }) => screenName).join(" + ")}
+                      {competitor.players.map((player) => (
+                        <PlayerIdentity key={player.id} player={player}>
+                          {player.screenName}
+                          <small className="round-credit-line">
+                            {personalPoints(match, player.id)} round credits
+                          </small>
+                        </PlayerIdentity>
+                      ))}
                     </span>
                     <strong>{competitor.score}</strong>
-                    <span className="round-credit-line">
-                      {competitor.players
-                        .map(
-                          (player) =>
-                            `${player.screenName} ${personalPoints(match, player.id)} round credits`,
-                        )
-                        .join(" · ")}
-                    </span>
                   </div>
                 ))}
               </div>
@@ -91,20 +91,17 @@ export function HistoryView({ matches, viewerId, onOpen }: HistoryViewProps) {
                     const winner = match.competitors.find(
                       ({ id }) => id === round.winnerCompetitorId,
                     );
-                    const credits = round.attributions
-                      .map((attribution) => {
-                        const player = winner?.players.find(
-                          ({ id }) => id === attribution.playerId,
-                        );
-                        return `${player?.screenName ?? "Player"} +${attribution.points}`;
-                      })
-                      .join(", ");
                     return (
                       <li className={round.undone ? "round-undone" : ""} key={round.id}>
                         <span className="round-number">R{round.sequence}</span>
-                        <span>
-                          {winner?.players.map(({ screenName }) => screenName).join(" + ")} won ·{" "}
-                          {credits}
+                        <span className="history-round-players">
+                          {winner?.players.map((player) => (
+                            <PlayerIdentity key={player.id} player={player}>
+                              {player.screenName}
+                              {` +${round.attributions.find(({ playerId }) => playerId === player.id)?.points ?? 0}`}
+                            </PlayerIdentity>
+                          ))}
+                          <span>won</span>
                         </span>
                         {round.undone && <span className="muted">Undone</span>}
                       </li>
