@@ -778,6 +778,18 @@ input[readonly] {
   background: rgb(179 154 255 / 10%);
 }
 
+.score-emblems {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.score-emblem {
+  display: block;
+  width: 48px;
+  height: 48px;
+}
+
 .winner-tag {
   display: inline-block;
   margin-top: 10px;

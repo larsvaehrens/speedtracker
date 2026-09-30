@@ -3,6 +3,7 @@ import type { MapView, MatchView, RoundView } from "#/domain/views";
 import { apiMessage, apiRequest, ApiError } from "#/lib/api";
 import { formatDuration } from "#/lib/time";
 import { MapPicker } from "./MapPicker";
+import { ScoreEmblems } from "./ScoreEmblems";
 
 type PendingScore = {
   revision: number;
@@ -439,6 +440,11 @@ export function MatchBoard({
                   </div>
                   {isScorekeeper && match.status === "active" && (
                     <button
+                      aria-label={
+                        competitor.kind === "team"
+                          ? `Only ${player.screenName} survives · +1 team point`
+                          : `${player.screenName} won Round · +1 point`
+                      }
                       className="button button-score"
                       disabled={
                         actionPending || saveState !== "idle" || !online || connection === "offline"
@@ -446,9 +452,7 @@ export function MatchBoard({
                       onClick={() => awardRound(competitor.id, [player.id])}
                       type="button"
                     >
-                      {competitor.kind === "team"
-                        ? "Only this Player survives · +1"
-                        : "Won Round · +1"}
+                      <ScoreEmblems score={competitor.score} points={1} />
                     </button>
                   )}
                 </div>
@@ -456,6 +460,7 @@ export function MatchBoard({
             </div>
             {competitor.kind === "team" && isScorekeeper && match.status === "active" && (
               <button
+                aria-label={`${competitor.players.map(({ screenName }) => screenName).join(" and ")} both survive · +1 each / +2 team points`}
                 className="button button-team"
                 disabled={
                   actionPending || saveState !== "idle" || !online || connection === "offline"
@@ -468,7 +473,7 @@ export function MatchBoard({
                 }
                 type="button"
               >
-                Both survive · +1 each / +2 team points
+                <ScoreEmblems score={competitor.score} points={2} />
               </button>
             )}
             {competitor.id === match.winnerCompetitorId && (
