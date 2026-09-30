@@ -441,6 +441,10 @@ input[readonly] {
 }
 
 .notice-success {
+  display: flex;
+  align-items: center;
+  justify-content: normal;
+  gap: 6px;
   border-color: rgb(131 229 162 / 38%);
   color: #d6ffe1;
   background: rgb(131 229 162 / 9%);
