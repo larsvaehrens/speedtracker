@@ -729,8 +729,7 @@ input[readonly] {
 }
 
 .match-player {
-  display: grid;
-  grid-template-columns: 48px minmax(0, 1fr);
+  display: flex;
   align-items: center;
   gap: 10px;
   min-width: 0;
@@ -741,6 +740,7 @@ input[readonly] {
 }
 
 .match-player-meta {
+  flex-grow: 1;
   display: grid;
   min-width: 0;
   gap: 4px;
@@ -757,7 +757,6 @@ input[readonly] {
 
 .button-score {
   grid-column: 1 / -1;
-  width: 100%;
   min-height: 54px;
   border-color: rgb(82 224 207 / 43%);
   color: #cbfff8;
