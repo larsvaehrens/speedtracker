@@ -51,7 +51,6 @@ export function FriendsView({ friends, onChanged, onViewStatistics }: FriendsVie
     <section className="page-section">
       <div className="section-heading">
         <div>
-          <p className="eyebrow">One-way follows</p>
           <h1>Players</h1>
           <p className="muted">
             Add someone by their exact login username. Click a followed Player to view their
@@ -91,7 +90,6 @@ export function FriendsView({ friends, onChanged, onViewStatistics }: FriendsVie
       <section className="subsection">
         <div className="section-heading compact-heading">
           <div>
-            <p className="eyebrow">Your list</p>
             <h2>Followed Players ({friends.length})</h2>
           </div>
         </div>

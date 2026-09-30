@@ -21,7 +21,6 @@ export function HistoryView({ matches, viewerId, onOpen }: HistoryViewProps) {
   if (matches.length === 0) {
     return (
       <section className="page-section">
-        <p className="eyebrow">Completed Matches</p>
         <h1>Match history</h1>
         <div className="empty-state panel">
           <span aria-hidden="true" className="empty-icon">
@@ -41,7 +40,6 @@ export function HistoryView({ matches, viewerId, onOpen }: HistoryViewProps) {
     <section className="page-section">
       <div className="section-heading">
         <div>
-          <p className="eyebrow">Completed Matches</p>
           <h1>Match history</h1>
           <p className="muted">{matches.length} recent completed Matches</p>
         </div>

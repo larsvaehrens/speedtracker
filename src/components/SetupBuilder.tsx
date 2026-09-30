@@ -182,7 +182,6 @@ export function SetupBuilder({
     <section className="page-section">
       <div className="section-heading">
         <div>
-          <p className="eyebrow">Fast setup</p>
           <h1>Start a Match</h1>
           <p className="muted">
             Choose the competitors now. A map is optional until the Match ends.

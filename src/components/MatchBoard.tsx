@@ -331,13 +331,6 @@ export function MatchBoard({
 
       <section className="match-banner panel">
         <div>
-          <p className="eyebrow">
-            {match.status === "completed"
-              ? "Match complete"
-              : match.status === "abandoned"
-                ? "Match abandoned"
-                : "Live Match"}
-          </p>
           <h1>{match.map?.name ?? "Map not selected"}</h1>
           {match.map ? (
             isScorekeeper && editable ? (

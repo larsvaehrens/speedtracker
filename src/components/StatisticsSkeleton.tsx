@@ -8,7 +8,6 @@ export function StatisticsHeading({ player, onBack }: PlayerHeadingProps) {
   return (
     <div className="section-heading statistics-heading">
       <div>
-        <p className="eyebrow">Completed Matches only</p>
         {player ? (
           <div className="statistics-player-heading">
             <PlayerAvatar avatar={player.avatar} />

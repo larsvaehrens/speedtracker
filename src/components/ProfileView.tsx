@@ -47,7 +47,6 @@ export function ProfileView({ user, onSaved }: ProfileViewProps) {
     <section className="page-section">
       <div className="section-heading">
         <div>
-          <p className="eyebrow">Your account</p>
           <h1>Profile settings</h1>
           <p className="muted">
             Your login username stays fixed. Change your screen name and hero avatar here.
