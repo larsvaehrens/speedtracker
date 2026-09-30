@@ -5,6 +5,7 @@ import { apiRequest, apiMessage } from "#/lib/api";
 import { MapPicker } from "./MapPicker";
 import { PlayerSelect } from "./PlayerSelect";
 import { PlayerIdentity } from "./PlayerIdentity";
+import { useToast } from "./ToastProvider";
 
 const formats = [
   { key: "1-1", label: "1 vs. 1", sizes: [1, 1] },
@@ -71,7 +72,7 @@ export function SetupBuilder({
   const [mapPickerOpen, setMapPickerOpen] = useState(false);
   const [starting, setStarting] = useState(false);
   const [error, setError] = useState("");
-  const [notice, setNotice] = useState("");
+  const toast = useToast();
 
   useEffect(() => {
     setCompetitors(emptySlots("1-1", user.id));
@@ -93,18 +94,18 @@ export function SetupBuilder({
       } else {
         window.localStorage.removeItem(key);
         setPreviousSetup(null);
-        setNotice("The previous Setup was no longer available and was cleared.");
+        toast("The previous Setup was no longer available and was cleared.", "warning");
       }
     } catch (parseError) {
       if (parseError instanceof SyntaxError) {
         window.localStorage.removeItem(key);
         setPreviousSetup(null);
-        setNotice("The saved Setup could not be read and was cleared.");
+        toast("The saved Setup could not be read and was cleared.", "warning");
       } else {
         throw parseError;
       }
     }
-  }, [eligibleIds, user.id]);
+  }, [eligibleIds, user.id, toast]);
 
   const selectedPlayers = new Set(competitors.flat().filter(Boolean));
   const setup = competitors.map((playerIds) => ({ playerIds }));
@@ -128,13 +129,13 @@ export function SetupBuilder({
     if (!format || validateSetup(previousSetup, user.id, eligibleIds)) {
       setPreviousSetup(null);
       window.localStorage.removeItem(`speedtracker.previous-setup:${user.id}`);
-      setNotice("The previous Setup is no longer valid.");
+      toast("The previous Setup is no longer valid.", "warning");
       return;
     }
 
     setFormatKey(format.key);
     setCompetitors(previousSetup.map(({ playerIds }) => [...playerIds]));
-    setNotice("Previous Setup restored. Start the Match when you are ready.");
+    toast("Previous Setup restored. Start the Match when you are ready.", "success");
   }
 
   function resetSetup() {
@@ -143,7 +144,7 @@ export function SetupBuilder({
     setMapId(null);
     setPreviousSetup(null);
     setError("");
-    setNotice("Setup reset.");
+    toast("Setup reset.", "success");
     window.localStorage.removeItem(`speedtracker.previous-setup:${user.id}`);
   }
 
@@ -180,24 +181,24 @@ export function SetupBuilder({
 
   return (
     <section className="page-section">
-      <div className="section-heading">
+      <div className="section-heading setup-heading">
         <div>
           <h1>Start a match</h1>
         </div>
-        <button className="button button-quiet" onClick={resetSetup} type="button">
-          Reset setup
-        </button>
-      </div>
-
-      {previousSetup && (
-        <div className="notice notice-info">
-          <span>Previous setup is ready.</span>
-          <button className="text-button" onClick={reusePrevious} type="button">
+        <div className="setup-heading-actions">
+          <button
+            className="button button-quiet"
+            disabled={!previousSetup}
+            onClick={reusePrevious}
+            type="button"
+          >
             Reuse last setup
           </button>
+          <button className="button button-quiet" onClick={resetSetup} type="button">
+            Reset setup
+          </button>
         </div>
-      )}
-      {notice && <p className="inline-notice">{notice}</p>}
+      </div>
 
       <section className="panel setup-panel">
         <div className="setup-controls">

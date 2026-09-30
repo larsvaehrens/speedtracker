@@ -6,6 +6,7 @@ import { HistoryView } from "./HistoryView";
 import { PlayerAvatar } from "./PlayerAvatar";
 import { PlayerSelect } from "./PlayerSelect";
 import { SetupBuilder } from "./SetupBuilder";
+import { ToastProvider } from "./ToastProvider";
 
 const players: FriendView[] = [
   { id: "me", username: "myself", screenName: "Me", avatar: "/me.png", followedAt: null },
@@ -142,16 +143,18 @@ describe("player profile pictures", () => {
 
   it("includes each player's picture in open matches on the setup screen", () => {
     const markup = renderToStaticMarkup(
-      createElement(SetupBuilder, {
-        user: players[0],
-        players,
-        maps: [],
-        openMatches: [{ ...match, status: "active" }],
-        onResume: () => {},
-        onMatchCreated: () => {},
+      createElement(ToastProvider, {
+        children: createElement(SetupBuilder, {
+          user: players[0],
+          players,
+          maps: [],
+          openMatches: [{ ...match, status: "active" }],
+          onResume: () => {},
+          onMatchCreated: () => {},
+        }),
       }),
     );
-    expect(markup).toContain("Open Matches");
+    expect(markup).toContain('class="open-match-list"');
     expect(markup.match(/<img /g)).toHaveLength(4);
     expect(markup).toContain('src="/friend.png"');
   });

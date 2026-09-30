@@ -2,6 +2,7 @@ import { useState, type FormEvent } from "react";
 import type { FriendView } from "#/domain/views";
 import { apiMessage, apiRequest } from "#/lib/api";
 import { PlayerAvatar } from "./PlayerAvatar";
+import { useToast } from "./ToastProvider";
 
 type FriendsViewProps = {
   friends: FriendView[];
@@ -13,20 +14,19 @@ export function FriendsView({ friends, onChanged, onViewStatistics }: FriendsVie
   const [username, setUsername] = useState("");
   const [pending, setPending] = useState(false);
   const [error, setError] = useState("");
-  const [notice, setNotice] = useState("");
+  const toast = useToast();
 
   async function addFollow(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setPending(true);
     setError("");
-    setNotice("");
     try {
       await apiRequest<{ follows: FriendView[] }>("/api/follows", {
         method: "POST",
         body: JSON.stringify({ username }),
       });
       setUsername("");
-      setNotice("Player added. They can now be selected for your setups.");
+      toast("Player added. They can now be selected for your setups.", "success");
       onChanged();
     } catch (addError) {
       setError(apiMessage(addError));
@@ -79,7 +79,6 @@ export function FriendsView({ friends, onChanged, onViewStatistics }: FriendsVie
             {pending ? "Adding…" : "Add Player"}
           </button>
         </form>
-        {notice && <p className="inline-notice">{notice}</p>}
         {error && (
           <p className="form-error" role="alert">
             {error}

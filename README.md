@@ -102,6 +102,11 @@ manual edits.
 - Initial session/Match loading and statistics use layout-matched skeletons.
   Background refreshes keep existing content visible, and skeleton animation
   is disabled when reduced motion is requested.
+- Setup, follow, and profile confirmations appear as floating, dismissible
+  toasts instead of moving page content. Informational and success toasts
+  auto-dismiss after six seconds, pausing while hovered or focused. Setup
+  warnings require dismissal; form errors and persistent Match status remain
+  inline. Toast animations respect reduced motion.
 - Match duration is elapsed wall-clock time from Match start to completion.
   Abandoned Matches are retained for reference but excluded from completed
   history and statistics.

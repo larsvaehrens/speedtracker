@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { HERO_AVATARS } from "#/domain/assets";
 import type { FriendView } from "#/domain/views";
 import { apiMessage, apiRequest } from "#/lib/api";
+import { useToast } from "./ToastProvider";
 
 type ProfileViewProps = {
   user: FriendView;
@@ -18,7 +19,7 @@ export function ProfileView({ user, onSaved }: ProfileViewProps) {
   const [avatar, setAvatar] = useState<string>(user.avatar ?? HERO_AVATARS[0]);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState("");
-  const [notice, setNotice] = useState("");
+  const toast = useToast();
 
   useEffect(() => {
     setScreenName(user.screenName);
@@ -28,14 +29,13 @@ export function ProfileView({ user, onSaved }: ProfileViewProps) {
   async function saveProfile() {
     setPending(true);
     setError("");
-    setNotice("");
     try {
       const result = await apiRequest<{ user: FriendView }>("/api/profile", {
         method: "PATCH",
         body: JSON.stringify({ screenName, avatar }),
       });
       onSaved({ ...result.user, followedAt: null });
-      setNotice("Profile saved.");
+      toast("Profile saved.", "success");
     } catch (saveError) {
       setError(apiMessage(saveError));
     } finally {
@@ -97,7 +97,6 @@ export function ProfileView({ user, onSaved }: ProfileViewProps) {
             {error}
           </p>
         )}
-        {notice && <p className="inline-notice">{notice}</p>}
         <button
           className="button button-primary"
           disabled={pending || screenName.trim().length < 2}

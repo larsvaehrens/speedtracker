@@ -28,12 +28,15 @@ export function AppSkeleton({ label }: { label: string }) {
           ))}
         </div>
         <section className="page-section">
-          <div className="section-heading">
+          <div className="section-heading setup-heading">
             <div>
               <p className="eyebrow">Fast setup</p>
               <h1>Start a match</h1>
             </div>
-            <Skeleton className="skeleton-button" width={110} />
+            <div className="setup-heading-actions">
+              <Skeleton className="skeleton-button" width={145} />
+              <Skeleton className="skeleton-button" width={110} />
+            </div>
           </div>
           <section className="panel setup-panel">
             <div className="setup-controls">

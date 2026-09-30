@@ -1,5 +1,6 @@
 import { HeadContent, Scripts, createRootRoute } from "@tanstack/react-router";
 import appCss from "../styles.css?url";
+import { ToastProvider } from "#/components/ToastProvider";
 
 export const Route = createRootRoute({
   head: () => ({
@@ -36,7 +37,9 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        <main id="app">{children}</main>
+        <ToastProvider>
+          <main id="app">{children}</main>
+        </ToastProvider>
         <Scripts />
       </body>
     </html>
