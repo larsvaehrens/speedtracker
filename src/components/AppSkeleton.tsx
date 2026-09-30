@@ -32,9 +32,6 @@ export function AppSkeleton({ label }: { label: string }) {
             <div>
               <p className="eyebrow">Fast setup</p>
               <h1>Start a Match</h1>
-              <p className="muted">
-                Choose the competitors now. A map is optional until the Match ends.
-              </p>
             </div>
             <Skeleton className="skeleton-button" width={110} />
           </div>

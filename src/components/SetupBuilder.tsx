@@ -183,9 +183,6 @@ export function SetupBuilder({
       <div className="section-heading">
         <div>
           <h1>Start a Match</h1>
-          <p className="muted">
-            Choose the competitors now. A map is optional until the Match ends.
-          </p>
         </div>
         <button className="button button-quiet" onClick={resetSetup} type="button">
           Reset Setup
@@ -296,8 +293,7 @@ export function SetupBuilder({
         <section className="subsection">
           <div className="section-heading compact-heading">
             <div>
-              <p className="eyebrow">In progress</p>
-              <h2>Open Matches</h2>
+              <h2>Active Matches</h2>
             </div>
           </div>
           <div className="open-match-list">
