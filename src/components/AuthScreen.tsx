@@ -1,6 +1,6 @@
-import { useState, type FormEvent } from "react";
 import { internalAuthEmail, validateUsername } from "#/domain/identity";
 import { authClient } from "#/server/auth-client";
+import { useState, type FormEvent } from "react";
 
 export function AuthScreen() {
   const [mode, setMode] = useState<"signin" | "signup">("signin");
@@ -65,13 +65,12 @@ export function AuthScreen() {
         />
       </div>
       <div className="auth-card">
-        <p className="eyebrow">Local matches · one Switch</p>
-        <h1>{mode === "signin" ? "Sign in" : "Create your Player account"}</h1>
+        <h1>{mode === "signin" ? "Sign in" : "Create account"}</h1>
         <p className="muted">Keep the score, remember every round, and settle the rematch.</p>
 
         <form onSubmit={submit} className="stack-form">
           <label>
-            Login username
+            Username
             <input
               autoComplete="username"
               autoCapitalize="none"
@@ -133,10 +132,12 @@ export function AuthScreen() {
             {mode === "signin" ? "Sign up" : "Sign in"}
           </button>
         </p>
-        <p className="recovery-note">
-          Accounts use a username and password only. There is no email recovery; losing your
-          password means losing access to that account.
-        </p>
+        {mode === "signup" && (
+          <p className="recovery-note">
+            Accounts use a username and password only. There is no email recovery; losing your
+            password means losing access to that account.
+          </p>
+        )}
       </div>
     </section>
   );
