@@ -1389,6 +1389,54 @@ input[readonly] {
   color: var(--muted);
 }
 
+.friend-profile {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  min-height: var(--touch);
+  flex: 1;
+  gap: 12px;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+
+.friend-profile:hover .friend-name strong {
+  color: var(--primary);
+}
+
+.friend-name strong,
+.friend-name small {
+  overflow-wrap: anywhere;
+}
+
+.statistics-heading {
+  flex-wrap: wrap;
+}
+
+.statistics-heading > div {
+  min-width: 0;
+  flex: 1 1 220px;
+}
+
+.statistics-player-heading {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  gap: 10px;
+}
+
+.statistics-player-heading h1 {
+  overflow-wrap: anywhere;
+}
+
+.statistics-heading > .button {
+  flex: 0 0 auto;
+}
+
 .profile-fields {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));

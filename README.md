@@ -90,8 +90,10 @@ manual edits.
   selects one.
 - The creator is the scorekeeper. Match participants can view live and
   completed state; unrelated users cannot access private Matches. Following
-  someone makes them selectable in Setup, but does not expose their private
-  Matches.
+  someone makes them selectable in Setup and lets you view their statistics
+  by clicking their name or profile picture in Players. It does not expose
+  their private Matches. Statistics access is limited to yourself and Players
+  you currently follow.
 - Open Matches poll the server every two seconds; connected participants
   normally see updates within about two to three seconds. The server is
   authoritative. Pending saves and connection errors remain visible, retries

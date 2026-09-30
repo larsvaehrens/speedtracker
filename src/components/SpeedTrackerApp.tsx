@@ -35,6 +35,7 @@ export function SpeedTrackerApp() {
   const [page, setPage] = useState<Page>("play");
   const [bootstrap, setBootstrap] = useState<BootstrapData | null>(null);
   const [selectedMatch, setSelectedMatch] = useState<MatchView | null>(null);
+  const [statisticsPlayer, setStatisticsPlayer] = useState<FriendView | null>(null);
   const [loading, setLoading] = useState(false);
   const [loadError, setLoadError] = useState("");
   const [signingOut, setSigningOut] = useState(false);
@@ -55,6 +56,7 @@ export function SpeedTrackerApp() {
 
   useEffect(() => {
     let cancelled = false;
+    setStatisticsPlayer(null);
     if (!sessionUserId) {
       setBootstrap(null);
       setSelectedMatch(null);
@@ -217,6 +219,7 @@ export function SpeedTrackerApp() {
             key={tab.id}
             onClick={() => {
               setPage(tab.id);
+              if (tab.id === "statistics") setStatisticsPlayer(null);
               if (tab.id !== "play") setSelectedMatch(null);
             }}
             type="button"
@@ -262,12 +265,31 @@ export function SpeedTrackerApp() {
         />
       )}
       {page === "statistics" && (
-        <StatisticsView hasMatches={bootstrap.recentMatches.length > 0} playerNames={playerNames} />
+        <StatisticsView
+          key={statisticsPlayer?.id ?? bootstrap.user.id}
+          hasMatches={statisticsPlayer !== null || bootstrap.recentMatches.length > 0}
+          playerNames={playerNames}
+          player={statisticsPlayer ?? undefined}
+          onBack={
+            statisticsPlayer
+              ? () => {
+                  setStatisticsPlayer(null);
+                  setPage("players");
+                }
+              : undefined
+          }
+        />
       )}
       {page === "players" && (
         <FriendsView
-          friends={bootstrap.players.filter((player) => player.id !== bootstrap.user.id)}
+          friends={bootstrap.players.filter(
+            (player) => player.id !== bootstrap.user.id && player.followedAt !== null,
+          )}
           onChanged={() => void refreshBootstrap()}
+          onViewStatistics={(player) => {
+            setStatisticsPlayer(player);
+            setPage("statistics");
+          }}
         />
       )}
       {page === "profile" && <ProfileView user={bootstrap.user} onSaved={updateProfile} />}

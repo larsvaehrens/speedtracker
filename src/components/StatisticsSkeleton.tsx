@@ -1,18 +1,38 @@
 import { Skeleton } from "./Skeleton";
+import type { StatisticsPlayer } from "#/domain/views";
+import { PlayerAvatar } from "./PlayerAvatar";
 
-export function StatisticsHeading() {
+type PlayerHeadingProps = { player?: StatisticsPlayer; onBack?: () => void };
+
+export function StatisticsHeading({ player, onBack }: PlayerHeadingProps) {
   return (
-    <div className="section-heading">
+    <div className="section-heading statistics-heading">
       <div>
         <p className="eyebrow">Completed Matches only</p>
-        <h1>Statistics</h1>
+        {player ? (
+          <div className="statistics-player-heading">
+            <PlayerAvatar avatar={player.avatar} />
+            <h1>{player.screenName}'s statistics</h1>
+          </div>
+        ) : (
+          <h1>Statistics</h1>
+        )}
         <p className="muted">All-time statistics</p>
       </div>
+      {onBack && (
+        <button className="button button-quiet" onClick={onBack} type="button">
+          Back to Players
+        </button>
+      )}
     </div>
   );
 }
 
-export function StatisticsSkeleton({ hasMatches }: { hasMatches: boolean }) {
+export function StatisticsSkeleton({
+  hasMatches,
+  player,
+  onBack,
+}: { hasMatches: boolean } & PlayerHeadingProps) {
   return (
     <section
       aria-busy="true"
@@ -20,7 +40,7 @@ export function StatisticsSkeleton({ hasMatches }: { hasMatches: boolean }) {
       className="page-section"
       role="status"
     >
-      <StatisticsHeading />
+      <StatisticsHeading player={player} onBack={onBack} />
       <div aria-hidden="true">
         <div className="stats-overview">
           {[

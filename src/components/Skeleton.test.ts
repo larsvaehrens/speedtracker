@@ -87,4 +87,19 @@ describe("loading skeletons", () => {
     expect(markup).toContain('class="auth-shell"');
     expect(markup).not.toContain('role="status"');
   });
+
+  it("identifies the followed player and keeps Back available while statistics load", () => {
+    const markup = renderToStaticMarkup(
+      createElement(StatisticsView, {
+        playerNames: {},
+        hasMatches: true,
+        player: { id: "friend", screenName: "Friend", avatar: "/friend.png" },
+        onBack: () => {},
+      }),
+    );
+    expect(markup).toContain("Friend&#x27;s statistics");
+    expect(markup).toContain('src="/friend.png"');
+    expect(markup).toContain("Back to Players");
+    expect(markup).toContain('aria-busy="true"');
+  });
 });

@@ -73,5 +73,20 @@ describe("monthly trends across statistics views", () => {
     expect(withoutIndicators).not.toContain('class="stat-trend');
     expect(withoutIndicators).not.toContain("No prior-period");
     expect(withoutIndicators).not.toContain("New activity");
+
+    const followedMarkup = renderToStaticMarkup(
+      createElement(StatisticsContent, {
+        stats,
+        names: { teammate: "Teammate", opponent: "Opponent" },
+        avatars: {},
+        player: { id: "player", screenName: "Followed", avatar: "/followed.png" },
+        onBack: () => {},
+      }),
+    );
+    expect(followedMarkup).toContain("Followed&#x27;s statistics");
+    expect(followedMarkup).toContain("Points credited to this Player");
+    expect(followedMarkup).toContain("Followed&#x27;s points");
+    expect(followedMarkup).not.toContain("Your points");
+    expect(followedMarkup).toContain("Back to Players");
   });
 });

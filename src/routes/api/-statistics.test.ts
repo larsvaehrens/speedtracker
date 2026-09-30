@@ -6,6 +6,7 @@ const mocks = vi.hoisted(() => ({
   getCompletedMatches: vi.fn(),
   getMaps: vi.fn(),
   getCompletedMatchPlayers: vi.fn(),
+  getFollows: vi.fn(),
   get: async (_input: { request: Request }): Promise<Response> => {
     throw new Error("Statistics handler has not been registered.");
   },
@@ -26,11 +27,13 @@ vi.mock("#/server/http", () => ({
   json: (data: unknown, status = 200) => Response.json(data, { status }),
   unauthorized: () => Response.json({ error: "Sign in to continue." }, { status: 401 }),
   badRequest: (error: string) => Response.json({ error }, { status: 400 }),
+  unavailable: () => Response.json({ error: "This resource is unavailable." }, { status: 404 }),
 }));
 vi.mock("#/server/data", () => ({
   getCompletedMatches: mocks.getCompletedMatches,
   getMaps: mocks.getMaps,
   getCompletedMatchPlayers: mocks.getCompletedMatchPlayers,
+  getFollows: mocks.getFollows,
 }));
 
 import "./statistics";
@@ -43,6 +46,7 @@ describe("statistics timezone API", () => {
     mocks.currentUser.mockResolvedValue({ id: "player", name: "Player", image: null });
     mocks.getMaps.mockResolvedValue([]);
     mocks.getCompletedMatchPlayers.mockResolvedValue({});
+    mocks.getFollows.mockResolvedValue([]);
     const matches: CompletedMatch[] = ["2026-01-01T23:00:00Z", "2026-01-02T01:00:00Z"].map(
       (completedAt, index) => ({
         id: `match-${index}`,
@@ -115,5 +119,68 @@ describe("statistics timezone API", () => {
     const response = await mocks.get({ request: new Request("http://localhost/api/statistics") });
     expect(response.status).toBe(401);
     expect(mocks.getCompletedMatches).not.toHaveBeenCalled();
+    expect(mocks.getFollows).not.toHaveBeenCalled();
+  });
+
+  it("allows a followed player's full statistics without exposing match records", async () => {
+    mocks.getFollows.mockResolvedValue([
+      {
+        id: "followed",
+        screenName: "Followed Player",
+        username: "followed",
+        avatar: "/followed.png",
+        followedAt: "2026-01-01",
+      },
+    ]);
+    const match: CompletedMatch = {
+      id: "private-match",
+      revision: 1,
+      status: "completed",
+      mapId: "map",
+      startedAt: "2026-01-01T12:00:00Z",
+      completedAt: "2026-01-01T12:05:00Z",
+      winnerCompetitorId: "followed-competitor",
+      competitors: [
+        { id: "followed-competitor", playerIds: ["followed"] },
+        { id: "opposition", playerIds: ["other"] },
+      ],
+      rounds: [],
+    };
+    mocks.getCompletedMatches.mockResolvedValue([match]);
+    const response = await mocks.get({
+      request: new Request("http://localhost/api/statistics?playerId=followed"),
+    });
+    expect(response.status).toBe(200);
+    const payload = await response.json();
+    expect(payload).not.toHaveProperty("matches");
+    expect(payload).not.toHaveProperty("rounds");
+    expect(payload).toMatchObject({
+      player: { id: "followed", screenName: "Followed Player", avatar: "/followed.png" },
+      statistics: { matchesPlayed: 1, matchWins: 1, totalPlayedSeconds: 300 },
+      playerNames: { followed: "Followed Player" },
+      playerAvatars: { followed: "/followed.png" },
+    });
+    expect(mocks.getFollows).toHaveBeenCalledWith("player");
+    expect(mocks.getCompletedMatches).toHaveBeenCalledWith("followed");
+    expect(mocks.getCompletedMatchPlayers).toHaveBeenCalledWith("followed");
+  });
+
+  it.each(["stranger", "former-follow", ""])("rejects unfollowed targets: %s", async (playerId) => {
+    const response = await mocks.get({
+      request: new Request(`http://localhost/api/statistics?playerId=${playerId}`),
+    });
+    expect(response.status).toBe(404);
+    expect(mocks.getCompletedMatches).not.toHaveBeenCalled();
+    expect(mocks.getCompletedMatchPlayers).not.toHaveBeenCalled();
+    expect(mocks.getMaps).not.toHaveBeenCalled();
+  });
+
+  it("allows an explicit self target without requiring a self-follow", async () => {
+    const response = await mocks.get({
+      request: new Request("http://localhost/api/statistics?playerId=player"),
+    });
+    expect(response.status).toBe(200);
+    expect(mocks.getFollows).not.toHaveBeenCalled();
+    expect(mocks.getCompletedMatches).toHaveBeenCalledWith("player");
   });
 });

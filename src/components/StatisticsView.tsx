@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import type { PlayerStatistics } from "#/domain/statistics";
+import type { StatisticsPlayer } from "#/domain/views";
 import { apiRequest, apiMessage } from "#/lib/api";
 import { formatPlayedTime } from "#/lib/time";
 import { PlayerAvatar } from "./PlayerAvatar";
@@ -10,12 +11,15 @@ import { StatTrend, WinRateTrend } from "./StatTrend";
 type StatisticsViewProps = {
   playerNames: Record<string, string>;
   hasMatches: boolean;
+  player?: StatisticsPlayer;
+  onBack?: () => void;
 };
 
 type StatisticsResponse = {
   statistics: PlayerStatistics;
   playerNames: Record<string, string>;
   playerAvatars: Record<string, string | null>;
+  player: StatisticsPlayer;
 };
 
 function percent(value: number | null): string {
@@ -26,22 +30,29 @@ function displayName(names: Record<string, string>, id: string): string {
   return names[id] ?? "Player";
 }
 
-export function StatisticsView({ playerNames, hasMatches }: StatisticsViewProps) {
+export function StatisticsView({ playerNames, hasMatches, player, onBack }: StatisticsViewProps) {
   const [stats, setStats] = useState<PlayerStatistics | null>(null);
   const [names, setNames] = useState(playerNames);
   const [avatars, setAvatars] = useState<Record<string, string | null>>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [subject, setSubject] = useState(player);
+  const playerId = player?.id;
 
   useEffect(() => {
     let cancelled = false;
+    setLoading(true);
+    setError("");
     const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    apiRequest<StatisticsResponse>(`/api/statistics?timeZone=${encodeURIComponent(timeZone)}`)
+    const parameters = new URLSearchParams({ timeZone });
+    if (playerId) parameters.set("playerId", playerId);
+    apiRequest<StatisticsResponse>(`/api/statistics?${parameters}`)
       .then((result) => {
         if (cancelled) return;
         setStats(result.statistics);
         setNames(result.playerNames);
         setAvatars(result.playerAvatars);
+        setSubject(result.player);
         setError("");
       })
       .catch((loadError) => {
@@ -54,14 +65,14 @@ export function StatisticsView({ playerNames, hasMatches }: StatisticsViewProps)
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [playerId]);
 
-  if (loading) return <StatisticsSkeleton hasMatches={hasMatches} />;
+  if (loading)
+    return <StatisticsSkeleton hasMatches={hasMatches} player={player} onBack={onBack} />;
   if (error) {
     return (
       <section className="page-section">
-        <p className="eyebrow">Completed Matches only</p>
-        <h1>Statistics</h1>
+        <StatisticsHeading player={player} onBack={onBack} />
         <p className="form-error" role="alert">
           {error}
         </p>
@@ -70,23 +81,35 @@ export function StatisticsView({ playerNames, hasMatches }: StatisticsViewProps)
   }
   if (!stats) return null;
 
-  return <StatisticsContent stats={stats} names={names} avatars={avatars} />;
+  return (
+    <StatisticsContent
+      stats={stats}
+      names={names}
+      avatars={avatars}
+      player={player ? subject : undefined}
+      onBack={onBack}
+    />
+  );
 }
 
 export function StatisticsContent({
   stats,
   names,
   avatars,
+  player,
+  onBack,
 }: {
   stats: PlayerStatistics;
   names: Record<string, string>;
   avatars: Record<string, string | null>;
+  player?: StatisticsPlayer;
+  onBack?: () => void;
 }) {
   const comparison = stats.monthlyComparison;
 
   return (
     <section className="page-section">
-      <StatisticsHeading />
+      <StatisticsHeading player={player} onBack={onBack} />
 
       <div className="stats-overview">
         <article className="stat-card stat-featured">
@@ -122,7 +145,7 @@ export function StatisticsContent({
               unit="count"
             />
           </strong>
-          <span>Points credited to you</span>
+          <span>{player ? "Points credited to this Player" : "Points credited to you"}</span>
         </article>
         <article className="stat-card">
           <span className="muted">Current streak</span>
@@ -151,7 +174,9 @@ export function StatisticsContent({
 
       {stats.matchesPlayed === 0 ? (
         <div className="empty-state panel">
-          <h2>Statistics will appear after your first Match</h2>
+          <h2>
+            {player ? "No completed Matches yet" : "Statistics will appear after your first Match"}
+          </h2>
           <p className="muted">
             Abandoned Matches and individual Rounds do not count as completed Matches.
           </p>
@@ -278,7 +303,8 @@ export function StatisticsContent({
                       />
                     </div>
                     <p className="contribution-copy">
-                      Your points: {pair.playerPoints} ({percent(pair.playerShare)}) ·{" "}
+                      {player ? `${player.screenName}'s points` : "Your points"}:{" "}
+                      {pair.playerPoints} ({percent(pair.playerShare)}) ·{" "}
                       {displayName(names, pair.teammateId)}: {pair.teammatePoints} (
                       {percent(pair.teammateShare)})
                     </p>

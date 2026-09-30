@@ -1,13 +1,15 @@
 import { useState, type FormEvent } from "react";
 import type { FriendView } from "#/domain/views";
 import { apiMessage, apiRequest } from "#/lib/api";
+import { PlayerAvatar } from "./PlayerAvatar";
 
 type FriendsViewProps = {
   friends: FriendView[];
   onChanged: () => void;
+  onViewStatistics: (player: FriendView) => void;
 };
 
-export function FriendsView({ friends, onChanged }: FriendsViewProps) {
+export function FriendsView({ friends, onChanged, onViewStatistics }: FriendsViewProps) {
   const [username, setUsername] = useState("");
   const [pending, setPending] = useState(false);
   const [error, setError] = useState("");
@@ -52,8 +54,8 @@ export function FriendsView({ friends, onChanged }: FriendsViewProps) {
           <p className="eyebrow">One-way follows</p>
           <h1>Players</h1>
           <p className="muted">
-            Add someone by their exact login username. Following only makes them selectable in your
-            Setups; it does not open their private data.
+            Add someone by their exact login username. Click a followed Player to view their
+            statistics, or select them in your Setups.
           </p>
         </div>
       </div>
@@ -101,15 +103,18 @@ export function FriendsView({ friends, onChanged }: FriendsViewProps) {
           <ul className="friend-list">
             {friends.map((friend) => (
               <li className="friend-row panel" key={friend.id}>
-                <img
-                  alt=""
-                  className="player-avatar"
-                  src={friend.avatar ?? "/ressources/heroes/SpeedRunner/SpeedRunner_Original.png"}
-                />
-                <span className="friend-name">
-                  <strong>{friend.screenName}</strong>
-                  <small>@{friend.username}</small>
-                </span>
+                <button
+                  aria-label={`View ${friend.screenName}'s statistics`}
+                  className="friend-profile"
+                  onClick={() => onViewStatistics(friend)}
+                  type="button"
+                >
+                  <PlayerAvatar avatar={friend.avatar} />
+                  <span className="friend-name">
+                    <strong>{friend.screenName}</strong>
+                    <small>@{friend.username}</small>
+                  </span>
+                </button>
                 <button
                   className="button button-quiet"
                   onClick={() => void removeFollow(friend)}

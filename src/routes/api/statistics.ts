@@ -1,8 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { calculateStatistics } from "#/domain/statistics";
 import type { CompletedMatch, MatchState } from "#/domain/types";
-import { badRequest, currentUser, json, unauthorized } from "#/server/http";
-import { getCompletedMatchPlayers, getCompletedMatches, getMaps } from "#/server/data";
+import type { StatisticsPlayer } from "#/domain/views";
+import { badRequest, currentUser, json, unauthorized, unavailable } from "#/server/http";
+import { getCompletedMatchPlayers, getCompletedMatches, getFollows, getMaps } from "#/server/data";
 
 function isCompletedMatch(match: MatchState): match is CompletedMatch {
   return (
@@ -20,7 +21,19 @@ export const Route = createFileRoute("/api/statistics")({
         const user = await currentUser(request);
         if (!user) return unauthorized();
 
-        const timeZone = new URL(request.url).searchParams.get("timeZone") ?? "UTC";
+        const searchParams = new URL(request.url).searchParams;
+        const playerId = searchParams.get("playerId") ?? user.id;
+        let player: StatisticsPlayer = {
+          id: user.id,
+          screenName: user.name ?? "",
+          avatar: user.image ?? null,
+        };
+        if (playerId !== user.id) {
+          const followedPlayer = (await getFollows(user.id)).find(({ id }) => id === playerId);
+          if (!followedPlayer) return unavailable();
+          player = followedPlayer;
+        }
+        const timeZone = searchParams.get("timeZone") ?? "UTC";
         try {
           new Intl.DateTimeFormat("en-US", { timeZone });
         } catch (error) {
@@ -29,15 +42,16 @@ export const Route = createFileRoute("/api/statistics")({
         }
 
         const [matches, maps, players] = await Promise.all([
-          getCompletedMatches(user.id),
+          getCompletedMatches(playerId),
           getMaps(),
-          getCompletedMatchPlayers(user.id),
+          getCompletedMatchPlayers(playerId),
         ]);
         const completedMatches = matches.filter(isCompletedMatch);
-        players[user.id] = { screenName: user.name ?? "", avatar: user.image ?? null };
+        players[playerId] = { screenName: player.screenName, avatar: player.avatar };
 
         return json({
-          statistics: calculateStatistics(user.id, completedMatches, maps, { timeZone }),
+          statistics: calculateStatistics(playerId, completedMatches, maps, { timeZone }),
+          player: { id: player.id, screenName: player.screenName, avatar: player.avatar },
           playerNames: Object.fromEntries(
             Object.entries(players).map(([id, player]) => [id, player.screenName]),
           ),
