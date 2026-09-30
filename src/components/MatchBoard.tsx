@@ -434,9 +434,6 @@ export function MatchBoard({
                   />
                   <div className="match-player-meta">
                     <strong>{player.screenName}</strong>
-                    <span className="muted">
-                      {playerPoints(match, player.id)} individual point credits
-                    </span>
                   </div>
                   {isScorekeeper && match.status === "active" && (
                     <button
