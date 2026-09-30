@@ -305,5 +305,105 @@ describe("player statistics", () => {
     expect(stats.currentStreak).toEqual({ kind: "none", length: 0 });
     expect(stats.longestWinStreak.length).toBe(0);
     expect(stats.longestLossStreak.length).toBe(0);
+    expect(stats.playingDayStreak).toEqual({ current: 0, longest: 0 });
+  });
+});
+
+describe("daily play streaks", () => {
+  function statisticsForDays(completedDays: string[], now: string, timeZone = "UTC") {
+    return calculateStatistics(
+      "player",
+      completedDays.map((completedAt, index) =>
+        completedMatch({
+          id: `daily-${index}`,
+          completedAt,
+          teams: [["player"], ["opponent"]],
+          winner: index % 2,
+        }),
+      ),
+      mapDetails,
+      { timeZone, now: new Date(now) },
+    ).playingDayStreak;
+  }
+
+  it("counts distinct played days independently of wins, losses, and match order", () => {
+    expect(
+      statisticsForDays(
+        [
+          "2026-01-03T15:00:00Z",
+          "2026-01-01T12:00:00Z",
+          "2026-01-02T12:00:00Z",
+          "2026-01-03T18:00:00Z",
+          "2026-01-06T12:00:00Z",
+          "2026-01-07T12:00:00Z",
+        ],
+        "2026-01-07T18:00:00Z",
+      ),
+    ).toEqual({ current: 2, longest: 3 });
+  });
+
+  it("keeps yesterday's streak active until a calendar day is missed", () => {
+    const days = ["2026-01-01T12:00:00Z", "2026-01-02T12:00:00Z"];
+    expect(statisticsForDays(days, "2026-01-03T23:59:59Z")).toEqual({ current: 2, longest: 2 });
+    expect(statisticsForDays(days, "2026-01-04T00:00:00Z")).toEqual({ current: 0, longest: 2 });
+  });
+
+  it("groups matches by the player's timezone instead of UTC", () => {
+    const days = ["2026-01-01T23:00:00Z", "2026-01-02T01:00:00Z"];
+    expect(statisticsForDays(days, "2026-01-02T12:00:00Z", "America/Los_Angeles")).toEqual({
+      current: 1,
+      longest: 1,
+    });
+    expect(statisticsForDays(days, "2026-01-02T12:00:00Z", "UTC")).toEqual({
+      current: 2,
+      longest: 2,
+    });
+  });
+
+  it("uses local today when determining whether the streak is still active", () => {
+    const days = ["2026-01-01T12:00:00Z"];
+    expect(statisticsForDays(days, "2026-01-03T01:00:00Z", "America/Los_Angeles")).toEqual({
+      current: 1,
+      longest: 1,
+    });
+    expect(statisticsForDays(days, "2026-01-03T01:00:00Z", "UTC")).toEqual({
+      current: 0,
+      longest: 1,
+    });
+  });
+
+  it.each([
+    ["2026-03-28T11:00:00Z", "2026-03-29T10:00:00Z", "2026-03-30T10:00:00Z"],
+    ["2026-10-24T10:00:00Z", "2026-10-25T11:00:00Z", "2026-10-26T11:00:00Z"],
+    ["2025-12-31T12:00:00Z", "2026-01-01T12:00:00Z", "2026-01-02T12:00:00Z"],
+    ["2024-02-28T12:00:00Z", "2024-02-29T12:00:00Z", "2024-03-01T12:00:00Z"],
+  ])("counts consecutive days across daylight-saving and date boundaries: %s", (...days) => {
+    expect(statisticsForDays(days, days[2], "Europe/Copenhagen")).toEqual({
+      current: 3,
+      longest: 3,
+    });
+  });
+
+  it("excludes days on which only other players played", () => {
+    const matches = [
+      completedMatch({
+        id: "own",
+        completedAt: "2026-01-01T12:00:00Z",
+        teams: [["player"], ["opponent"]],
+        winner: 0,
+      }),
+      completedMatch({
+        id: "unrelated",
+        completedAt: "2026-01-02T12:00:00Z",
+        teams: [["other"], ["opponent"]],
+        winner: 0,
+      }),
+    ];
+    expect(
+      calculateStatistics("player", matches, mapDetails, {
+        timeZone: "UTC",
+        now: new Date("2026-01-03T12:00:00Z"),
+      }).playingDayStreak,
+    ).toEqual({ current: 0, longest: 1 });
   });
 });

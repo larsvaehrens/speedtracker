@@ -46,6 +46,7 @@ export type PlayerStatistics = {
   currentStreak: { kind: "win" | "loss" | "none"; length: number };
   longestWinStreak: Streak;
   longestLossStreak: Streak;
+  playingDayStreak: { current: number; longest: number };
 };
 
 type MapDetails = {
@@ -125,6 +126,41 @@ function streakFrom(outcomes: Outcome[], won: boolean): Streak {
     : { length: 0, firstMatchId: null, lastMatchId: null };
 }
 
+function getPlayingDayStreak(
+  matches: CompletedMatch[],
+  timeZone: string,
+  now: Date,
+): PlayerStatistics["playingDayStreak"] {
+  const formatter = new Intl.DateTimeFormat("en-US", {
+    timeZone,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  });
+  function calendarDay(date: Date): number {
+    const parts = Object.fromEntries(
+      formatter.formatToParts(date).map(({ type, value }) => [type, value]),
+    );
+    return Date.UTC(Number(parts.year), Number(parts.month) - 1, Number(parts.day)) / 86400000;
+  }
+
+  const days = [...new Set(matches.map((match) => calendarDay(new Date(match.completedAt))))].sort(
+    (left, right) => left - right,
+  );
+  let current = 0;
+  let longest = 0;
+  let previous: number | undefined;
+  for (const day of days) {
+    current = previous !== undefined && day === previous + 1 ? current + 1 : 1;
+    longest = Math.max(longest, current);
+    previous = day;
+  }
+
+  const today = calendarDay(now);
+  if (previous !== today && previous !== today - 1) current = 0;
+  return { current, longest };
+}
+
 function getPartnershipStats(playerId: string, matches: CompletedMatch[]): PartnershipStat[] {
   const partnershipMatches = new Map<string, CompletedMatch[]>();
 
@@ -172,6 +208,7 @@ export function calculateStatistics(
   playerId: string,
   completedMatches: CompletedMatch[],
   mapDetails: MapDetails[],
+  options: { timeZone: string; now?: Date } = { timeZone: "UTC" },
 ): PlayerStatistics {
   const matches = completedMatches
     .filter((match) => match.competitors.some(({ playerIds }) => playerIds.includes(playerId)))
@@ -279,5 +316,6 @@ export function calculateStatistics(
     currentStreak: { kind: currentKind, length: currentStreak },
     longestWinStreak: streakFrom(outcomes, true),
     longestLossStreak: streakFrom(outcomes, false),
+    playingDayStreak: getPlayingDayStreak(matches, options.timeZone, options.now ?? new Date()),
   };
 }

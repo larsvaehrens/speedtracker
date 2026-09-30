@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { calculateStatistics } from "#/domain/statistics";
 import type { CompletedMatch, MatchState } from "#/domain/types";
-import { currentUser, json, unauthorized } from "#/server/http";
+import { badRequest, currentUser, json, unauthorized } from "#/server/http";
 import { getCompletedMatchPlayers, getCompletedMatches, getMaps } from "#/server/data";
 
 function isCompletedMatch(match: MatchState): match is CompletedMatch {
@@ -20,6 +20,14 @@ export const Route = createFileRoute("/api/statistics")({
         const user = await currentUser(request);
         if (!user) return unauthorized();
 
+        const timeZone = new URL(request.url).searchParams.get("timeZone") ?? "UTC";
+        try {
+          new Intl.DateTimeFormat("en-US", { timeZone });
+        } catch (error) {
+          if (error instanceof RangeError) return badRequest("Choose a valid time zone.");
+          throw error;
+        }
+
         const [matches, maps, players] = await Promise.all([
           getCompletedMatches(user.id),
           getMaps(),
@@ -29,7 +37,7 @@ export const Route = createFileRoute("/api/statistics")({
         players[user.id] = { screenName: user.name ?? "", avatar: user.image ?? null };
 
         return json({
-          statistics: calculateStatistics(user.id, completedMatches, maps),
+          statistics: calculateStatistics(user.id, completedMatches, maps, { timeZone }),
           playerNames: Object.fromEntries(
             Object.entries(players).map(([id, player]) => [id, player.screenName]),
           ),

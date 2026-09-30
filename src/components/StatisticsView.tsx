@@ -31,7 +31,8 @@ export function StatisticsView({ playerNames }: StatisticsViewProps) {
 
   useEffect(() => {
     let cancelled = false;
-    apiRequest<StatisticsResponse>("/api/statistics")
+    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    apiRequest<StatisticsResponse>(`/api/statistics?timeZone=${encodeURIComponent(timeZone)}`)
       .then((result) => {
         if (cancelled) return;
         setStats(result.statistics);
@@ -223,6 +224,7 @@ export function StatisticsView({ playerNames }: StatisticsViewProps) {
               <div>
                 <h2>Streaks</h2>
                 <p className="muted">Ordered by completion time, then Match ID</p>
+                <p className="muted">Daily streaks use your local calendar days.</p>
               </div>
             </div>
             <div className="streak-grid">
@@ -241,6 +243,20 @@ export function StatisticsView({ playerNames }: StatisticsViewProps) {
               <div>
                 <span className="muted">Longest losing</span>
                 <strong>{stats.longestLossStreak.length}</strong>
+              </div>
+              <div>
+                <span className="muted">Daily playing streak</span>
+                <strong>
+                  {stats.playingDayStreak.current}{" "}
+                  {stats.playingDayStreak.current === 1 ? "day" : "days"}
+                </strong>
+              </div>
+              <div>
+                <span className="muted">Longest playing streak</span>
+                <strong>
+                  {stats.playingDayStreak.longest}{" "}
+                  {stats.playingDayStreak.longest === 1 ? "day" : "days"}
+                </strong>
               </div>
             </div>
           </section>

@@ -104,6 +104,9 @@ manual edits.
   teammate partnerships and point contribution, streaks, and total time in
   completed Matches (displayed in minutes, hours, or days). Each rate shows
   its sample size; maps with no completed matches are omitted.
+- Current and longest daily play streaks count distinct local calendar days
+  with completed Matches. The current streak remains active if the last
+  played day was yesterday, and resets after a missed day.
 
 The map label is **Casino**. Its existing image filename is
 `public/ressources/maps/12_Casion.png`; the asset is intentionally not renamed.
