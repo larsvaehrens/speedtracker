@@ -134,6 +134,12 @@ h2 {
   text-decoration: none;
 }
 
+.brand-title {
+  display: block;
+  width: clamp(110px, 25vw, 180px);
+  height: auto;
+}
+
 .brand-mark {
   display: grid;
   width: 38px;

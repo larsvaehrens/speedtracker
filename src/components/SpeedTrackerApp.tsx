@@ -182,10 +182,13 @@ export function SpeedTrackerApp() {
             setPage("play");
           }}
         >
-          <span aria-hidden="true" className="brand-mark">
-            ST
-          </span>
-          <span>SpeedTracker</span>
+          <img
+            alt="SpeedTracker"
+            className="brand-title"
+            height={255}
+            src="/ressources/speedtracker-title.svg"
+            width={1100}
+          />
         </a>
         <div className="signed-in">
           <img

@@ -56,10 +56,13 @@ export function AuthScreen() {
   return (
     <section className="auth-shell">
       <div className="brand-lockup">
-        <span className="brand-mark" aria-hidden="true">
-          ST
-        </span>
-        <span>SpeedTracker</span>
+        <img
+          alt="SpeedTracker"
+          className="brand-title"
+          height={255}
+          src="/ressources/speedtracker-title.svg"
+          width={1100}
+        />
       </div>
       <div className="auth-card">
         <p className="eyebrow">Local matches · one Switch</p>
