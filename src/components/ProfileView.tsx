@@ -74,7 +74,7 @@ export function ProfileView({ user, onSaved }: ProfileViewProps) {
         <div className="avatar-heading">
           <div>
             <h2>Choose your hero</h2>
-            <p className="muted">Your avatar is visible to Match participants.</p>
+            <p className="muted">Your avatar is visible to match participants.</p>
           </div>
           <img alt="" className="avatar-preview" src={avatar} />
         </div>

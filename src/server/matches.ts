@@ -353,7 +353,7 @@ export async function undoRound(
       status: undone.error === "correction-required" ? 409 : 400,
       error:
         undone.error === "correction-required"
-          ? "Use the explicit correction action to reopen a completed Match."
+          ? "Use the explicit correction action to reopen a completed match."
           : "There is no Round to undo.",
       match: current,
     };

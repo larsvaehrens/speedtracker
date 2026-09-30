@@ -295,7 +295,7 @@ export function SpeedTrackerApp() {
       {page === "profile" && <ProfileView user={bootstrap.user} onSaved={updateProfile} />}
 
       <footer className="app-footer">
-        Scores are entered by the Match creator. Match participants can view the live score.
+        Scores are entered by the match creator. Match participants can view the live score.
       </footer>
     </div>
   );

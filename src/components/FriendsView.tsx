@@ -26,7 +26,7 @@ export function FriendsView({ friends, onChanged, onViewStatistics }: FriendsVie
         body: JSON.stringify({ username }),
       });
       setUsername("");
-      setNotice("Player added. They can now be selected for your Setups.");
+      setNotice("Player added. They can now be selected for your setups.");
       onChanged();
     } catch (addError) {
       setError(apiMessage(addError));
@@ -53,8 +53,8 @@ export function FriendsView({ friends, onChanged, onViewStatistics }: FriendsVie
         <div>
           <h1>Players</h1>
           <p className="muted">
-            Add someone by their exact login username. Click a followed Player to view their
-            statistics, or select them in your Setups.
+            Add someone by their exact login username. Click a followed player to view their
+            statistics, or select them in your setups.
           </p>
         </div>
       </div>
@@ -90,12 +90,12 @@ export function FriendsView({ friends, onChanged, onViewStatistics }: FriendsVie
       <section className="subsection">
         <div className="section-heading compact-heading">
           <div>
-            <h2>Followed Players ({friends.length})</h2>
+            <h2>Followed players ({friends.length})</h2>
           </div>
         </div>
         {friends.length === 0 ? (
           <p className="empty-inline panel">
-            No followed Players yet. Add someone by their login username.
+            No followed players yet. Add someone by their login username.
           </p>
         ) : (
           <ul className="friend-list">

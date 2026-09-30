@@ -369,7 +369,7 @@ export function MatchBoard({
           The winning Round is saved.{" "}
           {isScorekeeper
             ? "Select a map to finalize this Match; your score will remain here while you choose."
-            : "The Match creator must select a map to finalize it."}
+            : "The match creator must select a map to finalize it."}
         </div>
       )}
       {match.status === "completed" && (
@@ -519,7 +519,7 @@ export function MatchBoard({
               onClick={() => setAbandonPromptOpen(true)}
               type="button"
             >
-              Abandon Match
+              Abandon match
             </button>
           )}
         </div>
@@ -540,7 +540,7 @@ export function MatchBoard({
           </span>
         </summary>
         {match.rounds.length === 0 ? (
-          <p className="empty-inline">No Round has been recorded yet.</p>
+          <p className="empty-inline">No round has been recorded yet.</p>
         ) : (
           <ol className="round-list">
             {match.rounds.map((round) => (
@@ -582,9 +582,9 @@ export function MatchBoard({
 
       {abandonPromptOpen && (
         <ConfirmDialog
-          title="Abandon this Match?"
-          message="The score will be kept for reference, but this Match will not count as a loss or appear in completed-match statistics."
-          confirmLabel="Abandon Match"
+          title="Abandon this match?"
+          message="The score will be kept for reference, but this match will not count as a loss or appear in completed-match statistics."
+          confirmLabel="Abandon match"
           onCancel={() => setAbandonPromptOpen(false)}
           onConfirm={() => void abandonMatch()}
         />
@@ -623,7 +623,7 @@ function ConfirmDialog({ title, message, confirmLabel, onCancel, onConfirm }: Co
         <p className="muted">{message}</p>
         <div className="confirm-actions">
           <button className="button button-quiet" onClick={onCancel} type="button">
-            Keep Match
+            Keep match
           </button>
           <button className="button button-danger" onClick={onConfirm} type="button">
             {confirmLabel}

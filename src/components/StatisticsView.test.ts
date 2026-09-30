@@ -54,7 +54,6 @@ describe("monthly trends across statistics views", () => {
     expect(markup.match(/<span>\+100%<\/span>/g)).toHaveLength(4);
     expect(markup.match(/<span>\+50%<\/span>/g)).toHaveLength(2);
     expect(markup).toContain("<span>-50%</span>");
-    expect(markup).toContain("All-time statistics");
     expect(markup).not.toContain("This month:");
     expect(markup).not.toContain("monthly-comparison-note");
     expect(markup).toContain('src="/teammate.png"');

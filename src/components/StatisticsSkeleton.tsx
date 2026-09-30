@@ -16,7 +16,6 @@ export function StatisticsHeading({ player, onBack }: PlayerHeadingProps) {
         ) : (
           <h1>Statistics</h1>
         )}
-        <p className="muted">All-time statistics</p>
       </div>
       {onBack && (
         <button className="button button-quiet" onClick={onBack} type="button">
@@ -44,7 +43,7 @@ export function StatisticsSkeleton({
         <div className="stats-overview">
           {[
             "Match win rate",
-            "Individual Round credits",
+            "Individual round credits",
             "Current streak",
             "Total time played",
           ].map((label, index) => (
@@ -138,8 +137,6 @@ export function StatisticsSkeleton({
               <div className="panel-heading">
                 <div>
                   <h2>Streaks</h2>
-                  <p className="muted">Ordered by completion time, then Match ID</p>
-                  <p className="muted">Daily streaks use your local calendar days.</p>
                 </div>
               </div>
               <div className="streak-grid">

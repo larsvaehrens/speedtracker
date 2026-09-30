@@ -136,7 +136,7 @@ export function StatisticsContent({
           </span>
         </article>
         <article className="stat-card">
-          <span className="muted">Individual Round credits</span>
+          <span className="muted">Individual round credits</span>
           <strong className="stat-value">
             {stats.roundCredits}
             <StatTrend
@@ -168,17 +168,17 @@ export function StatisticsContent({
               unit="duration"
             />
           </strong>
-          <span style={{ visibility: "hidden" }}>Time in completed Matches</span>
+          <span style={{ visibility: "hidden" }}>Time in completed matches</span>
         </article>
       </div>
 
       {stats.matchesPlayed === 0 ? (
         <div className="empty-state panel">
           <h2>
-            {player ? "No completed Matches yet" : "Statistics will appear after your first Match"}
+            {player ? "No completed matches yet" : "Statistics will appear after your first match"}
           </h2>
           <p className="muted">
-            Abandoned Matches and individual Rounds do not count as completed Matches.
+            Abandoned Matches and individual Rounds do not count as completed matches.
           </p>
         </div>
       ) : (
@@ -318,8 +318,6 @@ export function StatisticsContent({
             <div className="panel-heading">
               <div>
                 <h2>Streaks</h2>
-                <p className="muted">Ordered by completion time, then Match ID</p>
-                <p className="muted">Daily streaks use your local calendar days.</p>
               </div>
             </div>
             <div className="streak-grid">

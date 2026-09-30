@@ -182,18 +182,18 @@ export function SetupBuilder({
     <section className="page-section">
       <div className="section-heading">
         <div>
-          <h1>Start a Match</h1>
+          <h1>Start a match</h1>
         </div>
         <button className="button button-quiet" onClick={resetSetup} type="button">
-          Reset Setup
+          Reset setup
         </button>
       </div>
 
       {previousSetup && (
         <div className="notice notice-info">
-          <span>Previous Setup is ready.</span>
+          <span>Previous setup is ready.</span>
           <button className="text-button" onClick={reusePrevious} type="button">
-            Reuse last Setup
+            Reuse last setup
           </button>
         </div>
       )}
@@ -275,8 +275,8 @@ export function SetupBuilder({
         <div className="setup-actions">
           <p className="muted">
             {setupError
-              ? "Select 2–4 distinct Players, including yourself."
-              : "Assignments lock when the Match starts."}
+              ? "Select 2–4 distinct players, including yourself."
+              : "Assignments lock when the match starts."}
           </p>
           <button
             className="button button-primary button-start"
@@ -284,7 +284,7 @@ export function SetupBuilder({
             onClick={startMatch}
             type="button"
           >
-            {starting ? "Starting…" : "Start Match"}
+            {starting ? "Starting…" : "Start match"}
           </button>
         </div>
       </section>
@@ -293,7 +293,7 @@ export function SetupBuilder({
         <section className="subsection">
           <div className="section-heading compact-heading">
             <div>
-              <h2>Active Matches</h2>
+              <h2>Active matches</h2>
             </div>
           </div>
           <div className="open-match-list">

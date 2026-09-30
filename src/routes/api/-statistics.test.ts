@@ -126,7 +126,7 @@ describe("statistics timezone API", () => {
     mocks.getFollows.mockResolvedValue([
       {
         id: "followed",
-        screenName: "Followed Player",
+        screenName: "Followed player",
         username: "followed",
         avatar: "/followed.png",
         followedAt: "2026-01-01",
@@ -155,9 +155,9 @@ describe("statistics timezone API", () => {
     expect(payload).not.toHaveProperty("matches");
     expect(payload).not.toHaveProperty("rounds");
     expect(payload).toMatchObject({
-      player: { id: "followed", screenName: "Followed Player", avatar: "/followed.png" },
+      player: { id: "followed", screenName: "Followed player", avatar: "/followed.png" },
       statistics: { matchesPlayed: 1, matchWins: 1, totalPlayedSeconds: 300 },
-      playerNames: { followed: "Followed Player" },
+      playerNames: { followed: "Followed player" },
       playerAvatars: { followed: "/followed.png" },
     });
     expect(mocks.getFollows).toHaveBeenCalledWith("player");

@@ -26,9 +26,9 @@ export function HistoryView({ matches, viewerId, onOpen }: HistoryViewProps) {
           <span aria-hidden="true" className="empty-icon">
             ◷
           </span>
-          <h2>No completed Matches yet</h2>
+          <h2>No completed matches yet</h2>
           <p className="muted">
-            Completed Matches will show the map, final scores, duration, Match outcome, and every
+            Completed matches will show the map, final scores, duration, match outcome, and every
             credited Round here.
           </p>
         </div>
@@ -41,7 +41,7 @@ export function HistoryView({ matches, viewerId, onOpen }: HistoryViewProps) {
       <div className="section-heading">
         <div>
           <h1>Match history</h1>
-          <p className="muted">{matches.length} recent completed Matches</p>
+          <p className="muted">{matches.length} recent completed matches</p>
         </div>
       </div>
       <div className="history-list">
@@ -117,7 +117,7 @@ export function HistoryView({ matches, viewerId, onOpen }: HistoryViewProps) {
                   onClick={() => onOpen(match)}
                   type="button"
                 >
-                  View Match
+                  View match
                 </button>
               </div>
             </article>

@@ -33,7 +33,7 @@ export const Route = createFileRoute("/api/follows")({
           return json({ error: "No Player has that login username." }, 404);
         }
         if (followed.id === user.id) {
-          return json({ error: "You already have yourself in your Setup." }, 400);
+          return json({ error: "You already have yourself in your setup." }, 400);
         }
 
         await env.DB.prepare(

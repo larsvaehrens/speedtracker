@@ -31,7 +31,7 @@ export function AppSkeleton({ label }: { label: string }) {
           <div className="section-heading">
             <div>
               <p className="eyebrow">Fast setup</p>
-              <h1>Start a Match</h1>
+              <h1>Start a match</h1>
             </div>
             <Skeleton className="skeleton-button" width={110} />
           </div>
@@ -58,13 +58,13 @@ export function AppSkeleton({ label }: { label: string }) {
               ))}
             </div>
             <div className="setup-actions">
-              <p className="muted">Select 2–4 distinct Players, including yourself.</p>
+              <p className="muted">Select 2–4 distinct players, including yourself.</p>
               <Skeleton className="skeleton-button skeleton-start" />
             </div>
           </section>
         </section>
         <footer className="app-footer">
-          Scores are entered by the Match creator. Match participants can view the live score.
+          Scores are entered by the match creator. Match participants can view the live score.
         </footer>
       </div>
     </div>
