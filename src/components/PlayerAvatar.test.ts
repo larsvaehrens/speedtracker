@@ -7,6 +7,7 @@ import { PlayerAvatar } from "./PlayerAvatar";
 import { PlayerSelect } from "./PlayerSelect";
 import { SetupBuilder } from "./SetupBuilder";
 import { ToastProvider } from "./ToastProvider";
+import { MatchBoard } from "./MatchBoard";
 
 const players: FriendView[] = [
   { id: "me", username: "myself", screenName: "Me", avatar: "/me.png", followedAt: null },
@@ -95,6 +96,27 @@ describe("player profile pictures", () => {
     expect(markup).toContain("Me (@myself) · you");
     expect(markup).toContain('aria-haspopup="listbox"');
     expect(markup).toContain('aria-expanded="false"');
+    expect(markup).toContain('class="icon player-select-arrow"');
+    expect(markup).not.toContain("▾");
+  });
+
+  describe("match navigation icons", () => {
+    it("uses SVG icons while preserving the back button and connection status labels", () => {
+      const markup = renderToStaticMarkup(
+        createElement(MatchBoard, {
+          initialMatch: match,
+          maps: [],
+          viewerId: "me",
+          onMatchChanged: () => {},
+          onDone: () => {},
+        }),
+      );
+      expect(markup).toContain("Matches</button>");
+      expect(markup).toContain("All changes saved");
+      expect(markup).toContain('fill="currentColor" r="8" stroke="none"');
+      expect(markup).not.toContain("←");
+      expect(markup).not.toContain("●");
+    });
   });
 
   it("shows a placeholder without an unrelated avatar for an empty setup slot", () => {

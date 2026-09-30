@@ -7,6 +7,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import { Icon } from "./Icon";
 
 type ToastKind = "info" | "success" | "warning";
 type Toast = { id: number; message: string; kind: ToastKind };
@@ -49,19 +50,7 @@ function ToastMessage({ toast, dismiss }: { toast: Toast; dismiss: (id: number) 
         onClick={() => dismiss(toast.id)}
         type="button"
       >
-        <svg
-          aria-hidden="true"
-          fill="none"
-          focusable="false"
-          height={18}
-          stroke="currentColor"
-          strokeLinecap="round"
-          strokeWidth={2}
-          viewBox="0 0 24 24"
-          width={18}
-        >
-          <path d="m6 6 12 12M18 6 6 18" />
-        </svg>
+        <Icon name="close" />
       </button>
     </div>
   );

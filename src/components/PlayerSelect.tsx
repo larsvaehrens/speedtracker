@@ -1,6 +1,7 @@
 import { useEffect, useId, useRef, useState } from "react";
 import type { FriendView } from "#/domain/views";
 import { PlayerAvatar } from "./PlayerAvatar";
+import { Icon } from "./Icon";
 
 type PlayerSelectProps = {
   label: string;
@@ -115,9 +116,7 @@ export function PlayerSelect({
         <span id={`${id}-value`}>
           {options.find((option) => option.id === value)?.name ?? "Select a Player"}
         </span>
-        <span aria-hidden="true" className="player-select-arrow">
-          ▾
-        </span>
+        <Icon className="player-select-arrow" name="chevron-down" />
       </button>
       {open && (
         <div

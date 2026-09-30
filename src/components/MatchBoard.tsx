@@ -4,6 +4,7 @@ import { apiMessage, apiRequest, ApiError } from "#/lib/api";
 import { formatDuration } from "#/lib/time";
 import { MapPicker } from "./MapPicker";
 import { ScoreEmblems } from "./ScoreEmblems";
+import { Icon } from "./Icon";
 
 type PendingScore = {
   revision: number;
@@ -322,10 +323,11 @@ export function MatchBoard({
           onClick={onDone}
           type="button"
         >
-          ← Matches
+          <Icon name="arrow-left" />
+          Matches
         </button>
         <span className={`save-status save-${connection}`} role="status">
-          <span aria-hidden="true">●</span> {savedLabel}
+          <Icon name="status-dot" size={12} /> {savedLabel}
         </span>
       </div>
 

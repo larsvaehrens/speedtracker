@@ -349,6 +349,12 @@ h2 {
   opacity: 0.6;
 }
 
+.icon {
+  display: inline-block;
+  flex-shrink: 0;
+  vertical-align: middle;
+}
+
 .icon-button {
   display: grid;
   width: 44px;
@@ -1585,7 +1591,6 @@ input[readonly] {
 .empty-icon {
   margin-bottom: 12px;
   color: var(--tertiary);
-  font-size: 2rem;
 }
 
 .skeleton {

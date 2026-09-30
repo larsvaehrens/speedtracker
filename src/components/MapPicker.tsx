@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import type { MapView } from "#/domain/views";
+import { Icon } from "./Icon";
 
 type MapPickerProps = {
   maps: MapView[];
@@ -49,7 +50,7 @@ export function MapPicker({
           onClick={onClose}
           type="button"
         >
-          ×
+          <Icon name="close" />
         </button>
       </div>
       <div className="map-grid">

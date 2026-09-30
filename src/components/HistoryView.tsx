@@ -2,6 +2,7 @@ import type { MatchView } from "#/domain/views";
 import { formatDuration } from "#/lib/time";
 import { PlayerIdentity } from "./PlayerIdentity";
 import { MapThumbnail } from "./MapThumbnail";
+import { Icon } from "./Icon";
 
 type HistoryViewProps = {
   matches: MatchView[];
@@ -23,9 +24,7 @@ export function HistoryView({ matches, viewerId, onOpen }: HistoryViewProps) {
       <section className="page-section">
         <h1>Match history</h1>
         <div className="empty-state panel">
-          <span aria-hidden="true" className="empty-icon">
-            ◷
-          </span>
+          <Icon className="empty-icon" name="clock" size={32} />
           <h2>No completed matches yet</h2>
           <p className="muted">
             Completed matches will show the map, final scores, duration, match outcome, and every
@@ -87,7 +86,8 @@ export function HistoryView({ matches, viewerId, onOpen }: HistoryViewProps) {
               <div className="history-rounds-container">
                 <details className="history-rounds">
                   <summary>
-                    Round breakdown · {match.rounds.filter((round) => !round.undone).length} credited
+                    Round breakdown · {match.rounds.filter((round) => !round.undone).length}{" "}
+                    credited
                   </summary>
                   <ol className="round-list">
                     {match.rounds.map((round) => {
