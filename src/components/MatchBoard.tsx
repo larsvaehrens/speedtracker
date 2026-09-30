@@ -341,7 +341,7 @@ export function MatchBoard({
             ) : (
               <div className="map-preview map-preview-static">
                 <img alt="" src={match.map.imagePath} />
-                Selected map
+                {match.map.name}
               </div>
             )
           ) : isScorekeeper && editable ? (
