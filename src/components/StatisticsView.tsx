@@ -4,9 +4,11 @@ import { apiRequest, apiMessage } from "#/lib/api";
 import { formatPlayedTime } from "#/lib/time";
 import { PlayerAvatar } from "./PlayerAvatar";
 import { MapThumbnail } from "./MapThumbnail";
+import { StatisticsHeading, StatisticsSkeleton } from "./StatisticsSkeleton";
 
 type StatisticsViewProps = {
   playerNames: Record<string, string>;
+  hasMatches: boolean;
 };
 
 type StatisticsResponse = {
@@ -23,7 +25,7 @@ function displayName(names: Record<string, string>, id: string): string {
   return names[id] ?? "Player";
 }
 
-export function StatisticsView({ playerNames }: StatisticsViewProps) {
+export function StatisticsView({ playerNames, hasMatches }: StatisticsViewProps) {
   const [stats, setStats] = useState<PlayerStatistics | null>(null);
   const [names, setNames] = useState(playerNames);
   const [avatars, setAvatars] = useState<Record<string, string | null>>({});
@@ -53,7 +55,7 @@ export function StatisticsView({ playerNames }: StatisticsViewProps) {
     };
   }, []);
 
-  if (loading) return <p className="page-section muted">Loading statistics…</p>;
+  if (loading) return <StatisticsSkeleton hasMatches={hasMatches} />;
   if (error) {
     return (
       <section className="page-section">
@@ -69,15 +71,7 @@ export function StatisticsView({ playerNames }: StatisticsViewProps) {
 
   return (
     <section className="page-section">
-      <div className="section-heading">
-        <div>
-          <p className="eyebrow">Completed Matches only</p>
-          <h1>Statistics</h1>
-          <p className="muted">
-            Match results and individual Round credits are counted separately.
-          </p>
-        </div>
-      </div>
+      <StatisticsHeading />
 
       <div className="stats-overview">
         <article className="stat-card stat-featured">

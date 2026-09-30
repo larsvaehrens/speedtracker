@@ -97,6 +97,9 @@ manual edits.
   authoritative. Pending saves and connection errors remain visible, retries
   reuse an idempotency key, and clients refresh authoritative state after
   reconnecting. Offline-first play is not supported.
+- Initial session/Match loading and statistics use layout-matched skeletons.
+  Background refreshes keep existing content visible, and skeleton animation
+  is disabled when reduced motion is requested.
 - Match duration is elapsed wall-clock time from Match start to completion.
   Abandoned Matches are retained for reference but excluded from completed
   history and statistics.

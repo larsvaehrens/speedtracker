@@ -9,6 +9,7 @@ import { MatchBoard } from "./MatchBoard";
 import { ProfileView } from "./ProfileView";
 import { SetupBuilder } from "./SetupBuilder";
 import { StatisticsView } from "./StatisticsView";
+import { AppSkeleton } from "./AppSkeleton";
 
 type Page = "play" | "history" | "statistics" | "players" | "profile";
 
@@ -125,12 +126,12 @@ export function SpeedTrackerApp() {
     }
   }
 
-  if (session.isPending) {
-    return <div className="loading-screen">Loading SpeedTracker…</div>;
+  if (session.isPending && !bootstrap) {
+    return <AppSkeleton label="Loading SpeedTracker" />;
   }
-  if (!session.data?.user) return <AuthScreen />;
-  if (loading && !bootstrap) {
-    return <div className="loading-screen">Loading your Matches…</div>;
+  if (!session.isPending && !session.data?.user) return <AuthScreen />;
+  if (!bootstrap && (loading || !loadError)) {
+    return <AppSkeleton label="Loading your Matches" />;
   }
   if (!bootstrap) {
     return (
@@ -260,7 +261,9 @@ export function SpeedTrackerApp() {
           viewerId={bootstrap.user.id}
         />
       )}
-      {page === "statistics" && <StatisticsView playerNames={playerNames} />}
+      {page === "statistics" && (
+        <StatisticsView hasMatches={bootstrap.recentMatches.length > 0} playerNames={playerNames} />
+      )}
       {page === "players" && (
         <FriendsView
           friends={bootstrap.players.filter((player) => player.id !== bootstrap.user.id)}
