@@ -101,7 +101,8 @@ manual edits.
   Abandoned Matches are retained for reference but excluded from completed
   history and statistics.
 - The statistics page shows match win rates, map and opponent performance,
-  teammate partnerships and point contribution, and streaks. Each rate shows
+  teammate partnerships and point contribution, streaks, and total time in
+  completed Matches (displayed in minutes, hours, or days). Each rate shows
   its sample size; maps with no completed matches are omitted.
 
 The map label is **Casino**. Its existing image filename is

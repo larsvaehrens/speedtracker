@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import type { PlayerStatistics } from "#/domain/statistics";
 import { apiRequest, apiMessage } from "#/lib/api";
+import { formatPlayedTime } from "#/lib/time";
 import { PlayerAvatar } from "./PlayerAvatar";
 
 type StatisticsViewProps = {
@@ -99,6 +100,11 @@ export function StatisticsView({ playerNames }: StatisticsViewProps) {
           <span>
             Longest: {stats.longestWinStreak.length} wins · {stats.longestLossStreak.length} losses
           </span>
+        </article>
+        <article className="stat-card">
+          <span className="muted">Total time played</span>
+          <strong>{formatPlayedTime(stats.totalPlayedSeconds)}</strong>
+          <span style={{ visibility: "hidden" }}>Time in completed Matches</span>
         </article>
       </div>
 

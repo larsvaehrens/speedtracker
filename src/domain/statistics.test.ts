@@ -52,6 +52,49 @@ const mapDetails = [
 ];
 
 describe("player statistics", () => {
+  it("sums solo and team match durations once per match, excluding unrelated matches", () => {
+    const makeMatch = (id: string, teams: string[][], startedAt: string, completedAt: string) => ({
+      ...completedMatch({ id, teams, completedAt, winner: 0 }),
+      startedAt,
+    });
+    const matches = [
+      makeMatch("solo", [["player"], ["opponent"]], "2026-01-01T00:00:00Z", "2026-01-01T00:10:00Z"),
+      makeMatch(
+        "team",
+        [["player", "teammate"], ["opponent"]],
+        "2026-01-02T00:00:00Z",
+        "2026-01-02T01:00:00Z",
+      ),
+      makeMatch(
+        "unrelated",
+        [["other"], ["opponent"]],
+        "2026-01-03T00:00:00Z",
+        "2026-01-03T02:00:00Z",
+      ),
+    ];
+
+    expect(calculateStatistics("player", matches, mapDetails).totalPlayedSeconds).toBe(4200);
+  });
+
+  it("uses whole non-negative seconds for match durations", () => {
+    const fixture = completedMatch({
+      id: "duration",
+      teams: [["player"], ["opponent"]],
+      winner: 0,
+      completedAt: "2026-01-01T00:00:01.900Z",
+    });
+    expect(
+      calculateStatistics(
+        "player",
+        [
+          { ...fixture, startedAt: "2026-01-01T00:00:00.000Z" },
+          { ...fixture, id: "negative", startedAt: "2026-01-01T00:01:00.000Z" },
+        ],
+        mapDetails,
+      ).totalPlayedSeconds,
+    ).toBe(1);
+  });
+
   it("keeps match wins separate from point credits earned in losses", () => {
     const matches = [
       completedMatch({
@@ -254,6 +297,7 @@ describe("player statistics", () => {
     const stats = calculateStatistics("player", [], mapDetails);
 
     expect(stats.matchesPlayed).toBe(0);
+    expect(stats.totalPlayedSeconds).toBe(0);
     expect(stats.matchWinRate).toBeNull();
     expect(stats.maps).toEqual([]);
     expect(stats.opponents).toEqual([]);

@@ -39,6 +39,7 @@ export type PlayerStatistics = {
   matchesPlayed: number;
   matchWinRate: number | null;
   roundCredits: number;
+  totalPlayedSeconds: number;
   maps: MapStat[];
   opponents: OpponentStat[];
   partnerships: PartnershipStat[];
@@ -249,6 +250,15 @@ export function calculateStatistics(
     matchesPlayed: matches.length,
     matchWinRate: winRate(matchWins, matches.length),
     roundCredits: sumPlayerPoints(matches, playerId),
+    totalPlayedSeconds: matches.reduce(
+      (total, match) =>
+        total +
+        Math.max(
+          0,
+          Math.floor((Date.parse(match.completedAt) - Date.parse(match.startedAt)) / 1000),
+        ),
+      0,
+    ),
     maps: [...mapStats.values()].sort(
       (left, right) =>
         compareRateThenSample(left, right) ||
