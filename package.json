@@ -20,26 +20,26 @@
     "cf-typegen": "wrangler types"
   },
   "dependencies": {
-    "@better-auth/drizzle-adapter": "1.7.6",
-    "@tanstack/react-router": "1.170.40",
-    "@tanstack/react-start": "1.168.59",
-    "better-auth": "1.7.6",
-    "drizzle-orm": "0.45.3",
-    "react": "19.3.0",
-    "react-dom": "19.3.0"
+    "@better-auth/drizzle-adapter": "catalog:",
+    "@tanstack/react-router": "catalog:",
+    "@tanstack/react-start": "catalog:",
+    "better-auth": "catalog:",
+    "drizzle-orm": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:"
   },
   "devDependencies": {
-    "@cloudflare/vite-plugin": "1.62.2",
-    "@tanstack/router-cli": "1.167.39",
-    "@types/node": "22.20.4",
-    "@types/react": "19.3.0",
-    "@types/react-dom": "19.3.0",
-    "@vitejs/plugin-react": "6.1.1",
-    "typescript": "7.0.2",
+    "@cloudflare/vite-plugin": "catalog:",
+    "@tanstack/router-cli": "catalog:",
+    "@types/node": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "@vitejs/plugin-react": "catalog:",
+    "typescript": "catalog:",
     "vite": "catalog:",
     "vite-plus": "catalog:",
-    "vitest": "5.0.1",
-    "wrangler": "4.144.0"
+    "vitest": "catalog:",
+    "wrangler": "catalog:"
   },
   "devEngines": {
     "packageManager": {

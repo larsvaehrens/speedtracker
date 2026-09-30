@@ -19,6 +19,9 @@ pnpm install
 cp .dev.vars.example .dev.vars
 ```
 
+Dependency versions are defined in the `catalog` in `pnpm-workspace.yaml`.
+Keep `package.json` dependencies and dev dependencies as `catalog:` references.
+
 Replace `BETTER_AUTH_SECRET` in `.dev.vars` with a private random value of at
 least 32 bytes. For example, generate one with `openssl rand -base64 32`. The
 local variables are ignored by Git; never commit secrets.
