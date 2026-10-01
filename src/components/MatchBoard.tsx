@@ -25,14 +25,6 @@ function activeRoundCount(rounds: RoundView[]): number {
   return rounds.filter((round) => !round.undone).length;
 }
 
-function playerPoints(match: MatchView, playerId: string): number {
-  return match.rounds
-    .filter((round) => !round.undone)
-    .flatMap((round) => round.attributions)
-    .filter((attribution) => attribution.playerId === playerId)
-    .reduce((total, attribution) => total + attribution.points, 0);
-}
-
 function winnerName(match: MatchView): string {
   return (
     match.competitors
