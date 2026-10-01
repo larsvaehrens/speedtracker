@@ -14,9 +14,9 @@
   },
   "d1_databases": [
     {
-      "binding": "DB",
+      "binding": "speedtracker_db",
       "database_name": "speedtracker-db",
-      "database_id": "00000000-0000-0000-0000-000000000001",
+      "database_id": "07f39400-894a-461e-bde5-90fc3eeb7705",
       "migrations_dir": "migrations",
     },
   ],
@@ -31,7 +31,7 @@
     },
   ],
   "vars": {
-    "BETTER_AUTH_URL": "https://speedtracker.example.com",
+    "BETTER_AUTH_URL": "https://speedtracker.vaehrens.dev",
   },
   "observability": {
     "enabled": true,
