@@ -38,6 +38,7 @@ const match: MatchView = {
   completedAt: "2026-09-30T10:05:00Z",
   durationSeconds: 300,
   winnerCompetitorId: "team",
+  gameModes: ["Sudden Death"],
   competitors: [
     {
       id: "team",
@@ -138,7 +139,7 @@ describe("player profile pictures", () => {
   it("shows all team and solo avatars in history, including round winners", () => {
     const markup = renderToStaticMarkup(
       createElement(HistoryView, {
-        matches: [match],
+        matches: [{ ...match, gameModes: ["Sudden Death", "Lethal Spikes"] }],
         viewerId: "me",
         onOpen: () => {},
       }),
@@ -149,7 +150,32 @@ describe("player profile pictures", () => {
     expect(markup).toContain('src="/friend.png"');
     expect(markup).toContain('src="/ressources/heroes/SpeedRunner/SpeedRunner_Original.png"');
     expect(markup).toContain("1 round credits");
+    expect(markup).toContain("Sudden Death");
+    expect(markup).toContain("Lethal Spikes");
+    expect(markup).toContain('aria-label="Enabled game modes"');
     expect(markup).toContain("Round breakdown");
+  });
+
+  it("defaults new matches to Sudden Death and exposes all game modes", () => {
+    const markup = renderToStaticMarkup(
+      createElement(ToastProvider, {
+        children: createElement(SetupBuilder, {
+          user: players[0],
+          players,
+          maps: [],
+          openMatches: [],
+          onResume: () => {},
+          onMatchCreated: () => {},
+        }),
+      }),
+    );
+    expect(markup.match(/checked=""/g)).toHaveLength(1);
+    expect(markup).toContain("Sudden Death");
+    expect(markup).toContain("Lethal Spikes");
+    expect(markup).toContain("srennuRdeepS");
+    expect(markup).toContain("SuperSpeedRunners");
+    expect(markup).toContain("SpeedRapture");
+    expect(markup).toContain("Destructible Environment");
   });
 
   it("keeps the missing map label without rendering a broken thumbnail", () => {
@@ -198,6 +224,7 @@ describe("player profile pictures", () => {
     expect(markup.match(/class="history-competitor"/g)).toHaveLength(2);
     expect(markup).toContain("<strong>2</strong>");
     expect(markup).toContain("<strong>0</strong>");
+    expect(markup).toContain("Sudden Death");
     expect(markup).toContain("1 round credits");
     expect(markup).not.toContain("Round breakdown");
     expect(markup).not.toContain("View match");

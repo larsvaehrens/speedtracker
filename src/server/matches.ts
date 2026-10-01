@@ -3,6 +3,7 @@ import { canEditMatch } from "#/domain/permissions";
 import { abandonMatch, recordRound, selectMap, undoLastRound } from "#/domain/scoring";
 import { validateSetup, type CompetitorSetup } from "#/domain/setup";
 import type { MatchState, RoundResult } from "#/domain/types";
+import { DEFAULT_GAME_MODES, type GameMode } from "#/domain/game-modes";
 import type { MatchView } from "#/domain/views";
 import { getEligiblePlayers, getMatch, setupEligibility } from "./data";
 
@@ -24,6 +25,7 @@ function toState(match: MatchView): MatchState {
     startedAt: match.startedAt,
     completedAt: match.completedAt,
     winnerCompetitorId: match.winnerCompetitorId,
+    gameModes: match.gameModes,
     competitors: match.competitors.map(({ id, playerIds }) => ({
       id,
       playerIds,
@@ -52,6 +54,7 @@ export async function createMatch(
   creatorId: string,
   competitors: CompetitorSetup[],
   mapId: string | null,
+  gameModes: GameMode[] = DEFAULT_GAME_MODES,
 ): Promise<MatchMutation> {
   const players = await getEligiblePlayers(creatorId);
   const setupError = validateSetup(competitors, creatorId, setupEligibility(creatorId, players));
@@ -72,9 +75,9 @@ export async function createMatch(
   const matchStatements = [
     env.DB.prepare(
       `INSERT INTO matches
-        (id, creator_id, map_id, status, revision, started_at, created_at)
-       VALUES (?, ?, ?, 'active', 0, ?, ?)`,
-    ).bind(matchId, creatorId, mapId, startedAt, startedAt),
+        (id, creator_id, map_id, status, revision, game_modes, started_at, created_at)
+       VALUES (?, ?, ?, 'active', 0, ?, ?, ?)`,
+    ).bind(matchId, creatorId, mapId, JSON.stringify(gameModes), startedAt, startedAt),
   ];
 
   for (const [competitorIndex, competitor] of competitors.entries()) {

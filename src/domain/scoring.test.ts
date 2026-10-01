@@ -19,6 +19,7 @@ function newMatch(teamSizes: number[], mapId: string | null = "metro"): MatchSta
     startedAt: "2026-01-01T00:00:00.000Z",
     completedAt: null,
     winnerCompetitorId: null,
+    gameModes: ["Sudden Death"],
     competitors: teamSizes.map((size, competitorIndex) => ({
       id: `competitor-${competitorIndex}`,
       playerIds: Array.from({ length: size }, () => `player-${playerNumber++}`),

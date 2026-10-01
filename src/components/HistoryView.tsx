@@ -12,6 +12,7 @@ import { MapThumbnail } from "./MapThumbnail";
 import { Icon } from "./Icon";
 import { MatchCompetitors } from "./MatchCompetitors";
 import { MatchFilters } from "./MatchFilters";
+import { GameModeBadges } from "./GameModeBadges";
 
 type HistoryViewProps = {
   matches: MatchView[];
@@ -86,7 +87,8 @@ export function HistoryView({ matches, viewerId, onOpen }: HistoryViewProps) {
     filters.endDate ||
     filters.mapIds.length ||
     filters.teammateIds.length ||
-    filters.opponentIds.length,
+    filters.opponentIds.length ||
+    filters.gameModes.length,
   );
 
   return (
@@ -146,9 +148,12 @@ export function HistoryView({ matches, viewerId, onOpen }: HistoryViewProps) {
                       <h2>{match.map?.name ?? "Map missing"}</h2>
                     </div>
                   </div>
-                  <span className="duration-pill">
-                    {formatDuration(match.durationSeconds ?? 0)}
-                  </span>
+                  <div className="history-meta">
+                    <GameModeBadges modes={match.gameModes} />
+                    <span className="duration-pill">
+                      {formatDuration(match.durationSeconds ?? 0)}
+                    </span>
+                  </div>
                 </div>
                 <MatchCompetitors match={match} />
                 <div className="history-rounds-container">

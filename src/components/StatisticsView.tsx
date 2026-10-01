@@ -65,6 +65,7 @@ export function StatisticsView({ playerNames, hasMatches, player, onBack }: Stat
     for (const id of filters.mapIds) parameters.append("mapId", id);
     for (const id of filters.teammateIds) parameters.append("teammateId", id);
     for (const id of filters.opponentIds) parameters.append("opponentId", id);
+    for (const mode of filters.gameModes) parameters.append("gameMode", mode);
     apiRequest<StatisticsResponse>(`/api/statistics?${parameters}`)
       .then((result) => {
         if (cancelled) return;
@@ -147,7 +148,8 @@ export function StatisticsContent({
     filters.endDate ||
     filters.mapIds.length ||
     filters.teammateIds.length ||
-    filters.opponentIds.length,
+    filters.opponentIds.length ||
+    filters.gameModes.length,
   );
 
   return (

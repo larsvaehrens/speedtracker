@@ -47,7 +47,7 @@ describe("loading skeletons", () => {
     expect(markup.match(/class="panel stats-panel/g)).toHaveLength(4);
     expect(markup).toContain("Total time played");
     expect(markup).toContain('class="match-filters panel"');
-    expect(markup).toContain("Date preset");
+    expect(markup.match(/class="skeleton-filter-control"/g)).toHaveLength(5);
     expect(markup).toContain("Against opponents");
     expect(markup).toContain("With teammates");
     expect(markup).toContain("Longest playing streak");

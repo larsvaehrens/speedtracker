@@ -19,6 +19,7 @@ describe("monthly trends across statistics views", () => {
       startedAt: new Date(Date.parse(completedAt) - seconds * 1000).toISOString(),
       completedAt,
       winnerCompetitorId: won ? "own" : "opposition",
+      gameModes: ["Sudden Death"],
       competitors: [
         { id: "own", playerIds: ["player", "teammate"] },
         { id: "opposition", playerIds: ["opponent"] },

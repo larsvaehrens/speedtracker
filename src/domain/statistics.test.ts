@@ -42,6 +42,7 @@ function completedMatch(fixture: MatchFixture): CompletedMatch {
     startedAt: fixture.completedAt,
     completedAt: fixture.completedAt,
     winnerCompetitorId: `competitor-${fixture.winner}`,
+    gameModes: ["Sudden Death"],
     competitors,
     rounds,
   };

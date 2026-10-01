@@ -3,6 +3,7 @@ import { calculateStatistics } from "#/domain/statistics";
 import type { CompletedMatch, MatchState } from "#/domain/types";
 import type { StatisticsPlayer } from "#/domain/views";
 import { EMPTY_MATCH_FILTERS, isValidDateInput, type MatchFilters } from "#/domain/match-filters";
+import { isGameModes } from "#/domain/game-modes";
 import { badRequest, currentUser, json, unauthorized, unavailable } from "#/server/http";
 import { getCompletedMatchPlayers, getCompletedMatches, getFollows, getMaps } from "#/server/data";
 
@@ -57,9 +58,11 @@ export const Route = createFileRoute("/api/statistics")({
         const mapIds = selectedIds("mapId");
         const teammateIds = selectedIds("teammateId");
         const opponentIds = selectedIds("opponentId");
-        if (!mapIds || !teammateIds || !opponentIds) {
+        const gameModeValues = selectedIds("gameMode");
+        if (!mapIds || !teammateIds || !opponentIds || !gameModeValues) {
           return badRequest("Too many filter selections.");
         }
+        if (!isGameModes(gameModeValues)) return badRequest("Choose valid game modes.");
         const filters: MatchFilters = {
           ...EMPTY_MATCH_FILTERS,
           startDate,
@@ -67,6 +70,7 @@ export const Route = createFileRoute("/api/statistics")({
           mapIds,
           teammateIds,
           opponentIds,
+          gameModes: gameModeValues,
         };
 
         const [matches, maps, players] = await Promise.all([

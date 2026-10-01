@@ -49,10 +49,14 @@ describe("match filter controls", () => {
     );
     expect(markup).toContain("Teammates");
     expect(markup).toContain("Opponents");
+    expect(markup).toContain("Game modes");
     expect(markup).toContain("Casino");
     expect(markup).toContain("Ally");
     expect(markup).toContain("Opponent");
     expect(markup).toContain("Clear filters");
+    expect(markup).toContain("Game modes");
+    expect(markup).toContain("Sudden Death");
+    expect(markup).toContain("Lethal Spikes");
     expect(markup).toContain("Clear dates");
     expect(markup).toContain("Apply date range");
   });

@@ -28,6 +28,7 @@ function match({
     startedAt: completedAt,
     completedAt,
     winnerCompetitorId: "own",
+    gameModes: ["Sudden Death"],
     competitors,
     rounds: [],
   };
@@ -39,6 +40,7 @@ const noFilters: MatchFilters = {
   mapIds: [],
   teammateIds: [],
   opponentIds: [],
+  gameModes: [],
 };
 
 describe("match filters", () => {
@@ -87,6 +89,21 @@ describe("match filters", () => {
         { ...noFilters, endDate: "2026-04-15" },
         "America/Los_Angeles",
       ),
+    ).toBe(false);
+  });
+
+  it("matches a match when any selected game mode is enabled", () => {
+    const fixture = match();
+    expect(
+      matchesFilters(
+        { ...fixture, gameModes: ["Lethal Spikes", "SpeedRapture"] },
+        "player",
+        { ...noFilters, gameModes: ["SuperSpeedRunners", "SpeedRapture"] },
+        "UTC",
+      ),
+    ).toBe(true);
+    expect(
+      matchesFilters(fixture, "player", { ...noFilters, gameModes: ["Lethal Spikes"] }, "UTC"),
     ).toBe(false);
   });
 

@@ -1,4 +1,5 @@
 import type { MatchState } from "./types";
+import type { GameMode } from "./game-modes";
 
 export type MatchFilters = {
   startDate: string;
@@ -6,6 +7,7 @@ export type MatchFilters = {
   mapIds: string[];
   teammateIds: string[];
   opponentIds: string[];
+  gameModes: GameMode[];
 };
 
 export type MatchDateRange = { startDate: string; endDate: string };
@@ -25,6 +27,7 @@ export const EMPTY_MATCH_FILTERS: MatchFilters = {
   mapIds: [],
   teammateIds: [],
   opponentIds: [],
+  gameModes: [],
 };
 
 const dateFormatters = new Map<string, Intl.DateTimeFormat>();
@@ -100,7 +103,7 @@ export function getDatePresetRange(preset: DatePreset, now = new Date()): MatchD
 }
 
 export function matchesFilters(
-  match: Pick<MatchState, "completedAt" | "mapId" | "competitors">,
+  match: Pick<MatchState, "completedAt" | "mapId" | "competitors" | "gameModes">,
   playerId: string,
   filters: MatchFilters,
   timeZone: string,
@@ -126,6 +129,12 @@ export function matchesFilters(
   }
 
   if (filters.mapIds.length > 0 && (!match.mapId || !filters.mapIds.includes(match.mapId))) {
+    return false;
+  }
+  if (
+    filters.gameModes.length > 0 &&
+    !filters.gameModes.some((mode) => match.gameModes.includes(mode))
+  ) {
     return false;
   }
 

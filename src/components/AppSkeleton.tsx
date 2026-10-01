@@ -50,6 +50,17 @@ export function AppSkeleton({ label }: { label: string }) {
                 <Skeleton className="skeleton-button" />
               </div>
             </div>
+            <fieldset className="game-mode-options">
+              <legend>Game modes</legend>
+              <div aria-hidden="true" className="game-mode-grid">
+                {Array.from({ length: 6 }, (_, index) => (
+                  <div className="game-mode-option" key={index}>
+                    <Skeleton width={18} height={18} />
+                    <Skeleton width="70%" />
+                  </div>
+                ))}
+              </div>
+            </fieldset>
             <div className="competitor-setup-grid">
               {[1, 2].map((competitor) => (
                 <fieldset className="competitor-setup" key={competitor}>

@@ -56,6 +56,7 @@ describe("statistics timezone API", () => {
         startedAt: completedAt,
         completedAt,
         winnerCompetitorId: "own",
+        gameModes: ["Sudden Death"],
         competitors: [
           { id: "own", playerIds: ["player"] },
           { id: "other", playerIds: ["opponent"] },
@@ -127,6 +128,7 @@ describe("statistics timezone API", () => {
         startedAt: "2026-01-02T11:00:00Z",
         completedAt: "2026-01-02T12:00:00Z",
         winnerCompetitorId: "own",
+        gameModes: ["Lethal Spikes"],
         competitors: [
           { id: "own", playerIds: ["player", "teammate"] },
           { id: "other", playerIds: ["opponent"] },
@@ -141,6 +143,7 @@ describe("statistics timezone API", () => {
         startedAt: "2026-01-01T11:00:00Z",
         completedAt: "2026-01-01T12:00:00Z",
         winnerCompetitorId: "own",
+        gameModes: ["Sudden Death"],
         competitors: [
           { id: "own", playerIds: ["player", "teammate"] },
           { id: "other", playerIds: ["opponent"] },
@@ -156,7 +159,7 @@ describe("statistics timezone API", () => {
     });
     const response = await mocks.get({
       request: new Request(
-        "http://localhost/api/statistics?startDate=2026-01-02&endDate=2026-01-02&mapId=map&teammateId=teammate&opponentId=opponent",
+        "http://localhost/api/statistics?startDate=2026-01-02&endDate=2026-01-02&mapId=map&teammateId=teammate&opponentId=opponent&gameMode=Lethal%20Spikes",
       ),
     });
     expect(response.status).toBe(200);
@@ -166,7 +169,7 @@ describe("statistics timezone API", () => {
         matchWins: 1,
         monthlyComparison: {
           current: { matchesPlayed: 1 },
-          previous: { matchesPlayed: 1 },
+          previous: { matchesPlayed: 0 },
         },
       },
       filterOptions: {
@@ -215,6 +218,7 @@ describe("statistics timezone API", () => {
       startedAt: "2026-01-01T12:00:00Z",
       completedAt: "2026-01-01T12:05:00Z",
       winnerCompetitorId: "followed-competitor",
+      gameModes: ["Sudden Death"],
       competitors: [
         { id: "followed-competitor", playerIds: ["followed"] },
         { id: "opposition", playerIds: ["other"] },

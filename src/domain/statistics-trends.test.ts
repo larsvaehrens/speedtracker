@@ -16,6 +16,7 @@ function match(
     startedAt: new Date(Date.parse(completedAt) - duration * 1000).toISOString(),
     completedAt,
     winnerCompetitorId: won ? "own" : "opposition",
+    gameModes: ["Sudden Death"],
     competitors: [
       { id: "own", playerIds: team ? [player, "teammate"] : [player] },
       { id: "opposition", playerIds: ["opponent"] },

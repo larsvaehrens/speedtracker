@@ -7,6 +7,7 @@ import { PlayerSelect } from "./PlayerSelect";
 import { MatchCompetitors } from "./MatchCompetitors";
 import { MapThumbnail } from "./MapThumbnail";
 import { useToast } from "./ToastProvider";
+import { DEFAULT_GAME_MODES, GAME_MODES, isGameModes, type GameMode } from "#/domain/game-modes";
 
 const formats = [
   { key: "1-1", label: "1 vs. 1", sizes: [1, 1] },
@@ -49,6 +50,25 @@ function isCompetitorList(value: unknown): value is CompetitorSetup[] {
   );
 }
 
+type PreviousSetup = { competitors: CompetitorSetup[]; gameModes: GameMode[] };
+
+function parsePreviousSetup(value: unknown): PreviousSetup | null {
+  if (isCompetitorList(value)) {
+    return { competitors: value, gameModes: [...DEFAULT_GAME_MODES] };
+  }
+  if (
+    typeof value !== "object" ||
+    value === null ||
+    !("competitors" in value) ||
+    !isCompetitorList(value.competitors) ||
+    !("gameModes" in value) ||
+    !isGameModes(value.gameModes)
+  ) {
+    return null;
+  }
+  return { competitors: value.competitors, gameModes: value.gameModes };
+}
+
 export function SetupBuilder({
   user,
   players,
@@ -60,7 +80,8 @@ export function SetupBuilder({
   const eligibleIds = useMemo(() => new Set(players.map((player) => player.id)), [players]);
   const [formatKey, setFormatKey] = useState("1-1");
   const [competitors, setCompetitors] = useState<string[][]>(() => emptySlots("1-1", user.id));
-  const [previousSetup, setPreviousSetup] = useState<CompetitorSetup[] | null>(null);
+  const [previousSetup, setPreviousSetup] = useState<PreviousSetup | null>(null);
+  const [gameModes, setGameModes] = useState<GameMode[]>(() => [...DEFAULT_GAME_MODES]);
   const [mapId, setMapId] = useState<string | null>(null);
   const [mapPickerOpen, setMapPickerOpen] = useState(false);
   const [starting, setStarting] = useState(false);
@@ -70,6 +91,7 @@ export function SetupBuilder({
   useEffect(() => {
     setCompetitors(emptySlots("1-1", user.id));
     setFormatKey("1-1");
+    setGameModes([...DEFAULT_GAME_MODES]);
   }, [user.id]);
 
   useEffect(() => {
@@ -82,8 +104,9 @@ export function SetupBuilder({
 
     try {
       const parsed: unknown = JSON.parse(stored);
-      if (isCompetitorList(parsed) && validateSetup(parsed, user.id, eligibleIds) === null) {
-        setPreviousSetup(parsed);
+      const previous = parsePreviousSetup(parsed);
+      if (previous && validateSetup(previous.competitors, user.id, eligibleIds) === null) {
+        setPreviousSetup(previous);
       } else {
         window.localStorage.removeItem(key);
         setPreviousSetup(null);
@@ -117,9 +140,13 @@ export function SetupBuilder({
 
   function reusePrevious() {
     if (!previousSetup) return;
-    const nextKey = arrangementKey(previousSetup);
+    const nextKey = arrangementKey(previousSetup.competitors);
     const format = formats.find(({ key }) => key === nextKey);
-    if (!format || validateSetup(previousSetup, user.id, eligibleIds)) {
+    if (
+      !format ||
+      !isGameModes(previousSetup.gameModes) ||
+      validateSetup(previousSetup.competitors, user.id, eligibleIds)
+    ) {
       setPreviousSetup(null);
       window.localStorage.removeItem(`speedtracker.previous-setup:${user.id}`);
       toast("The previous Setup is no longer valid.", "warning");
@@ -127,7 +154,8 @@ export function SetupBuilder({
     }
 
     setFormatKey(format.key);
-    setCompetitors(previousSetup.map(({ playerIds }) => [...playerIds]));
+    setCompetitors(previousSetup.competitors.map(({ playerIds }) => [...playerIds]));
+    setGameModes([...previousSetup.gameModes]);
     toast("Previous Setup restored. Start the Match when you are ready.", "success");
   }
 
@@ -136,6 +164,7 @@ export function SetupBuilder({
     setCompetitors(emptySlots("1-1", user.id));
     setMapId(null);
     setPreviousSetup(null);
+    setGameModes([...DEFAULT_GAME_MODES]);
     setError("");
     toast("Setup reset.", "success");
     window.localStorage.removeItem(`speedtracker.previous-setup:${user.id}`);
@@ -143,7 +172,10 @@ export function SetupBuilder({
 
   function savePreviousSetup() {
     if (setupError) return;
-    const validSetup = competitors.map((playerIds) => ({ playerIds }));
+    const validSetup = {
+      competitors: competitors.map((playerIds) => ({ playerIds })),
+      gameModes,
+    };
     window.localStorage.setItem(
       `speedtracker.previous-setup:${user.id}`,
       JSON.stringify(validSetup),
@@ -162,7 +194,7 @@ export function SetupBuilder({
     try {
       const result = await apiRequest<{ match: MatchView }>("/api/matches", {
         method: "POST",
-        body: JSON.stringify({ competitors: setup, mapId }),
+        body: JSON.stringify({ competitors: setup, mapId, gameModes }),
       });
       onMatchCreated(result.match);
     } catch (startError) {
@@ -230,6 +262,28 @@ export function SetupBuilder({
             </button>
           </div>
         </div>
+
+        <fieldset className="game-mode-options">
+          <legend>Game modes</legend>
+          <div className="game-mode-grid">
+            {GAME_MODES.map((mode) => (
+              <label className="game-mode-option" key={mode}>
+                <input
+                  checked={gameModes.includes(mode)}
+                  onChange={() =>
+                    setGameModes((current) =>
+                      current.includes(mode)
+                        ? current.filter((selected) => selected !== mode)
+                        : [...current, mode],
+                    )
+                  }
+                  type="checkbox"
+                />
+                <span>{mode}</span>
+              </label>
+            ))}
+          </div>
+        </fieldset>
 
         <div className="competitor-setup-grid">
           {competitors.map((members, competitorIndex) => (

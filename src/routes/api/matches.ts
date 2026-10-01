@@ -3,6 +3,7 @@ import { getRecentMatches } from "#/server/data";
 import { badRequest, currentUser, json, requestBody, unauthorized } from "#/server/http";
 import { createMatch } from "#/server/matches";
 import type { CompetitorSetup } from "#/domain/setup";
+import { DEFAULT_GAME_MODES, isGameModes } from "#/domain/game-modes";
 
 function isCompetitorSetup(value: unknown): value is CompetitorSetup[] {
   return (
@@ -42,8 +43,10 @@ export const Route = createFileRoute("/api/matches")({
               ? body.mapId
               : undefined;
         if (mapId === undefined) return badRequest("Choose a valid map.");
+        const gameModes = body.gameModes === undefined ? DEFAULT_GAME_MODES : body.gameModes;
+        if (!isGameModes(gameModes)) return badRequest("Choose valid game modes.");
 
-        const result = await createMatch(user.id, body.competitors, mapId);
+        const result = await createMatch(user.id, body.competitors, mapId, gameModes);
         if (!result.ok) return json({ error: result.error }, result.status);
         return json({ match: result.match }, 201);
       },

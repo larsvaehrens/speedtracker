@@ -1,3 +1,5 @@
+import type { GameMode } from "./game-modes";
+
 export type MatchStatus = "active" | "awaiting-map" | "completed" | "abandoned";
 
 export type Competitor = {
@@ -28,6 +30,7 @@ export type MatchState = {
   startedAt: string;
   completedAt: string | null;
   winnerCompetitorId: string | null;
+  gameModes: GameMode[];
   competitors: Competitor[];
   rounds: RoundResult[];
 };

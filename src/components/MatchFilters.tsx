@@ -4,6 +4,7 @@ import { getDatePresetRange } from "#/domain/match-filters";
 import { PlayerAvatar } from "./PlayerAvatar";
 import { MapThumbnail } from "./MapThumbnail";
 import { Icon } from "./Icon";
+import { GAME_MODES } from "#/domain/game-modes";
 
 type FilterOption = { id: string; label: string; avatar?: string | null; imagePath?: string };
 
@@ -27,6 +28,7 @@ const datePresets: { id: DatePreset; label: string }[] = [
   { id: "this-year", label: "This year" },
   { id: "last-year", label: "Last year" },
 ];
+const gameModeOptions = GAME_MODES.map((mode) => ({ id: mode, label: mode }));
 
 function formatDate(value: string): string {
   const [year, month, day] = value.split("-").map(Number);
@@ -52,7 +54,14 @@ function MultiSelect({
   open: boolean;
   onToggle: () => void;
 }) {
-  const singularLabel = label === "Maps" ? "map" : label === "Teammates" ? "teammate" : "opponent";
+  const singularLabel =
+    label === "Maps"
+      ? "map"
+      : label === "Teammates"
+        ? "teammate"
+        : label === "Game modes"
+          ? "game mode"
+          : "opponent";
   const summary =
     selected.length === 0
       ? `Any ${singularLabel}`
@@ -112,7 +121,7 @@ export function MatchFilters({
   isActive,
 }: MatchFiltersProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
-  const filterGridRef = useRef<HTMLDivElement>(null);
+  const filterControlsRef = useRef<HTMLDivElement>(null);
   const [datePickerOpen, setDatePickerOpen] = useState(false);
   const [openMultiSelect, setOpenMultiSelect] = useState<string | null>(null);
   const [dateDraft, setDateDraft] = useState({
@@ -129,7 +138,7 @@ export function MatchFilters({
   useEffect(() => {
     if (!openMultiSelect) return;
     function closeOutside(event: PointerEvent) {
-      if (event.target instanceof Node && !filterGridRef.current?.contains(event.target)) {
+      if (event.target instanceof Node && !filterControlsRef.current?.contains(event.target)) {
         setOpenMultiSelect(null);
       }
     }
@@ -152,46 +161,60 @@ export function MatchFilters({
 
   return (
     <section aria-label="Filter matches" className="match-filters panel">
-      <div className="match-filter-grid" ref={filterGridRef}>
-        <button
-          aria-haspopup="dialog"
-          className="date-range-trigger"
-          onClick={() => {
-            setOpenMultiSelect(null);
-            setDateDraft({ startDate: value.startDate, endDate: value.endDate });
-            setDatePickerOpen(true);
-          }}
-          type="button"
-        >
-          <span>Date range</span>
-          <strong>{dateRangeLabel}</strong>
-        </button>
+      <div className="match-filter-controls" ref={filterControlsRef}>
+        <div className="match-filter-grid">
+          <button
+            aria-haspopup="dialog"
+            className="date-range-trigger"
+            onClick={() => {
+              setOpenMultiSelect(null);
+              setDateDraft({ startDate: value.startDate, endDate: value.endDate });
+              setDatePickerOpen(true);
+            }}
+            type="button"
+          >
+            <span>Date range</span>
+            <strong>{dateRangeLabel}</strong>
+          </button>
+          <MultiSelect
+            label="Maps"
+            onChange={(mapIds) => update({ mapIds })}
+            options={maps}
+            selected={value.mapIds}
+            open={openMultiSelect === "Maps"}
+            onToggle={() => setOpenMultiSelect((current) => (current === "Maps" ? null : "Maps"))}
+          />
+          <MultiSelect
+            label="Teammates"
+            onChange={(teammateIds) => update({ teammateIds })}
+            options={teammates}
+            selected={value.teammateIds}
+            open={openMultiSelect === "Teammates"}
+            onToggle={() =>
+              setOpenMultiSelect((current) => (current === "Teammates" ? null : "Teammates"))
+            }
+          />
+          <MultiSelect
+            label="Opponents"
+            onChange={(opponentIds) => update({ opponentIds })}
+            options={opponents}
+            selected={value.opponentIds}
+            open={openMultiSelect === "Opponents"}
+            onToggle={() =>
+              setOpenMultiSelect((current) => (current === "Opponents" ? null : "Opponents"))
+            }
+          />
+        </div>
         <MultiSelect
-          label="Maps"
-          onChange={(mapIds) => update({ mapIds })}
-          options={maps}
-          selected={value.mapIds}
-          open={openMultiSelect === "Maps"}
-          onToggle={() => setOpenMultiSelect((current) => (current === "Maps" ? null : "Maps"))}
-        />
-        <MultiSelect
-          label="Teammates"
-          onChange={(teammateIds) => update({ teammateIds })}
-          options={teammates}
-          selected={value.teammateIds}
-          open={openMultiSelect === "Teammates"}
-          onToggle={() =>
-            setOpenMultiSelect((current) => (current === "Teammates" ? null : "Teammates"))
+          label="Game modes"
+          onChange={(selected) =>
+            update({ gameModes: GAME_MODES.filter((mode) => selected.includes(mode)) })
           }
-        />
-        <MultiSelect
-          label="Opponents"
-          onChange={(opponentIds) => update({ opponentIds })}
-          options={opponents}
-          selected={value.opponentIds}
-          open={openMultiSelect === "Opponents"}
+          options={gameModeOptions}
+          selected={value.gameModes}
+          open={openMultiSelect === "Game modes"}
           onToggle={() =>
-            setOpenMultiSelect((current) => (current === "Opponents" ? null : "Opponents"))
+            setOpenMultiSelect((current) => (current === "Game modes" ? null : "Game modes"))
           }
         />
       </div>
