@@ -1,5 +1,5 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { CompletedMatch } from "#/domain/types";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const mocks = vi.hoisted(() => ({
   currentUser: vi.fn(),
@@ -96,12 +96,12 @@ describe("statistics timezone API", () => {
 
   it("includes each map's picture in the statistics response", async () => {
     mocks.getMaps.mockResolvedValue([
-      { id: "map", name: "Casino", imagePath: "/ressources/maps/12_Casion.png", order: 12 },
+      { id: "map", name: "Casino", imagePath: "/ressources/maps/12_Casino.png", order: 12 },
     ]);
     const response = await mocks.get({ request: new Request("http://localhost/api/statistics") });
     expect(await response.json()).toMatchObject({
       statistics: {
-        maps: [{ mapId: "map", name: "Casino", imagePath: "/ressources/maps/12_Casion.png" }],
+        maps: [{ mapId: "map", name: "Casino", imagePath: "/ressources/maps/12_Casino.png" }],
       },
     });
   });

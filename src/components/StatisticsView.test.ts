@@ -1,8 +1,8 @@
+import { calculateStatistics } from "#/domain/statistics";
+import type { CompletedMatch } from "#/domain/types";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
-import { calculateStatistics } from "#/domain/statistics";
-import type { CompletedMatch } from "#/domain/types";
 import { StatisticsContent } from "./StatisticsView";
 
 describe("monthly trends across statistics views", () => {
@@ -39,7 +39,7 @@ describe("monthly trends across statistics views", () => {
     const stats = calculateStatistics(
       "player",
       matches,
-      [{ id: "map", name: "Casino", imagePath: "/ressources/maps/12_Casion.png", order: 12 }],
+      [{ id: "map", name: "Casino", imagePath: "/ressources/maps/12_Casino.png", order: 12 }],
       { timeZone: "UTC", now: new Date("2026-09-15T12:00:00Z") },
     );
     const markup = renderToStaticMarkup(
@@ -59,12 +59,12 @@ describe("monthly trends across statistics views", () => {
     expect(markup).not.toContain("monthly-comparison-note");
     expect(markup).toContain('src="/teammate.png"');
     expect(markup).toContain('src="/opponent.png"');
-    expect(markup).toContain('src="/ressources/maps/12_Casion.png"');
+    expect(markup).toContain('src="/ressources/maps/12_Casino.png"');
     expect(markup.indexOf("<h2>Streaks</h2>")).toBeLessThan(markup.indexOf("<h2>By map</h2>"));
     expect(markup.indexOf('class="stats-side-panels"')).toBeLessThan(
       markup.indexOf("<h2>Against opponents</h2>"),
     );
-
+Casino
     const withoutPriorMatches = calculateStatistics(
       "player",
       [matches[0]],

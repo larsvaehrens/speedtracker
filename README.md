@@ -133,7 +133,7 @@ manual edits.
   sizes are available in the indicator tooltip.
 
 The map label is **Casino**. Its existing image filename is
-`public/ressources/maps/12_Casion.png`; the asset is intentionally not renamed.
+`public/ressources/maps/12_Casino.png`; the asset is intentionally not renamed.
 Avatars and map images remain under the existing `ressources` spelling.
 
 ## Authentication and account recovery

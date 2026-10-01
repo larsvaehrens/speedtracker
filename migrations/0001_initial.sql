@@ -72,7 +72,7 @@ INSERT INTO maps (id, name, sort_order, image_path) VALUES
   ('nightclub', 'Nightclub', 10, '/ressources/maps/09_Nightclub.png'),
   ('zoo', 'Zoo', 11, '/ressources/maps/10_Zoo.png'),
   ('swift-peaks', 'Swift Peaks', 12, '/ressources/maps/11_Swift_Peaks.png'),
-  ('casino', 'Casino', 13, '/ressources/maps/12_Casion.png'),
+  ('casino', 'Casino', 13, '/ressources/maps/12_Casino.png'),
   ('festival', 'Festival', 14, '/ressources/maps/13_Festival.png'),
   ('resort', 'Resort', 15, '/ressources/maps/14_Resort.png'),
   ('airport', 'Airport', 16, '/ressources/maps/15_Airport.png'),
