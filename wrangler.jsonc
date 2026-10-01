@@ -14,7 +14,7 @@
   },
   "d1_databases": [
     {
-      "binding": "speedtracker_db",
+      "binding": "DB",
       "database_name": "speedtracker-db",
       "database_id": "07f39400-894a-461e-bde5-90fc3eeb7705",
       "migrations_dir": "migrations",
