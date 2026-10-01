@@ -197,7 +197,7 @@ export function StatisticsSkeleton({
             <div className="stats-grid">
               <StatisticsPanelSkeleton
                 title="By map"
-                description="Ranked by win rate · sample size shown"
+                description="Ranked by win rate"
                 map
               />
               <div className="stats-side-panels">

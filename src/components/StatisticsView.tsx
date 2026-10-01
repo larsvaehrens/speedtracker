@@ -297,7 +297,7 @@ export function StatisticsContent({
               <div className="panel-heading">
                 <div>
                   <h2>By map</h2>
-                  <p className="muted">Ranked by win rate · sample size shown</p>
+                  <p className="muted">Ranked by win rate</p>
                 </div>
               </div>
               {stats.maps.length === 0 ? (
