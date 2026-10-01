@@ -110,8 +110,9 @@ manual edits.
 - Match duration is elapsed wall-clock time from Match start to completion.
   Abandoned Matches are retained for reference but excluded from completed
   history and statistics.
-- The statistics page shows match win rates, map and opponent performance,
-  teammate partnerships and point contribution, streaks, and total time in
+- The statistics page shows match win rates, flawless wins and shutout losses,
+  map and opponent performance, teammate partnerships and point contribution,
+  streaks, and total time in
   completed Matches (displayed in minutes, hours, or days). Each rate shows
   its sample size; maps with no completed matches are omitted. Per-map results
   show total, average, shortest, and longest Match times. Map pictures appear

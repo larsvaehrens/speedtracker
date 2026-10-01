@@ -1,4 +1,5 @@
 import type { CompletedMatch } from "./types";
+import { getCompetitorScore } from "./scoring";
 import {
   EMPTY_MATCH_FILTERS,
   matchesFilters,
@@ -51,6 +52,8 @@ export type PlayerStatistics = {
   matchWinRate: number | null;
   roundCredits: number;
   totalPlayedSeconds: number;
+  flawlessWins: number;
+  shutoutLosses: number;
   maps: MapStat[];
   opponents: OpponentStat[];
   partnerships: PartnershipStat[];
@@ -267,10 +270,19 @@ function calculateBaseStatistics(
   const mapStats = new Map<string, MapStat>();
   const opponentStats = new Map<string, { wins: number; losses: number; matches: number }>();
   const mapsById = new Map(mapDetails.map((map) => [map.id, map]));
+  let flawlessWins = 0;
+  let shutoutLosses = 0;
 
   for (const match of matches) {
     const ownCompetitor = match.competitors.find(({ playerIds }) => playerIds.includes(playerId));
     if (!ownCompetitor) continue;
+    const ownScore = getCompetitorScore(match, ownCompetitor.id);
+    const opponentScore = match.competitors
+      .filter(({ id }) => id !== ownCompetitor.id)
+      .reduce((total, competitor) => total + getCompetitorScore(match, competitor.id), 0);
+    const won = ownCompetitor.id === match.winnerCompetitorId;
+    if (won && opponentScore === 0) flawlessWins += 1;
+    if (!won && ownScore === 0) shutoutLosses += 1;
 
     const map = mapsById.get(match.mapId);
     if (map) {
@@ -336,6 +348,8 @@ function calculateBaseStatistics(
     matchWinRate: winRate(matchWins, matches.length),
     roundCredits: sumPlayerPoints(matches, playerId),
     totalPlayedSeconds: matches.reduce((total, match) => total + getMatchDurationSeconds(match), 0),
+    flawlessWins,
+    shutoutLosses,
     maps: [...mapStats.values()].sort(
       (left, right) =>
         compareRateThenSample(left, right) ||

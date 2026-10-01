@@ -68,6 +68,10 @@ describe("monthly trends across statistics views", () => {
     expect(markup).toContain("0:30");
     expect(markup).toContain("Longest");
     expect(markup).toContain("1:30");
+    expect(markup).toContain("Flawless wins");
+    expect(markup).toContain("Won without conceding a credit");
+    expect(markup).toContain("Shutout losses");
+    expect(markup).toContain("Lost without scoring a credit");
     expect(markup.indexOf("<h2>Streaks</h2>")).toBeLessThan(markup.indexOf("<h2>By map</h2>"));
     expect(markup.indexOf('class="stats-side-panels"')).toBeLessThan(
       markup.indexOf("<h2>Against opponents</h2>"),

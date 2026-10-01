@@ -210,16 +210,15 @@ export function StatisticsContent({
           </strong>
           <span>{player ? "Points credited to this Player" : "Points credited to you"}</span>
         </article>
-        <article className="stat-card">
-          <span className="muted">Current streak</span>
-          <strong>
-            {stats.currentStreak.length === 0
-              ? "—"
-              : `${stats.currentStreak.length} ${stats.currentStreak.kind === "win" ? "wins" : "losses"}`}
-          </strong>
-          <span>
-            Longest: {stats.longestWinStreak.length} wins · {stats.longestLossStreak.length} losses
-          </span>
+        <article className="stat-card stat-card-positive">
+          <span className="muted">Flawless wins</span>
+          <strong>{stats.flawlessWins}</strong>
+          <span>Won without conceding a credit</span>
+        </article>
+        <article className="stat-card stat-card-negative">
+          <span className="muted">Shutout losses</span>
+          <strong>{stats.shutoutLosses}</strong>
+          <span>Lost without scoring a credit</span>
         </article>
         <article className="stat-card">
           <span className="muted">Total time played</span>

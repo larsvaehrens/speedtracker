@@ -1536,6 +1536,22 @@ input[readonly] {
   border-color: rgb(82 224 207 / 37%);
 }
 
+.stat-card-positive {
+  border-color: rgb(131 229 162 / 35%);
+}
+
+.stat-card-positive strong {
+  color: var(--success);
+}
+
+.stat-card-negative {
+  border-color: rgb(255 121 129 / 35%);
+}
+
+.stat-card-negative strong {
+  color: var(--quaternary);
+}
+
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -2057,7 +2073,7 @@ input[readonly] {
 
 @media (min-width: 1050px) {
   .stats-overview {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(5, minmax(0, 1fr));
   }
 
   .map-grid {

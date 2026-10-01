@@ -40,12 +40,14 @@ describe("loading skeletons", () => {
     expect(markup).not.toContain("<button");
   });
 
-  it("matches the four overview cards, four panels, and five streak slots in statistics", () => {
+  it("matches the five overview cards, four panels, and five streak slots in statistics", () => {
     const markup = renderToStaticMarkup(createElement(StatisticsSkeleton, { hasMatches: true }));
     expect(markup).toContain('aria-label="Loading statistics"');
-    expect(markup.match(/class="stat-card(?: stat-featured)?"/g)).toHaveLength(4);
+    expect(markup.match(/<article class="stat-card/g)).toHaveLength(5);
     expect(markup.match(/class="panel stats-panel/g)).toHaveLength(4);
     expect(markup).toContain("Total time played");
+    expect(markup).toContain("Flawless wins");
+    expect(markup).toContain("Shutout losses");
     expect(markup).toContain('class="match-filters panel"');
     expect(markup.match(/class="skeleton-filter-control"/g)).toHaveLength(5);
     expect(markup).toContain("Against opponents");
@@ -59,7 +61,7 @@ describe("loading skeletons", () => {
     const markup = renderToStaticMarkup(createElement(StatisticsSkeleton, { hasMatches: false }));
     expect(markup).toContain('class="empty-state panel skeleton-empty"');
     expect(markup).not.toContain('class="stats-grid"');
-    expect(markup.match(/class="stat-card(?: stat-featured)?"/g)).toHaveLength(4);
+    expect(markup.match(/<article class="stat-card/g)).toHaveLength(5);
   });
 
   it("uses the statistics skeleton while the request is loading", () => {

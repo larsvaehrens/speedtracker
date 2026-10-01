@@ -162,6 +162,40 @@ describe("player statistics", () => {
     expect(stats.roundCredits).toBe(2);
   });
 
+  it("counts flawless wins and shutout losses using full competitor credits", () => {
+    let day = 1;
+    const scoreMatch = (id: string, winner: number, ownCredits: number, opponentCredits: number) =>
+      completedMatch({
+        id,
+        teams: [["player", "teammate"], ["opponent"]],
+        winner,
+        completedAt: `2026-01-${String(day++).padStart(2, "0")}T00:00:00.000Z`,
+        rounds: [
+          ...Array.from({ length: ownCredits }, () => [{ playerId: "teammate", points: 1 }]),
+          ...Array.from({ length: opponentCredits }, () => [{ playerId: "opponent", points: 1 }]),
+        ],
+      });
+    const flawlessWinWithUndoneOpponentCredit = scoreMatch("flawless", 0, 3, 1);
+    const undoneRoundIndex = flawlessWinWithUndoneOpponentCredit.rounds.length - 1;
+    flawlessWinWithUndoneOpponentCredit.rounds = flawlessWinWithUndoneOpponentCredit.rounds.map(
+      (round, index) => (index === undoneRoundIndex ? { ...round, undone: true } : round),
+    );
+    const stats = calculateStatistics(
+      "player",
+      [
+        scoreMatch("win", 0, 3, 0),
+        scoreMatch("contested-win", 0, 3, 1),
+        flawlessWinWithUndoneOpponentCredit,
+        scoreMatch("shutout-loss", 1, 0, 3),
+        scoreMatch("contested-loss", 1, 1, 3),
+      ],
+      mapDetails,
+    );
+
+    expect(stats.flawlessWins).toBe(2);
+    expect(stats.shutoutLosses).toBe(1);
+  });
+
   it("omits maps without completed matches and ranks played maps by win rate", () => {
     const matches = [
       completedMatch({

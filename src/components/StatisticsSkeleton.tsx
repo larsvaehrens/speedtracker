@@ -150,14 +150,18 @@ export function StatisticsSkeleton({
           {[
             "Match win rate",
             "Individual round credits",
-            "Current streak",
+            "Flawless wins",
+            "Shutout losses",
             "Total time played",
           ].map((label, index) => (
-            <article className={`stat-card${index === 0 ? " stat-featured" : ""}`} key={label}>
+            <article
+              className={`stat-card${index === 0 ? " stat-featured" : index === 2 ? " stat-card-positive" : index === 3 ? " stat-card-negative" : ""}`}
+              key={label}
+            >
               <span className="muted">{label}</span>
               <strong className="stat-value">
                 <Skeleton width="55%" />
-                {index !== 2 && (
+                {[0, 1, 4].includes(index) && (
                   <span className="stat-trend">
                     <Skeleton width={45} />
                   </span>
@@ -195,11 +199,7 @@ export function StatisticsSkeleton({
               </div>
             </section>
             <div className="stats-grid">
-              <StatisticsPanelSkeleton
-                title="By map"
-                description="Ranked by win rate"
-                map
-              />
+              <StatisticsPanelSkeleton title="By map" description="Ranked by win rate" map />
               <div className="stats-side-panels">
                 <StatisticsPanelSkeleton
                   title="Against opponents"
