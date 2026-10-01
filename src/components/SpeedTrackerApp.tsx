@@ -134,7 +134,7 @@ export function SpeedTrackerApp() {
   }
   if (!session.isPending && !session.data?.user) return <AuthScreen />;
   if (!bootstrap && (loading || !loadError)) {
-    return <AppSkeleton label="Loading your Matches" />;
+    return <AppSkeleton label="Loading your matches" />;
   }
   if (!bootstrap) {
     return (

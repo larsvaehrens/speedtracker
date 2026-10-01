@@ -99,9 +99,9 @@ describe("monthly trends across statistics views", () => {
       }),
     );
     expect(followedMarkup).toContain("Followed&#x27;s statistics");
-    expect(followedMarkup).toContain("Points credited to this Player");
+    expect(followedMarkup).toContain("Points credited to this player");
     expect(followedMarkup).toContain("Followed&#x27;s points");
     expect(followedMarkup).not.toContain("Your points");
-    expect(followedMarkup).toContain("Back to Players");
+    expect(followedMarkup).toContain("Back to players");
   });
 });

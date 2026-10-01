@@ -27,11 +27,11 @@ describe("loading skeletons", () => {
 
   it("preserves the app shell, five navigation slots, and default setup layout", () => {
     const markup = renderToStaticMarkup(
-      createElement(AppSkeleton, { label: "Loading your Matches" }),
+      createElement(AppSkeleton, { label: "Loading your matches" }),
     );
     expect(markup).toContain('aria-busy="true"');
     expect(markup).toContain('role="status"');
-    expect(markup).toContain('aria-label="Loading your Matches"');
+    expect(markup).toContain('aria-label="Loading your matches"');
     expect(markup).toContain('class="app-header"');
     expect(markup.match(/class="nav-tab skeleton-nav-tab"/g)).toHaveLength(5);
     expect(markup.match(/class="competitor-setup"/g)).toHaveLength(2);
@@ -83,7 +83,7 @@ describe("loading skeletons", () => {
   it("does not flash an error before the initial bootstrap request starts", () => {
     useSession.mockReturnValue({ data: { user: { id: "player" } }, isPending: false });
     const markup = renderToStaticMarkup(createElement(SpeedTrackerApp));
-    expect(markup).toContain('aria-label="Loading your Matches"');
+    expect(markup).toContain('aria-label="Loading your matches"');
     expect(markup).not.toContain("Could not load SpeedTracker");
   });
 
@@ -105,7 +105,7 @@ describe("loading skeletons", () => {
     );
     expect(markup).toContain("Friend&#x27;s statistics");
     expect(markup).toContain('src="/friend.png"');
-    expect(markup).toContain("Back to Players");
+    expect(markup).toContain("Back to players");
     expect(markup).toContain('aria-busy="true"');
   });
 });

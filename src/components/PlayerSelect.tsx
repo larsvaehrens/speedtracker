@@ -29,7 +29,7 @@ export function PlayerSelect({
   const [active, setActive] = useState(0);
   const selected = players.find((player) => player.id === value);
   const options = [
-    { id: "", name: "Select a Player", player: null, disabled: false },
+    { id: "", name: "Select a player", player: null, disabled: false },
     ...players.map((player) => ({
       id: player.id,
       name: `${player.screenName} (@${player.username})${player.id === userId ? " · you" : ""}`,
@@ -114,7 +114,7 @@ export function PlayerSelect({
       >
         {selected && <PlayerAvatar avatar={selected.avatar} />}
         <span id={`${id}-value`}>
-          {options.find((option) => option.id === value)?.name ?? "Select a Player"}
+          {options.find((option) => option.id === value)?.name ?? "Select a player"}
         </span>
         <Icon className="player-select-arrow" name="chevron-down" />
       </button>

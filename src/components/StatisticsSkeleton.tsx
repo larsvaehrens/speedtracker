@@ -109,7 +109,7 @@ export function StatisticsHeading({ player, onBack }: PlayerHeadingProps) {
       </div>
       {onBack && (
         <button className="button button-quiet" onClick={onBack} type="button">
-          Back to Players
+          Back to players
         </button>
       )}
     </div>
@@ -207,7 +207,7 @@ export function StatisticsSkeleton({
                 />
                 <StatisticsPanelSkeleton
                   title="With teammates"
-                  description="Match results and individual points credited to each Player"
+                  description="Match results and individual points credited to each player"
                   partnership
                 />
               </div>

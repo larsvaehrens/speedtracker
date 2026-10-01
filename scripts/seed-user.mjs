@@ -59,4 +59,4 @@ if (!response.ok) {
   process.exit(1);
 }
 
-console.log(`Created local Player @${username}.`);
+console.log(`Created local player @${username}.`);
