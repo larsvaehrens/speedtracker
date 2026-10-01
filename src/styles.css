@@ -1547,6 +1547,17 @@ input[readonly] {
   padding: clamp(15px, 3vw, 22px);
 }
 
+.stats-side-panels {
+  display: grid;
+  align-content: start;
+  gap: 12px;
+  min-width: 0;
+}
+
+.streak-panel {
+  margin-bottom: 12px;
+}
+
 .panel-heading {
   align-items: flex-start;
   margin-bottom: 10px;

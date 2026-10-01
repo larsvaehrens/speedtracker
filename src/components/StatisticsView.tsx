@@ -252,141 +252,7 @@ export function StatisticsContent({
           </p>
         </div>
       ) : (
-        <div className="stats-grid">
-          <section className="panel stats-panel">
-            <div className="panel-heading">
-              <div>
-                <h2>By map</h2>
-                <p className="muted">Ranked by win rate · sample size shown</p>
-              </div>
-            </div>
-            {stats.maps.length === 0 ? (
-              <p className="empty-inline">No map results yet.</p>
-            ) : (
-              <div className="stat-list">
-                {stats.maps.map((map) => (
-                  <div className="stat-row" key={map.mapId}>
-                    <span className="stat-map">
-                      <MapThumbnail imagePath={map.imagePath} />
-                      <span className="stat-row-title">
-                        <strong>{map.name}</strong>
-                        <small>
-                          {map.wins} wins · {map.matches} played
-                        </small>
-                      </span>
-                    </span>
-                    <div className="stat-row-metric">
-                      <strong>{percent(map.winRate)}</strong>
-                      <WinRateTrend
-                        {...trendPeriod}
-                        current={comparison.current.maps.find(({ mapId }) => mapId === map.mapId)}
-                        previous={comparison.previous.maps.find(({ mapId }) => mapId === map.mapId)}
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </section>
-
-          <section className="panel stats-panel">
-            <div className="panel-heading">
-              <div>
-                <h2>Against opponents</h2>
-                <p className="muted">Teammates are excluded</p>
-              </div>
-            </div>
-            {stats.opponents.length === 0 ? (
-              <p className="empty-inline">No opponent results yet.</p>
-            ) : (
-              <div className="stat-list">
-                {stats.opponents.map((opponent) => (
-                  <div className="stat-row" key={opponent.playerId}>
-                    <span className="stat-player">
-                      <PlayerAvatar avatar={avatars[opponent.playerId] ?? null} />
-                      <span className="stat-row-title">
-                        <strong>{displayName(names, opponent.playerId)}</strong>
-                        <small>
-                          {opponent.wins} wins · {opponent.losses} losses · {opponent.matches}{" "}
-                          played
-                        </small>
-                      </span>
-                    </span>
-                    <div className="stat-row-metric">
-                      <strong>{percent(opponent.winRate)}</strong>
-                      <WinRateTrend
-                        {...trendPeriod}
-                        current={comparison.current.opponents.find(
-                          ({ playerId }) => playerId === opponent.playerId,
-                        )}
-                        previous={comparison.previous.opponents.find(
-                          ({ playerId }) => playerId === opponent.playerId,
-                        )}
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </section>
-
-          <section className="panel stats-panel">
-            <div className="panel-heading">
-              <div>
-                <h2>With teammates</h2>
-                <p className="muted">Match results and individual points credited to each Player</p>
-              </div>
-            </div>
-            {stats.partnerships.length === 0 ? (
-              <p className="empty-inline">
-                Two-player team Matches will create partnership statistics.
-              </p>
-            ) : (
-              <div className="stat-list">
-                {stats.partnerships.map((pair) => (
-                  <div className="partnership-row" key={pair.teammateId}>
-                    <div className="stat-row">
-                      <span className="stat-player">
-                        <PlayerAvatar avatar={avatars[pair.teammateId] ?? null} />
-                        <span className="stat-row-title">
-                          <strong>{displayName(names, pair.teammateId)}</strong>
-                          <small>
-                            {pair.wins} team wins · {pair.matches} Matches
-                          </small>
-                        </span>
-                      </span>
-                      <div className="stat-row-metric">
-                        <strong>{percent(pair.winRate)}</strong>
-                        <WinRateTrend
-                          {...trendPeriod}
-                          current={comparison.current.partnerships.find(
-                            ({ teammateId }) => teammateId === pair.teammateId,
-                          )}
-                          previous={comparison.previous.partnerships.find(
-                            ({ teammateId }) => teammateId === pair.teammateId,
-                          )}
-                        />
-                      </div>
-                    </div>
-                    <div className="contribution-bar" aria-hidden="true">
-                      <span
-                        style={{
-                          width: `${Math.round((pair.playerShare ?? 0) * 100)}%`,
-                        }}
-                      />
-                    </div>
-                    <p className="contribution-copy">
-                      {player ? `${player.screenName}'s points` : "Your points"}:{" "}
-                      {pair.playerPoints} ({percent(pair.playerShare)}) ·{" "}
-                      {displayName(names, pair.teammateId)}: {pair.teammatePoints} (
-                      {percent(pair.teammateShare)})
-                    </p>
-                  </div>
-                ))}
-              </div>
-            )}
-          </section>
-
+        <>
           <section className="panel stats-panel streak-panel">
             <div className="panel-heading">
               <div>
@@ -426,7 +292,148 @@ export function StatisticsContent({
               </div>
             </div>
           </section>
-        </div>
+          <div className="stats-grid">
+            <section className="panel stats-panel">
+              <div className="panel-heading">
+                <div>
+                  <h2>By map</h2>
+                  <p className="muted">Ranked by win rate · sample size shown</p>
+                </div>
+              </div>
+              {stats.maps.length === 0 ? (
+                <p className="empty-inline">No map results yet.</p>
+              ) : (
+                <div className="stat-list">
+                  {stats.maps.map((map) => (
+                    <div className="stat-row" key={map.mapId}>
+                      <span className="stat-map">
+                        <MapThumbnail imagePath={map.imagePath} />
+                        <span className="stat-row-title">
+                          <strong>{map.name}</strong>
+                          <small>
+                            {map.wins} wins · {map.matches} played
+                          </small>
+                        </span>
+                      </span>
+                      <div className="stat-row-metric">
+                        <strong>{percent(map.winRate)}</strong>
+                        <WinRateTrend
+                          {...trendPeriod}
+                          current={comparison.current.maps.find(({ mapId }) => mapId === map.mapId)}
+                          previous={comparison.previous.maps.find(
+                            ({ mapId }) => mapId === map.mapId,
+                          )}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </section>
+
+            <div className="stats-side-panels">
+              <section className="panel stats-panel">
+                <div className="panel-heading">
+                  <div>
+                    <h2>Against opponents</h2>
+                    <p className="muted">Teammates are excluded</p>
+                  </div>
+                </div>
+                {stats.opponents.length === 0 ? (
+                  <p className="empty-inline">No opponent results yet.</p>
+                ) : (
+                  <div className="stat-list">
+                    {stats.opponents.map((opponent) => (
+                      <div className="stat-row" key={opponent.playerId}>
+                        <span className="stat-player">
+                          <PlayerAvatar avatar={avatars[opponent.playerId] ?? null} />
+                          <span className="stat-row-title">
+                            <strong>{displayName(names, opponent.playerId)}</strong>
+                            <small>
+                              {opponent.wins} wins · {opponent.losses} losses · {opponent.matches}{" "}
+                              played
+                            </small>
+                          </span>
+                        </span>
+                        <div className="stat-row-metric">
+                          <strong>{percent(opponent.winRate)}</strong>
+                          <WinRateTrend
+                            {...trendPeriod}
+                            current={comparison.current.opponents.find(
+                              ({ playerId }) => playerId === opponent.playerId,
+                            )}
+                            previous={comparison.previous.opponents.find(
+                              ({ playerId }) => playerId === opponent.playerId,
+                            )}
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </section>
+
+              <section className="panel stats-panel">
+                <div className="panel-heading">
+                  <div>
+                    <h2>With teammates</h2>
+                    <p className="muted">
+                      Match results and individual points credited to each Player
+                    </p>
+                  </div>
+                </div>
+                {stats.partnerships.length === 0 ? (
+                  <p className="empty-inline">
+                    Two-player team Matches will create partnership statistics.
+                  </p>
+                ) : (
+                  <div className="stat-list">
+                    {stats.partnerships.map((pair) => (
+                      <div className="partnership-row" key={pair.teammateId}>
+                        <div className="stat-row">
+                          <span className="stat-player">
+                            <PlayerAvatar avatar={avatars[pair.teammateId] ?? null} />
+                            <span className="stat-row-title">
+                              <strong>{displayName(names, pair.teammateId)}</strong>
+                              <small>
+                                {pair.wins} team wins · {pair.matches} Matches
+                              </small>
+                            </span>
+                          </span>
+                          <div className="stat-row-metric">
+                            <strong>{percent(pair.winRate)}</strong>
+                            <WinRateTrend
+                              {...trendPeriod}
+                              current={comparison.current.partnerships.find(
+                                ({ teammateId }) => teammateId === pair.teammateId,
+                              )}
+                              previous={comparison.previous.partnerships.find(
+                                ({ teammateId }) => teammateId === pair.teammateId,
+                              )}
+                            />
+                          </div>
+                        </div>
+                        <div className="contribution-bar" aria-hidden="true">
+                          <span
+                            style={{
+                              width: `${Math.round((pair.playerShare ?? 0) * 100)}%`,
+                            }}
+                          />
+                        </div>
+                        <p className="contribution-copy">
+                          {player ? `${player.screenName}'s points` : "Your points"}:{" "}
+                          {pair.playerPoints} ({percent(pair.playerShare)}) ·{" "}
+                          {displayName(names, pair.teammateId)}: {pair.teammatePoints} (
+                          {percent(pair.teammateShare)})
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </section>
+            </div>
+          </div>
+        </>
       )}
     </section>
   );

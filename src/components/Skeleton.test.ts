@@ -51,6 +51,7 @@ describe("loading skeletons", () => {
     expect(markup).toContain("Against opponents");
     expect(markup).toContain("With teammates");
     expect(markup).toContain("Longest playing streak");
+    expect(markup.indexOf("<h2>Streaks</h2>")).toBeLessThan(markup.indexOf("<h2>By map</h2>"));
     expect(markup).not.toContain("<button");
   });
 

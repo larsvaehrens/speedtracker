@@ -4,6 +4,66 @@ import { PlayerAvatar } from "./PlayerAvatar";
 
 type PlayerHeadingProps = { player?: StatisticsPlayer; onBack?: () => void };
 
+function StatisticsPanelSkeleton({
+  title,
+  description,
+  map = false,
+  partnership = false,
+}: {
+  title: string;
+  description: string;
+  map?: boolean;
+  partnership?: boolean;
+}) {
+  return (
+    <section className="panel stats-panel">
+      <div className="panel-heading">
+        <div>
+          <h2>{title}</h2>
+          <p className="muted">{description}</p>
+        </div>
+      </div>
+      <div className="stat-list">
+        {Array.from({ length: 3 }, (_, index) => (
+          <div className={partnership ? "partnership-row" : undefined} key={index}>
+            <div className="stat-row">
+              <span className="stat-player skeleton-stat-player">
+                <Skeleton className={map ? "skeleton-map" : "skeleton-player-avatar"} />
+                <span className="stat-row-title skeleton-stat-title">
+                  <strong>
+                    <Skeleton width="75%" />
+                  </strong>
+                  <small>
+                    <Skeleton />
+                  </small>
+                </span>
+              </span>
+              <div className="stat-row-metric">
+                <strong>
+                  <Skeleton width={40} />
+                </strong>
+                <span className="stat-trend">
+                  <Skeleton width={50} />
+                </span>
+              </div>
+            </div>
+            {partnership && (
+              <>
+                <div className="contribution-bar">
+                  <Skeleton height="100%" />
+                </div>
+                <p className="contribution-copy">
+                  <Skeleton height="1.45em" />
+                </p>
+              </>
+            )}
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 export function StatisticsHeading({ player, onBack }: PlayerHeadingProps) {
   return (
     <div className="section-heading statistics-heading">
@@ -80,75 +140,7 @@ export function StatisticsSkeleton({
           ))}
         </div>
         {hasMatches ? (
-          <div className="stats-grid">
-            {[
-              {
-                title: "By map",
-                description: "Ranked by win rate · sample size shown",
-                map: true,
-                partnership: false,
-              },
-              {
-                title: "Against opponents",
-                description: "Teammates are excluded",
-                map: false,
-                partnership: false,
-              },
-              {
-                title: "With teammates",
-                description: "Match results and individual points credited to each Player",
-                map: false,
-                partnership: true,
-              },
-            ].map((panel) => (
-              <section className="panel stats-panel" key={panel.title}>
-                <div className="panel-heading">
-                  <div>
-                    <h2>{panel.title}</h2>
-                    <p className="muted">{panel.description}</p>
-                  </div>
-                </div>
-                <div className="stat-list">
-                  {Array.from({ length: 3 }, (_, index) => (
-                    <div className={panel.partnership ? "partnership-row" : undefined} key={index}>
-                      <div className="stat-row">
-                        <span className="stat-player skeleton-stat-player">
-                          <Skeleton
-                            className={panel.map ? "skeleton-map" : "skeleton-player-avatar"}
-                          />
-                          <span className="stat-row-title skeleton-stat-title">
-                            <strong>
-                              <Skeleton width="75%" />
-                            </strong>
-                            <small>
-                              <Skeleton />
-                            </small>
-                          </span>
-                        </span>
-                        <div className="stat-row-metric">
-                          <strong>
-                            <Skeleton width={40} />
-                          </strong>
-                          <span className="stat-trend">
-                            <Skeleton width={50} />
-                          </span>
-                        </div>
-                      </div>
-                      {panel.partnership && (
-                        <>
-                          <div className="contribution-bar">
-                            <Skeleton height="100%" />
-                          </div>
-                          <p className="contribution-copy">
-                            <Skeleton height="1.45em" />
-                          </p>
-                        </>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </section>
-            ))}
+          <>
             <section className="panel stats-panel streak-panel">
               <div className="panel-heading">
                 <div>
@@ -172,7 +164,25 @@ export function StatisticsSkeleton({
                 ))}
               </div>
             </section>
-          </div>
+            <div className="stats-grid">
+              <StatisticsPanelSkeleton
+                title="By map"
+                description="Ranked by win rate · sample size shown"
+                map
+              />
+              <div className="stats-side-panels">
+                <StatisticsPanelSkeleton
+                  title="Against opponents"
+                  description="Teammates are excluded"
+                />
+                <StatisticsPanelSkeleton
+                  title="With teammates"
+                  description="Match results and individual points credited to each Player"
+                  partnership
+                />
+              </div>
+            </div>
+          </>
         ) : (
           <div className="empty-state panel skeleton-empty">
             <h2>
