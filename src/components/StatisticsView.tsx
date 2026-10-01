@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import type { PlayerStatistics } from "#/domain/statistics";
 import type { StatisticsPlayer } from "#/domain/views";
 import { apiRequest, apiMessage } from "#/lib/api";
-import { formatPlayedTime } from "#/lib/time";
+import { formatDuration, formatPlayedTime } from "#/lib/time";
 import { PlayerAvatar } from "./PlayerAvatar";
 import { MapThumbnail } from "./MapThumbnail";
 import { StatisticsHeading, StatisticsSkeleton } from "./StatisticsSkeleton";
@@ -305,25 +305,50 @@ export function StatisticsContent({
               ) : (
                 <div className="stat-list">
                   {stats.maps.map((map) => (
-                    <div className="stat-row" key={map.mapId}>
-                      <span className="stat-map">
-                        <MapThumbnail imagePath={map.imagePath} />
-                        <span className="stat-row-title">
-                          <strong>{map.name}</strong>
-                          <small>
-                            {map.wins} wins · {map.matches} played
-                          </small>
-                        </span>
-                      </span>
-                      <div className="stat-row-metric">
-                        <strong>{percent(map.winRate)}</strong>
-                        <WinRateTrend
-                          {...trendPeriod}
-                          current={comparison.current.maps.find(({ mapId }) => mapId === map.mapId)}
-                          previous={comparison.previous.maps.find(
-                            ({ mapId }) => mapId === map.mapId,
-                          )}
-                        />
+                    <div className="map-stat-row" key={map.mapId}>
+                      <MapThumbnail
+                        className="map-thumbnail map-stat-thumbnail"
+                        imagePath={map.imagePath}
+                      />
+                      <div className="map-stat-content">
+                        <div className="map-stat-heading">
+                          <span className="map-stat-title">
+                            <strong>{map.name}</strong>
+                            <small>
+                              {map.wins} wins · {map.matches} played
+                            </small>
+                          </span>
+                          <div className="stat-row-metric">
+                            <strong>{percent(map.winRate)}</strong>
+                            <WinRateTrend
+                              {...trendPeriod}
+                              current={comparison.current.maps.find(
+                                ({ mapId }) => mapId === map.mapId,
+                              )}
+                              previous={comparison.previous.maps.find(
+                                ({ mapId }) => mapId === map.mapId,
+                              )}
+                            />
+                          </div>
+                        </div>
+                        <div className="map-time-metrics">
+                          <span className="map-time-metric">
+                            <span className="map-time-metric-label">Total time</span>
+                            <strong>{formatPlayedTime(map.totalPlayedSeconds)}</strong>
+                          </span>
+                          <span className="map-time-metric">
+                            <span className="map-time-metric-label">Avg match</span>
+                            <strong>{formatDuration(map.averageMatchSeconds)}</strong>
+                          </span>
+                          <span className="map-time-metric">
+                            <span className="map-time-metric-label">Shortest</span>
+                            <strong>{formatDuration(map.shortestMatchSeconds)}</strong>
+                          </span>
+                          <span className="map-time-metric">
+                            <span className="map-time-metric-label">Longest</span>
+                            <strong>{formatDuration(map.longestMatchSeconds)}</strong>
+                          </span>
+                        </div>
                       </div>
                     </div>
                   ))}

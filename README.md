@@ -113,8 +113,9 @@ manual edits.
 - The statistics page shows match win rates, map and opponent performance,
   teammate partnerships and point contribution, streaks, and total time in
   completed Matches (displayed in minutes, hours, or days). Each rate shows
-  its sample size; maps with no completed matches are omitted. Map pictures
-  appear alongside map names in statistics and Match history.
+  its sample size; maps with no completed matches are omitted. Per-map results
+  show total, average, shortest, and longest Match times. Map pictures appear
+  alongside map names in statistics and Match history.
 - Match history and statistics can be filtered by a custom local date range,
   common week/month/quarter/year presets, maps, teammates, opponents, and game
   modes. New Matches default to Sudden Death; enabled modes are saved with the

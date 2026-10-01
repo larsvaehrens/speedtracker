@@ -14,6 +14,10 @@ export type MapStat = {
   wins: number;
   matches: number;
   winRate: number;
+  totalPlayedSeconds: number;
+  averageMatchSeconds: number;
+  shortestMatchSeconds: number;
+  longestMatchSeconds: number;
 };
 
 export type OpponentStat = {
@@ -108,6 +112,13 @@ function sumPlayerPoints(matches: CompletedMatch[], playerId: string): number {
         .filter((attribution) => attribution.playerId === playerId)
         .reduce((points, attribution) => points + attribution.points, 0),
     0,
+  );
+}
+
+function getMatchDurationSeconds(match: CompletedMatch): number {
+  return Math.max(
+    0,
+    Math.floor((Date.parse(match.completedAt) - Date.parse(match.startedAt)) / 1000),
   );
 }
 
@@ -263,6 +274,7 @@ function calculateBaseStatistics(
 
     const map = mapsById.get(match.mapId);
     if (map) {
+      const duration = getMatchDurationSeconds(match);
       const stat = mapStats.get(map.id) ?? {
         mapId: map.id,
         name: map.name,
@@ -271,8 +283,16 @@ function calculateBaseStatistics(
         wins: 0,
         matches: 0,
         winRate: 0,
+        totalPlayedSeconds: 0,
+        averageMatchSeconds: 0,
+        shortestMatchSeconds: duration,
+        longestMatchSeconds: duration,
       };
       stat.matches += 1;
+      stat.totalPlayedSeconds += duration;
+      stat.averageMatchSeconds = Math.round(stat.totalPlayedSeconds / stat.matches);
+      stat.shortestMatchSeconds = Math.min(stat.shortestMatchSeconds, duration);
+      stat.longestMatchSeconds = Math.max(stat.longestMatchSeconds, duration);
       if (ownCompetitor.id === match.winnerCompetitorId) stat.wins += 1;
       stat.winRate = stat.wins / stat.matches;
       mapStats.set(map.id, stat);
@@ -315,15 +335,7 @@ function calculateBaseStatistics(
     matchesPlayed: matches.length,
     matchWinRate: winRate(matchWins, matches.length),
     roundCredits: sumPlayerPoints(matches, playerId),
-    totalPlayedSeconds: matches.reduce(
-      (total, match) =>
-        total +
-        Math.max(
-          0,
-          Math.floor((Date.parse(match.completedAt) - Date.parse(match.startedAt)) / 1000),
-        ),
-      0,
-    ),
+    totalPlayedSeconds: matches.reduce((total, match) => total + getMatchDurationSeconds(match), 0),
     maps: [...mapStats.values()].sort(
       (left, right) =>
         compareRateThenSample(left, right) ||

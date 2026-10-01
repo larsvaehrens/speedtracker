@@ -97,6 +97,44 @@ describe("player statistics", () => {
     ).toBe(1);
   });
 
+  it("calculates total, average, shortest, and longest match times for each map", () => {
+    const matchWithDuration = (id: string, mapId: string, seconds: number) => {
+      const completedAt = "2026-01-01T00:10:00.000Z";
+      return {
+        ...completedMatch({
+          id,
+          teams: [["player"], ["opponent"]],
+          winner: 0,
+          mapId,
+          completedAt,
+        }),
+        startedAt: new Date(Date.parse(completedAt) - seconds * 1000).toISOString(),
+      };
+    };
+    const stats = calculateStatistics(
+      "player",
+      [
+        matchWithDuration("metro-short", "metro", 60),
+        matchWithDuration("metro-long", "metro", 61),
+        matchWithDuration("plaza", "plaza", 90),
+      ],
+      mapDetails,
+    );
+
+    expect(stats.maps.find(({ mapId }) => mapId === "metro")).toMatchObject({
+      totalPlayedSeconds: 121,
+      averageMatchSeconds: 61,
+      shortestMatchSeconds: 60,
+      longestMatchSeconds: 61,
+    });
+    expect(stats.maps.find(({ mapId }) => mapId === "plaza")).toMatchObject({
+      totalPlayedSeconds: 90,
+      averageMatchSeconds: 90,
+      shortestMatchSeconds: 90,
+      longestMatchSeconds: 90,
+    });
+  });
+
   it("keeps match wins separate from point credits earned in losses", () => {
     const matches = [
       completedMatch({
@@ -150,6 +188,10 @@ describe("player statistics", () => {
         wins: 1,
         matches: 1,
         winRate: 1,
+        totalPlayedSeconds: 0,
+        averageMatchSeconds: 0,
+        shortestMatchSeconds: 0,
+        longestMatchSeconds: 0,
       },
       {
         mapId: "plaza",
@@ -159,6 +201,10 @@ describe("player statistics", () => {
         wins: 0,
         matches: 1,
         winRate: 0,
+        totalPlayedSeconds: 0,
+        averageMatchSeconds: 0,
+        shortestMatchSeconds: 0,
+        longestMatchSeconds: 0,
       },
     ]);
   });

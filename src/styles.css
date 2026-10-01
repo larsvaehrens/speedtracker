@@ -1643,6 +1643,75 @@ input[readonly] {
   overflow-wrap: anywhere;
 }
 
+.map-time-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+  font-variant-numeric: tabular-nums;
+}
+
+.map-time-metric {
+  display: grid;
+  min-width: 0;
+  gap: 2px;
+}
+
+.map-time-metric-label {
+  color: var(--muted);
+  font-size: 0.68rem;
+  white-space: nowrap;
+}
+
+.map-time-metric strong {
+  font-size: 0.76rem;
+  white-space: nowrap;
+}
+
+.map-stat-row {
+  display: grid;
+  grid-template-columns: 80px minmax(0, 1fr);
+  gap: 10px;
+  padding: 12px 0;
+  border-top: 1px solid rgb(255 255 255 / 8%);
+}
+
+.map-stat-thumbnail {
+  align-self: stretch;
+  height: auto;
+  min-height: 72px;
+}
+
+.map-stat-content {
+  display: grid;
+  align-content: start;
+  min-width: 0;
+  gap: 8px;
+}
+
+.map-stat-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-width: 0;
+}
+
+.map-stat-title {
+  display: grid;
+  min-width: 0;
+  gap: 4px;
+}
+
+.map-stat-title strong {
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 380px) {
+  .map-time-metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 .stat-row-title small {
   color: var(--muted);
   font-size: 0.76rem;

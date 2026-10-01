@@ -26,27 +26,57 @@ function StatisticsPanelSkeleton({
       <div className="stat-list">
         {Array.from({ length: 3 }, (_, index) => (
           <div className={partnership ? "partnership-row" : undefined} key={index}>
-            <div className="stat-row">
-              <span className="stat-player skeleton-stat-player">
-                <Skeleton className={map ? "skeleton-map" : "skeleton-player-avatar"} />
-                <span className="stat-row-title skeleton-stat-title">
+            {!map && (
+              <div className="stat-row">
+                <span className="stat-player skeleton-stat-player">
+                  <Skeleton className="skeleton-player-avatar" />
+                  <span className="stat-row-title skeleton-stat-title">
+                    <strong>
+                      <Skeleton width="75%" />
+                    </strong>
+                    <small>
+                      <Skeleton />
+                    </small>
+                  </span>
+                </span>
+                <div className="stat-row-metric">
                   <strong>
-                    <Skeleton width="75%" />
+                    <Skeleton width={40} />
                   </strong>
-                  <small>
-                    <Skeleton />
-                  </small>
-                </span>
-              </span>
-              <div className="stat-row-metric">
-                <strong>
-                  <Skeleton width={40} />
-                </strong>
-                <span className="stat-trend">
-                  <Skeleton width={50} />
-                </span>
+                  <span className="stat-trend">
+                    <Skeleton width={50} />
+                  </span>
+                </div>
               </div>
-            </div>
+            )}
+            {map && (
+              <div className="map-stat-row">
+                <Skeleton className="skeleton-map map-stat-thumbnail" />
+                <div className="map-stat-content">
+                  <div className="map-stat-heading">
+                    <span className="map-stat-title skeleton-stat-title">
+                      <strong>
+                        <Skeleton width="75%" />
+                      </strong>
+                      <small>
+                        <Skeleton />
+                      </small>
+                    </span>
+                    <div className="stat-row-metric">
+                      <Skeleton width={40} />
+                    </div>
+                  </div>
+                  <div className="map-time-metrics">
+                    {["Total time", "Avg match", "Shortest", "Longest"].map((label) => (
+                      <span className="map-time-metric" key={label}>
+                        <span className="map-time-metric-label">{label}</span>
+                        <Skeleton width={55} />
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
             {partnership && (
               <>
                 <div className="contribution-bar">

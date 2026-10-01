@@ -60,11 +60,18 @@ describe("monthly trends across statistics views", () => {
     expect(markup).toContain('src="/teammate.png"');
     expect(markup).toContain('src="/opponent.png"');
     expect(markup).toContain('src="/ressources/maps/12_Casino.png"');
+    expect(markup).toContain("Total time");
+    expect(markup).toContain("2.5 minutes");
+    expect(markup).toContain("Avg match");
+    expect(markup).toContain("0:50");
+    expect(markup).toContain("Shortest");
+    expect(markup).toContain("0:30");
+    expect(markup).toContain("Longest");
+    expect(markup).toContain("1:30");
     expect(markup.indexOf("<h2>Streaks</h2>")).toBeLessThan(markup.indexOf("<h2>By map</h2>"));
     expect(markup.indexOf('class="stats-side-panels"')).toBeLessThan(
       markup.indexOf("<h2>Against opponents</h2>"),
     );
-Casino
     const withoutPriorMatches = calculateStatistics(
       "player",
       [matches[0]],
