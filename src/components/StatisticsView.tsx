@@ -208,7 +208,7 @@ export function StatisticsContent({
               unit="count"
             />
           </strong>
-          <span>{player ? "Points credited to this Player" : "Points credited to you"}</span>
+          <span>{player ? "Points credited to this player" : "Points credited to you"}</span>
         </article>
         <article className="stat-card stat-card-positive">
           <span className="muted">Flawless wins</span>
@@ -247,7 +247,7 @@ export function StatisticsContent({
           <p className="muted">
             {filtersActive
               ? "Try adjusting or clearing your selected filters."
-              : "Abandoned Matches and individual Rounds do not count as completed matches."}
+              : "Abandoned matches and individual rounds do not count as completed matches."}
           </p>
         </div>
       ) : (
@@ -402,13 +402,13 @@ export function StatisticsContent({
                   <div>
                     <h2>With teammates</h2>
                     <p className="muted">
-                      Match results and individual points credited to each Player
+                      Match results and individual points credited to each player
                     </p>
                   </div>
                 </div>
                 {stats.partnerships.length === 0 ? (
                   <p className="empty-inline">
-                    Two-player team Matches will create partnership statistics.
+                    Two-player team matches will create partnership statistics.
                   </p>
                 ) : (
                   <div className="stat-list">
@@ -420,7 +420,7 @@ export function StatisticsContent({
                             <span className="stat-row-title">
                               <strong>{displayName(names, pair.teammateId)}</strong>
                               <small>
-                                {pair.wins} team wins · {pair.matches} Matches
+                                {pair.wins} team wins · {pair.matches} matches
                               </small>
                             </span>
                           </span>

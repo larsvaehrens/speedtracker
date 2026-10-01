@@ -22,7 +22,7 @@ export function isGameModes(value: unknown): value is GameMode[] {
 export function parseGameModes(value: string): GameMode[] {
   const parsed: unknown = JSON.parse(value);
   if (!isGameModes(parsed)) {
-    throw new Error("The stored Match has invalid game mode settings.");
+    throw new Error("The stored match has invalid game mode settings.");
   }
   return parsed;
 }

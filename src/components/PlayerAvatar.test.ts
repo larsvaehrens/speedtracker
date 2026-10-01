@@ -132,7 +132,7 @@ describe("player profile pictures", () => {
         onChange: () => {},
       }),
     );
-    expect(markup).toContain("Select a Player");
+    expect(markup).toContain("Select a player");
     expect(markup).not.toContain("<img");
   });
 

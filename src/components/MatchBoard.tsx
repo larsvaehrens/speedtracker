@@ -345,7 +345,7 @@ export function MatchBoard({
               type="button"
             >
               {match.status === "awaiting-map"
-                ? "Choose a map to finish this Match"
+                ? "Choose a map to finish this match"
                 : "Choose map (optional)"}
             </button>
           ) : (
@@ -360,21 +360,21 @@ export function MatchBoard({
 
       {match.status === "awaiting-map" && (
         <div className="notice notice-warning" role="alert">
-          The winning Round is saved.{" "}
+          The winning round is saved.{" "}
           {isScorekeeper
-            ? "Select a map to finalize this Match; your score will remain here while you choose."
+            ? "Select a map to finalize this match; your score will remain here while you choose."
             : "The match creator must select a map to finalize it."}
         </div>
       )}
       {match.status === "completed" && (
         <div className="notice notice-success">
-          <strong>{winnerName(match)}</strong> won the Match. Round credits are kept separately from
-          Match wins.
+          <strong>{winnerName(match)}</strong> won the match. Round credits are kept separately from
+          match wins.
         </div>
       )}
       {match.status === "abandoned" && (
         <div className="notice notice-info">
-          This Match was abandoned and does not count as a loss.
+          This match was abandoned and does not count as a loss.
         </div>
       )}
 
@@ -427,7 +427,7 @@ export function MatchBoard({
                       aria-label={
                         competitor.kind === "team"
                           ? `Only ${player.screenName} survives · +1 team point`
-                          : `${player.screenName} won Round · +1 point`
+                          : `${player.screenName} won round · +1 point`
                       }
                       className="button button-score"
                       disabled={
@@ -521,7 +521,7 @@ export function MatchBoard({
 
       {!isScorekeeper && (
         <p className="notice notice-info">
-          You are viewing the live score. Only the Match creator can enter or correct results.
+          You are viewing the live score. Only the match creator can enter or correct results.
         </p>
       )}
 
@@ -529,7 +529,7 @@ export function MatchBoard({
         <summary>
           <span>Round results</span>
           <span className="muted">
-            {activeRoundCount(match.rounds)} Round
+            {activeRoundCount(match.rounds)} round
             {activeRoundCount(match.rounds) === 1 ? "" : "s"} credited
           </span>
         </summary>
@@ -586,7 +586,7 @@ export function MatchBoard({
       {correctionPromptOpen && (
         <ConfirmDialog
           title="Correct the final result?"
-          message="This will reopen the Match and undo its most recent Round. Score entry will be enabled again."
+          message="This will reopen the match and undo its most recent round. Score entry will be enabled again."
           confirmLabel="Reopen and undo"
           onCancel={() => setCorrectionPromptOpen(false)}
           onConfirm={() => void undoLast(true)}

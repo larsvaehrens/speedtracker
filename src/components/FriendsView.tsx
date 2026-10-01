@@ -76,7 +76,7 @@ export function FriendsView({ friends, onChanged, onViewStatistics }: FriendsVie
             />
           </label>
           <button className="button button-primary" disabled={pending}>
-            {pending ? "Adding…" : "Add Player"}
+            {pending ? "Adding…" : "Add player"}
           </button>
         </form>
         {error && (

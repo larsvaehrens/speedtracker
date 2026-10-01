@@ -110,13 +110,13 @@ export function SetupBuilder({
       } else {
         window.localStorage.removeItem(key);
         setPreviousSetup(null);
-        toast("The previous Setup was no longer available and was cleared.", "warning");
+        toast("The previous setup was no longer available and was cleared.", "warning");
       }
     } catch (parseError) {
       if (parseError instanceof SyntaxError) {
         window.localStorage.removeItem(key);
         setPreviousSetup(null);
-        toast("The saved Setup could not be read and was cleared.", "warning");
+        toast("The saved setup could not be read and was cleared.", "warning");
       } else {
         throw parseError;
       }
@@ -149,14 +149,14 @@ export function SetupBuilder({
     ) {
       setPreviousSetup(null);
       window.localStorage.removeItem(`speedtracker.previous-setup:${user.id}`);
-      toast("The previous Setup is no longer valid.", "warning");
+      toast("The previous setup is no longer valid.", "warning");
       return;
     }
 
     setFormatKey(format.key);
     setCompetitors(previousSetup.competitors.map(({ playerIds }) => [...playerIds]));
     setGameModes([...previousSetup.gameModes]);
-    toast("Previous Setup restored. Start the Match when you are ready.", "success");
+    toast("Previous setup restored. Start the match when you are ready.", "success");
   }
 
   function resetSetup() {
@@ -185,7 +185,7 @@ export function SetupBuilder({
 
   async function startMatch() {
     if (setupError) {
-      setError(`Check the Setup: ${setupError.replaceAll("-", " ")}.`);
+      setError(`Check the setup: ${setupError.replaceAll("-", " ")}.`);
       return;
     }
     setError("");
@@ -311,7 +311,7 @@ export function SetupBuilder({
 
         {players.length <= 1 && (
           <p className="empty-inline">
-            Follow Players by their exact login username to invite them into a Setup.
+            Follow players by their exact login username to invite them into a setup.
           </p>
         )}
 

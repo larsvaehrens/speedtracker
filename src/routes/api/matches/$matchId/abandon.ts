@@ -14,7 +14,7 @@ export const Route = createFileRoute("/api/matches/$matchId/abandon")({
         if (!user) return unauthorized();
         const body = await requestBody(request);
         if (!body || !isRevision(body.revision)) {
-          return badRequest("Refresh the Match before abandoning it.");
+          return badRequest("Refresh the match before abandoning it.");
         }
 
         const result = await abandon(params.matchId, user.id, body.revision);

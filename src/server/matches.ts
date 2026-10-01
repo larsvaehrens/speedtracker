@@ -108,7 +108,7 @@ export async function createMatch(
   await env.DB.batch(matchStatements);
   const match = await getMatch(matchId, creatorId);
   if (!match) {
-    throw new Error("The new Match could not be read after creation.");
+    throw new Error("The new match could not be read after creation.");
   }
 
   return { ok: true, match };
@@ -192,7 +192,7 @@ export async function submitRound(
   }
 
   const round = scored.round;
-  if (!round) throw new Error("Scoring did not produce a Round record.");
+  if (!round) throw new Error("Scoring did not produce a round record.");
 
   const statements = [
     env.DB.prepare(
@@ -257,7 +257,7 @@ export async function submitRound(
       return {
         ok: false,
         status: 409,
-        error: "The Match changed. Refresh its current score before retrying.",
+        error: "The match changed. Refresh its current score before retrying.",
         match: latest ?? current,
       };
     }
@@ -280,7 +280,7 @@ export async function submitRound(
   }
 
   const updated = await getMatch(matchId, creatorId);
-  if (!updated) throw new Error("The saved Match could not be read.");
+  if (!updated) throw new Error("The saved match could not be read.");
 
   return { ok: true, match: updated };
 }
@@ -306,7 +306,7 @@ export async function chooseMap(
     return {
       ok: false,
       status: 409,
-      error: "This Match is not editable.",
+      error: "This match is not editable.",
       match: current,
     };
   }
@@ -324,13 +324,13 @@ export async function chooseMap(
     return {
       ok: false,
       status: 409,
-      error: "The Match changed. Refresh its current state before retrying.",
+      error: "The match changed. Refresh its current state before retrying.",
       match: latest ?? current,
     };
   }
 
   const updated = await getMatch(matchId, creatorId);
-  if (!updated) throw new Error("The updated Match could not be read.");
+  if (!updated) throw new Error("The updated match could not be read.");
   return { ok: true, match: updated };
 }
 
@@ -357,7 +357,7 @@ export async function undoRound(
       error:
         undone.error === "correction-required"
           ? "Use the explicit correction action to reopen a completed match."
-          : "There is no Round to undo.",
+          : "There is no round to undo.",
       match: current,
     };
   }
@@ -367,7 +367,7 @@ export async function undoRound(
       round.undone &&
       !current.rounds.find((previous) => previous.id === round.id && previous.undone),
   );
-  if (!lastRound) throw new Error("Undo did not identify its Round record.");
+  if (!lastRound) throw new Error("Undo did not identify its round record.");
 
   const undoneAt = new Date().toISOString();
   const results = await env.DB.batch([
@@ -403,13 +403,13 @@ export async function undoRound(
     return {
       ok: false,
       status: 409,
-      error: "The Match changed. Refresh its current state before undoing.",
+      error: "The match changed. Refresh its current state before undoing.",
       match: latest ?? current,
     };
   }
 
   const updated = await getMatch(matchId, creatorId);
-  if (!updated) throw new Error("The corrected Match could not be read.");
+  if (!updated) throw new Error("The corrected match could not be read.");
   return { ok: true, match: updated };
 }
 
@@ -425,7 +425,7 @@ export async function abandon(
   if (!current) return { ok: false, status: 404, error: "Match not found." };
   const result = abandonMatch(toState(current));
   if (!result.ok) {
-    return { ok: false, status: 409, error: "This Match is not active." };
+    return { ok: false, status: 409, error: "This match is not active." };
   }
 
   const abandonedAt = new Date().toISOString();
@@ -442,12 +442,12 @@ export async function abandon(
     return {
       ok: false,
       status: 409,
-      error: "The Match changed. Refresh its current state before abandoning.",
+      error: "The match changed. Refresh its current state before abandoning.",
       match: latest ?? current,
     };
   }
 
   const updated = await getMatch(matchId, creatorId);
-  if (!updated) throw new Error("The abandoned Match could not be read.");
+  if (!updated) throw new Error("The abandoned match could not be read.");
   return { ok: true, match: updated };
 }

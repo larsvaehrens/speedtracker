@@ -125,7 +125,7 @@ export function HistoryView({ matches, viewerId, onOpen }: HistoryViewProps) {
           </h2>
           <p className="muted">
             {allMatches.length === 0
-              ? "Completed matches will show the map, final scores, duration, match outcome, and every credited Round here."
+              ? "Completed matches will show the map, final scores, duration, match outcome, and every credited round here."
               : "Try adjusting or clearing your selected filters."}
           </p>
         </div>

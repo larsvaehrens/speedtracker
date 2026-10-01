@@ -18,7 +18,7 @@ export const Route = createFileRoute("/api/matches/$matchId/undo")({
           !isRevision(body.revision) ||
           (body.correction !== undefined && typeof body.correction !== "boolean")
         ) {
-          return badRequest("Refresh the Match before undoing a Round.");
+          return badRequest("Refresh the match before undoing a round.");
         }
 
         const result = await undoRound(

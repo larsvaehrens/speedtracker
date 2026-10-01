@@ -33,7 +33,7 @@ export const Route = createFileRoute("/api/matches/$matchId/rounds")({
           typeof body.winnerCompetitorId !== "string" ||
           !isStringArray(body.survivingPlayerIds)
         ) {
-          return badRequest("The Round result is incomplete.");
+          return badRequest("The round result is incomplete.");
         }
 
         const result = await submitRound(params.matchId, user.id, {
