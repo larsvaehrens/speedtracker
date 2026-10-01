@@ -1,9 +1,8 @@
-name: Check and deploy SpeedTracker
+name: Deploy SpeedTracker
 
 on:
   push:
     branches: [main]
-  workflow_dispatch:
 
 permissions:
   contents: read
@@ -32,15 +31,6 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-
-      - name: Check formatting and lint
-        run: pnpm check
-
-      - name: Type-check
-        run: pnpm typecheck
-
-      - name: Test
-        run: pnpm test
 
       - name: Build
         run: pnpm build

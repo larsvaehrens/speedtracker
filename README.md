@@ -180,16 +180,18 @@ For production:
    pnpm db:migrate:remote
    ```
 
-The GitHub deployment workflow runs formatting/lint, type-checks, tests, and a
-production build before applying pending D1 migrations and deploying the
-Worker. D1 migrations are applied with Wrangler's remote migration command;
+The GitHub CI workflow runs formatting/lint, type-checks, tests, and a production
+build on every pull request. The deployment workflow installs dependencies,
+builds, validates production configuration, applies pending D1 migrations, and
+deploys the Worker on pushes to `main`. D1 migrations are applied with Wrangler's remote migration command;
 additive migrations are preferred so the currently deployed Worker remains
 compatible while rollout is in progress.
 
 ## GitHub deployment and custom domain
 
-The workflow in `.github/workflows/deploy.yml` deploys when code is pushed to
-`main` or when manually dispatched. Configure these repository Actions secrets:
+The workflow in `.github/workflows/ci.yml` checks every pull request. The workflow
+in `.github/workflows/deploy.yml` deploys only when code is pushed to `main`,
+including merged pull requests. Configure these repository Actions secrets:
 
 - `CLOUDFLARE_API_TOKEN`: a Cloudflare API token scoped to the target account
   with Workers Scripts edit and D1 edit permissions.
