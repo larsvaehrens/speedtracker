@@ -1,0 +1,52 @@
+{
+  "name": "speedtracker",
+  "private": true,
+  "type": "module",
+  "imports": {
+    "#/*": "./src/*"
+  },
+  "scripts": {
+    "dev": "vp dev --port 3000",
+    "generate-routes": "tsr generate",
+    "build": "vp build",
+    "preview": "vp preview",
+    "deploy": "pnpm run build && wrangler deploy",
+    "db:migrate:local": "wrangler d1 migrations apply speedtracker-db --local",
+    "db:migrate:remote": "wrangler d1 migrations apply speedtracker-db --remote",
+    "db:seed:user": "node scripts/seed-user.mjs",
+    "check": "vp check",
+    "test": "vp test",
+    "typecheck": "pnpm cf-typegen && tsc --noEmit",
+    "cf-typegen": "wrangler types"
+  },
+  "dependencies": {
+    "@better-auth/drizzle-adapter": "catalog:",
+    "@tanstack/react-router": "catalog:",
+    "@tanstack/react-start": "catalog:",
+    "better-auth": "catalog:",
+    "drizzle-orm": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:"
+  },
+  "devDependencies": {
+    "@cloudflare/vite-plugin": "catalog:",
+    "@tanstack/router-cli": "catalog:",
+    "@types/node": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "@vitejs/plugin-react": "catalog:",
+    "typescript": "catalog:",
+    "vite": "catalog:",
+    "vite-plus": "catalog:",
+    "vitest": "catalog:",
+    "wrangler": "catalog:"
+  },
+  "devEngines": {
+    "packageManager": {
+      "name": "pnpm",
+      "version": "10.33.0",
+      "onFail": "download"
+    }
+  },
+  "packageManager": "pnpm@10.33.0"
+}
