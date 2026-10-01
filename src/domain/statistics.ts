@@ -1,4 +1,10 @@
 import type { CompletedMatch } from "./types";
+import {
+  EMPTY_MATCH_FILTERS,
+  matchesFilters,
+  precedingDateRange,
+  type MatchFilters,
+} from "./match-filters";
 
 export type MapStat = {
   mapId: string;
@@ -67,7 +73,7 @@ export type MonthlyStatistics = Pick<
   | "partnerships"
 >;
 
-type StatisticsOptions = { timeZone: string; now?: Date };
+type StatisticsOptions = { timeZone: string; now?: Date; filters?: MatchFilters };
 
 type MapDetails = {
   id: string;
@@ -349,6 +355,7 @@ export function calculateStatistics(
   options: StatisticsOptions = { timeZone: "UTC" },
 ): PlayerStatistics {
   const now = options.now ?? new Date();
+  const filters = options.filters ?? EMPTY_MATCH_FILTERS;
   const calendar = new Intl.DateTimeFormat("en-US", {
     timeZone: options.timeZone,
     year: "numeric",
@@ -392,19 +399,47 @@ export function calculateStatistics(
           localNow.getUTCSeconds(),
           localNow.getUTCMilliseconds(),
         );
+  const filtersWithoutDates = { ...filters, startDate: "", endDate: "" };
   const currentMatches: CompletedMatch[] = [];
   const previousMatches: CompletedMatch[] = [];
-  for (const match of completedMatches) {
-    const completedAt = new Date(match.completedAt);
-    if (completedAt.getTime() > now.getTime()) continue;
-    const localTime = localTimestamp(completedAt);
-    if (localTime >= currentStart) {
-      currentMatches.push(match);
-    } else if (
-      localTime >= previousStart &&
-      (previousEnd === currentStart || localTime <= previousEnd)
-    ) {
-      previousMatches.push(match);
+  const selectedMatches = completedMatches.filter((match) =>
+    matchesFilters(match, playerId, filters, options.timeZone),
+  );
+  if (filters.startDate && filters.endDate) {
+    const previousRange = precedingDateRange(filters);
+    for (const match of completedMatches) {
+      if (match.completedAt && Date.parse(match.completedAt) > now.getTime()) continue;
+      if (
+        matchesFilters(
+          match,
+          playerId,
+          { ...filtersWithoutDates, ...previousRange },
+          options.timeZone,
+        )
+      ) {
+        previousMatches.push(match);
+      }
+    }
+    currentMatches.push(...selectedMatches);
+  } else if (filters.startDate || filters.endDate) {
+    currentMatches.push(...selectedMatches);
+  } else {
+    for (const match of completedMatches) {
+      const completedAt = new Date(match.completedAt);
+      if (completedAt.getTime() > now.getTime()) continue;
+      const localTime = localTimestamp(completedAt);
+      if (localTime >= currentStart) {
+        if (matchesFilters(match, playerId, filtersWithoutDates, options.timeZone)) {
+          currentMatches.push(match);
+        }
+      } else if (
+        localTime >= previousStart &&
+        (previousEnd === currentStart || localTime <= previousEnd)
+      ) {
+        if (matchesFilters(match, playerId, filtersWithoutDates, options.timeZone)) {
+          previousMatches.push(match);
+        }
+      }
     }
   }
   const monthLabel = new Intl.DateTimeFormat("en-US", {
@@ -412,6 +447,30 @@ export function calculateStatistics(
     month: "long",
     year: "numeric",
   });
+  const rangeLabel = (startDate: string, endDate: string) => {
+    const dateFormat = new Intl.DateTimeFormat("en-US", {
+      timeZone: "UTC",
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
+    return `${dateFormat.format(new Date(`${startDate}T00:00:00Z`))} – ${dateFormat.format(
+      new Date(`${endDate}T00:00:00Z`),
+    )}`;
+  };
+  const comparisonCurrentLabel =
+    filters.startDate || filters.endDate
+      ? filters.startDate && filters.endDate
+        ? rangeLabel(filters.startDate, filters.endDate)
+        : "Selected date range"
+      : monthLabel.format(new Date(currentStart));
+  const comparisonDateRange =
+    filters.startDate && filters.endDate ? precedingDateRange(filters) : null;
+  const comparisonPreviousLabel = comparisonDateRange
+    ? rangeLabel(comparisonDateRange.startDate, comparisonDateRange.endDate)
+    : filters.startDate || filters.endDate
+      ? "Previous matching range"
+      : monthLabel.format(new Date(previousStart));
   const fixedOptions = { ...options, now };
   function monthlyStatistics(matches: CompletedMatch[]): MonthlyStatistics {
     const stats = calculateBaseStatistics(playerId, matches, mapDetails, fixedOptions);
@@ -426,10 +485,10 @@ export function calculateStatistics(
     };
   }
   return {
-    ...calculateBaseStatistics(playerId, completedMatches, mapDetails, fixedOptions),
+    ...calculateBaseStatistics(playerId, selectedMatches, mapDetails, fixedOptions),
     monthlyComparison: {
-      currentMonth: monthLabel.format(new Date(currentStart)),
-      previousMonth: monthLabel.format(new Date(previousStart)),
+      currentMonth: comparisonCurrentLabel,
+      previousMonth: comparisonPreviousLabel,
       current: monthlyStatistics(currentMatches),
       previous: monthlyStatistics(previousMatches),
     },

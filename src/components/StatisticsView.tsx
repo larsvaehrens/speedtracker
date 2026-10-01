@@ -7,6 +7,11 @@ import { PlayerAvatar } from "./PlayerAvatar";
 import { MapThumbnail } from "./MapThumbnail";
 import { StatisticsHeading, StatisticsSkeleton } from "./StatisticsSkeleton";
 import { StatTrend, WinRateTrend } from "./StatTrend";
+import {
+  EMPTY_MATCH_FILTERS,
+  type MatchFilters as MatchFiltersValue,
+} from "#/domain/match-filters";
+import { MatchFilters } from "./MatchFilters";
 
 type StatisticsViewProps = {
   playerNames: Record<string, string>;
@@ -20,6 +25,11 @@ type StatisticsResponse = {
   playerNames: Record<string, string>;
   playerAvatars: Record<string, string | null>;
   player: StatisticsPlayer;
+  filterOptions: {
+    maps: { id: string; label: string; imagePath: string }[];
+    teammates: { id: string; label: string; avatar: string | null }[];
+    opponents: { id: string; label: string; avatar: string | null }[];
+  };
 };
 
 function percent(value: number | null): string {
@@ -37,21 +47,31 @@ export function StatisticsView({ playerNames, hasMatches, player, onBack }: Stat
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [subject, setSubject] = useState(player);
+  const [filters, setFilters] = useState<MatchFiltersValue>(EMPTY_MATCH_FILTERS);
+  const [filterOptions, setFilterOptions] = useState<StatisticsResponse["filterOptions"]>({
+    maps: [],
+    teammates: [],
+    opponents: [],
+  });
   const playerId = player?.id;
-
   useEffect(() => {
     let cancelled = false;
-    setLoading(true);
     setError("");
     const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     const parameters = new URLSearchParams({ timeZone });
     if (playerId) parameters.set("playerId", playerId);
+    if (filters.startDate) parameters.set("startDate", filters.startDate);
+    if (filters.endDate) parameters.set("endDate", filters.endDate);
+    for (const id of filters.mapIds) parameters.append("mapId", id);
+    for (const id of filters.teammateIds) parameters.append("teammateId", id);
+    for (const id of filters.opponentIds) parameters.append("opponentId", id);
     apiRequest<StatisticsResponse>(`/api/statistics?${parameters}`)
       .then((result) => {
         if (cancelled) return;
         setStats(result.statistics);
         setNames(result.playerNames);
         setAvatars(result.playerAvatars);
+        setFilterOptions(result.filterOptions);
         setSubject(result.player);
         setError("");
       })
@@ -65,11 +85,11 @@ export function StatisticsView({ playerNames, hasMatches, player, onBack }: Stat
     return () => {
       cancelled = true;
     };
-  }, [playerId]);
+  }, [filters, playerId]);
 
   if (loading)
     return <StatisticsSkeleton hasMatches={hasMatches} player={player} onBack={onBack} />;
-  if (error) {
+  if (error && !stats) {
     return (
       <section className="page-section">
         <StatisticsHeading player={player} onBack={onBack} />
@@ -88,6 +108,10 @@ export function StatisticsView({ playerNames, hasMatches, player, onBack }: Stat
       avatars={avatars}
       player={player ? subject : undefined}
       onBack={onBack}
+      filters={filters}
+      onFiltersChange={setFilters}
+      filterOptions={filterOptions}
+      error={error}
     />
   );
 }
@@ -98,18 +122,52 @@ export function StatisticsContent({
   avatars,
   player,
   onBack,
+  filters = EMPTY_MATCH_FILTERS,
+  onFiltersChange,
+  filterOptions = { maps: [], teammates: [], opponents: [] },
+  error = "",
 }: {
   stats: PlayerStatistics;
   names: Record<string, string>;
   avatars: Record<string, string | null>;
   player?: StatisticsPlayer;
   onBack?: () => void;
+  filters?: MatchFiltersValue;
+  onFiltersChange?: (filters: MatchFiltersValue) => void;
+  filterOptions?: StatisticsResponse["filterOptions"];
+  error?: string;
 }) {
   const comparison = stats.monthlyComparison;
+  const trendPeriod = {
+    currentPeriodLabel: comparison.currentMonth,
+    comparisonLabel: comparison.previousMonth,
+  };
+  const filtersActive = Boolean(
+    filters.startDate ||
+    filters.endDate ||
+    filters.mapIds.length ||
+    filters.teammateIds.length ||
+    filters.opponentIds.length,
+  );
 
   return (
     <section className="page-section">
       <StatisticsHeading player={player} onBack={onBack} />
+
+      <MatchFilters
+        isActive={filtersActive}
+        maps={filterOptions.maps}
+        onChange={onFiltersChange ?? (() => {})}
+        onReset={() => onFiltersChange?.(EMPTY_MATCH_FILTERS)}
+        opponents={filterOptions.opponents}
+        teammates={filterOptions.teammates}
+        value={filters}
+      />
+      {error && (
+        <p className="inline-error" role="alert">
+          {error}
+        </p>
+      )}
 
       <div className="stats-overview">
         <article className="stat-card stat-featured">
@@ -117,6 +175,7 @@ export function StatisticsContent({
           <strong className="stat-value">
             {percent(stats.matchWinRate)}
             <StatTrend
+              {...trendPeriod}
               current={comparison.current.matchWinRate}
               previous={comparison.previous.matchWinRate}
               unit="rate"
@@ -128,6 +187,7 @@ export function StatisticsContent({
           <span>
             {stats.matchWins} wins · {stats.matchesPlayed} played{" "}
             <StatTrend
+              {...trendPeriod}
               current={comparison.current.matchesPlayed}
               previous={comparison.previous.matchesPlayed}
               unit="count"
@@ -140,6 +200,7 @@ export function StatisticsContent({
           <strong className="stat-value">
             {stats.roundCredits}
             <StatTrend
+              {...trendPeriod}
               current={comparison.current.roundCredits}
               previous={comparison.previous.roundCredits}
               unit="count"
@@ -163,6 +224,7 @@ export function StatisticsContent({
           <strong className="stat-value">
             {formatPlayedTime(stats.totalPlayedSeconds)}
             <StatTrend
+              {...trendPeriod}
               current={comparison.current.totalPlayedSeconds}
               previous={comparison.previous.totalPlayedSeconds}
               unit="duration"
@@ -175,10 +237,16 @@ export function StatisticsContent({
       {stats.matchesPlayed === 0 ? (
         <div className="empty-state panel">
           <h2>
-            {player ? "No completed matches yet" : "Statistics will appear after your first match"}
+            {filtersActive
+              ? "No completed matches match these filters"
+              : player
+                ? "No completed matches yet"
+                : "Statistics will appear after your first match"}
           </h2>
           <p className="muted">
-            Abandoned Matches and individual Rounds do not count as completed matches.
+            {filtersActive
+              ? "Try adjusting or clearing your selected filters."
+              : "Abandoned Matches and individual Rounds do not count as completed matches."}
           </p>
         </div>
       ) : (
@@ -208,6 +276,7 @@ export function StatisticsContent({
                     <div className="stat-row-metric">
                       <strong>{percent(map.winRate)}</strong>
                       <WinRateTrend
+                        {...trendPeriod}
                         current={comparison.current.maps.find(({ mapId }) => mapId === map.mapId)}
                         previous={comparison.previous.maps.find(({ mapId }) => mapId === map.mapId)}
                       />
@@ -244,6 +313,7 @@ export function StatisticsContent({
                     <div className="stat-row-metric">
                       <strong>{percent(opponent.winRate)}</strong>
                       <WinRateTrend
+                        {...trendPeriod}
                         current={comparison.current.opponents.find(
                           ({ playerId }) => playerId === opponent.playerId,
                         )}
@@ -286,6 +356,7 @@ export function StatisticsContent({
                       <div className="stat-row-metric">
                         <strong>{percent(pair.winRate)}</strong>
                         <WinRateTrend
+                          {...trendPeriod}
                           current={comparison.current.partnerships.find(
                             ({ teammateId }) => teammateId === pair.teammateId,
                           )}

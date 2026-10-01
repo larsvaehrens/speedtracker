@@ -292,20 +292,23 @@ export async function getFollows(currentPlayerId: string): Promise<FriendView[]>
   }));
 }
 
-export async function getRecentMatches(playerId: string, limit = 30): Promise<MatchView[]> {
-  const { results } = await env.DB.prepare(
-    `SELECT m.id
-     FROM matches m
-     WHERE m.status = 'completed'
-       AND EXISTS (
-         SELECT 1 FROM competitor_members cm
-         WHERE cm.match_id = m.id AND cm.player_id = ?
-       )
-     ORDER BY m.completed_at DESC, m.id
-     LIMIT ?`,
-  )
-    .bind(playerId, limit)
-    .all<MatchListRow>();
+export async function getRecentMatches(
+  playerId: string,
+  limit: number | null = 30,
+): Promise<MatchView[]> {
+  const query = `SELECT m.id
+    FROM matches m
+    WHERE m.status = 'completed'
+      AND EXISTS (
+        SELECT 1 FROM competitor_members cm
+        WHERE cm.match_id = m.id AND cm.player_id = ?
+      )
+    ORDER BY m.completed_at DESC, m.id${limit === null ? "" : "\n    LIMIT ?"}`;
+  const statement = env.DB.prepare(query);
+  const { results } =
+    limit === null
+      ? await statement.bind(playerId).all<MatchListRow>()
+      : await statement.bind(playerId, limit).all<MatchListRow>();
 
   const matches: MatchView[] = [];
   for (const row of results) {

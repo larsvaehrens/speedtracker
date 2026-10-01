@@ -143,7 +143,7 @@ describe("player profile pictures", () => {
         onOpen: () => {},
       }),
     );
-    expect(markup.match(/class="player-avatar"/g)).toHaveLength(5);
+    expect(markup.match(/class="player-avatar"/g)).toHaveLength(7);
     expect(markup).toContain('src="/map.png"');
     expect(markup).toContain('src="/me.png"');
     expect(markup).toContain('src="/friend.png"');

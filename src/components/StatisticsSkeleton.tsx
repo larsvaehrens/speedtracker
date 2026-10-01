@@ -40,6 +40,24 @@ export function StatisticsSkeleton({
     >
       <StatisticsHeading player={player} onBack={onBack} />
       <div aria-hidden="true">
+        <div className="match-filters panel">
+          <div className="match-filter-dates">
+            {["Date preset", "Start date", "End date"].map((label) => (
+              <div className="skeleton-filter-control" key={label}>
+                <span className="muted">{label}</span>
+                <Skeleton height="48px" />
+              </div>
+            ))}
+          </div>
+          <div className="match-filter-multiselects">
+            {["Maps", "Teammates", "Opponents"].map((label) => (
+              <div className="skeleton-filter-control" key={label}>
+                <span className="muted">{label}</span>
+                <Skeleton height="48px" />
+              </div>
+            ))}
+          </div>
+        </div>
         <div className="stats-overview">
           {[
             "Match win rate",

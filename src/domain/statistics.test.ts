@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { calculateStatistics } from "./statistics";
 import type { CompletedMatch, PointAttribution } from "./types";
+import { EMPTY_MATCH_FILTERS } from "./match-filters";
 
 type MatchFixture = {
   id: string;
@@ -342,6 +343,66 @@ describe("daily play streaks", () => {
         "2026-01-07T18:00:00Z",
       ),
     ).toEqual({ current: 2, longest: 3 });
+  });
+
+  describe("filtered statistics", () => {
+    it("calculates all-time totals from selected filters and compares with the equal preceding date range", () => {
+      const matches = [
+        completedMatch({
+          id: "selected",
+          completedAt: "2026-03-15T12:00:00Z",
+          teams: [["player", "ally"], ["foe"]],
+          winner: 0,
+          mapId: "metro",
+        }),
+        completedMatch({
+          id: "previous",
+          completedAt: "2026-03-14T12:00:00Z",
+          teams: [["player", "ally"], ["foe"]],
+          winner: 1,
+          mapId: "metro",
+        }),
+        completedMatch({
+          id: "wrong-map",
+          completedAt: "2026-03-15T12:00:00Z",
+          teams: [["player", "ally"], ["foe"]],
+          winner: 0,
+          mapId: "plaza",
+        }),
+        completedMatch({
+          id: "other-partner",
+          completedAt: "2026-02-15T12:00:00Z",
+          teams: [["player", "other-ally"], ["foe"]],
+          winner: 0,
+          mapId: "metro",
+        }),
+      ];
+      const stats = calculateStatistics("player", matches, mapDetails, {
+        timeZone: "UTC",
+        now: new Date("2026-04-01T00:00:00Z"),
+        filters: {
+          ...EMPTY_MATCH_FILTERS,
+          startDate: "2026-03-15",
+          endDate: "2026-03-15",
+          mapIds: ["metro"],
+          teammateIds: ["ally"],
+          opponentIds: ["foe"],
+        },
+      });
+
+      expect(stats.matchesPlayed).toBe(1);
+      expect(stats.matchWins).toBe(1);
+      expect(stats.monthlyComparison.current).toMatchObject({
+        matchesPlayed: 1,
+        matchWinRate: 1,
+      });
+      expect(stats.monthlyComparison.previous).toMatchObject({
+        matchesPlayed: 1,
+        matchWinRate: 0,
+      });
+      expect(stats.monthlyComparison.currentMonth).toContain("Mar 15");
+      expect(stats.monthlyComparison.previousMonth).toContain("Mar 14");
+    });
   });
 
   it("keeps yesterday's streak active until a calendar day is missed", () => {

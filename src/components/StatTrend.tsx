@@ -7,6 +7,8 @@ type StatTrendProps = {
   label?: string;
   currentSamples?: number;
   previousSamples?: number;
+  currentPeriodLabel?: string;
+  comparisonLabel?: string;
 };
 
 export function StatTrend({
@@ -16,6 +18,8 @@ export function StatTrend({
   label,
   currentSamples,
   previousSamples,
+  currentPeriodLabel = "this month",
+  comparisonLabel = "matched period last month",
 }: StatTrendProps) {
   if (current === null || previous === null || previous <= 0 || current === previous) {
     return null;
@@ -34,13 +38,14 @@ export function StatTrend({
   const description = change === 0 ? "<0.1%" : `${change > 0 ? "+" : ""}${change}%`;
   const samples =
     currentSamples !== undefined && previousSamples !== undefined
-      ? ` (${currentSamples} matches this month; ${previousSamples} in the previous period)`
+      ? ` (${currentSamples} matches ${currentPeriodLabel}; ${previousSamples} in the previous period)`
       : "";
+  const currentPeriod = samples ? "" : ` (${currentPeriodLabel})`;
 
   return (
     <span
       className={`stat-trend stat-trend-${direction}`}
-      title={`${label ? `${label}: ` : ""}${description} vs matched period last month (${value(current)} vs ${value(previous)})${samples}`}
+      title={`${label ? `${label}: ` : ""}${description} vs ${comparisonLabel} (${value(current)} vs ${value(previous)})${samples}${currentPeriod}`}
     >
       <svg
         aria-hidden="true"
@@ -64,9 +69,13 @@ export function StatTrend({
 export function WinRateTrend({
   current,
   previous,
+  currentPeriodLabel,
+  comparisonLabel,
 }: {
   current: { winRate: number; matches: number } | undefined;
   previous: { winRate: number; matches: number } | undefined;
+  currentPeriodLabel?: string;
+  comparisonLabel?: string;
 }) {
   return (
     <StatTrend
@@ -75,6 +84,8 @@ export function WinRateTrend({
       unit="rate"
       currentSamples={current?.matches ?? 0}
       previousSamples={previous?.matches ?? 0}
+      currentPeriodLabel={currentPeriodLabel}
+      comparisonLabel={comparisonLabel}
     />
   );
 }

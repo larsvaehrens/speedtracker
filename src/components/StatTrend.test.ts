@@ -30,6 +30,20 @@ describe("monthly trend indicators", () => {
     expect(markup).toContain("trend-icon-down");
   });
 
+  it("labels a selected date range and its preceding equal-length comparison", () => {
+    const markup = renderToStaticMarkup(
+      createElement(StatTrend, {
+        current: 5,
+        previous: 4,
+        unit: "count",
+        currentPeriodLabel: "Mar 15, 2026",
+        comparisonLabel: "Mar 14, 2026",
+      }),
+    );
+    expect(markup).toContain("vs Mar 14, 2026");
+    expect(markup).toContain("(Mar 15, 2026)");
+  });
+
   it("formats play time while calculating its change from seconds", () => {
     const markup = renderToStaticMarkup(
       createElement(StatTrend, { current: 5400, previous: 3600, unit: "duration" }),

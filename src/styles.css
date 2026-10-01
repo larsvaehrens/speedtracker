@@ -564,6 +564,193 @@ input[readonly] {
   padding: clamp(16px, 3vw, 26px);
 }
 
+.match-filters {
+  display: grid;
+  gap: 14px;
+  margin-bottom: 20px;
+  padding: 14px;
+}
+
+.match-filter-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.date-range-trigger,
+.match-filter-multiselect > summary {
+  display: grid;
+  min-height: var(--touch);
+  align-content: center;
+  gap: 2px;
+  padding: 7px 11px;
+  border: 1px solid #465267;
+  border-radius: 12px;
+  background: var(--surface-soft);
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+  list-style: none;
+}
+
+.date-range-trigger {
+  width: 100%;
+}
+
+.date-range-trigger > span,
+.match-filter-multiselect > summary span {
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+
+.date-range-trigger > strong,
+.match-filter-multiselect > summary strong {
+  max-width: 100%;
+  overflow: hidden;
+  font-size: 0.86rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.date-range-modal {
+  display: grid;
+  width: min(480px, calc(100% - 24px));
+  max-width: 480px;
+  gap: 16px;
+  padding: clamp(16px, 4vw, 24px);
+  border: 1px solid #4a566b;
+  border-radius: 20px;
+  color: var(--ink);
+  background: #161c26;
+  box-shadow: 0 26px 90px rgb(0 0 0 / 60%);
+}
+
+.date-range-modal:not([open]) {
+  display: none;
+}
+
+.date-range-modal::backdrop {
+  background: rgb(5 7 11 / 78%);
+  backdrop-filter: blur(5px);
+}
+
+.date-range-modal .modal-heading {
+  margin-bottom: 0;
+}
+
+.date-range-inputs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.date-range-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.date-range-actions .button {
+  flex: 1 1 auto;
+}
+
+.match-filter-reset {
+  justify-self: start;
+}
+
+.skeleton-filter-control {
+  display: grid;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.match-filter-multiselect {
+  position: relative;
+  min-width: 0;
+}
+
+.match-filter-multiselect > summary {
+  gap: 3px;
+}
+
+.match-filter-multiselect > summary::-webkit-details-marker {
+  display: none;
+}
+
+.match-filter-multiselect > summary span {
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+
+.match-filter-multiselect > summary strong {
+  overflow: hidden;
+  font-size: 0.85rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.match-filter-options {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + 5px);
+  left: 0;
+  display: grid;
+  width: max(100%, 230px);
+  max-height: min(280px, 55vh);
+  gap: 2px;
+  overflow-y: auto;
+  padding: 7px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface-raised);
+  box-shadow: 0 12px 32px rgb(0 0 0 / 40%);
+}
+
+.match-filter-options > .muted {
+  padding: 9px;
+  font-size: 0.8rem;
+}
+
+.match-filter-option {
+  display: flex;
+  min-height: 42px;
+  align-items: center;
+  gap: 9px;
+  padding: 5px 7px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.match-filter-option:hover {
+  background: rgb(255 255 255 / 6%);
+}
+
+.match-filter-option input {
+  width: 18px;
+  min-height: 18px;
+  flex: 0 0 auto;
+  margin: 0;
+  accent-color: var(--primary);
+}
+
+.match-filter-option .player-avatar {
+  width: 30px;
+  height: 30px;
+}
+
+.match-filter-option .map-thumbnail {
+  width: 42px;
+  height: 28px;
+}
+
+.match-filter-option > span:last-child {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .setup-heading {
   flex-wrap: wrap;
 }

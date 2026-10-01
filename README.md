@@ -115,10 +115,15 @@ manual edits.
   completed Matches (displayed in minutes, hours, or days). Each rate shows
   its sample size; maps with no completed matches are omitted. Map pictures
   appear alongside map names in statistics and Match history.
+- Match history and statistics can be filtered by a custom local date range,
+  common week/month/quarter/year presets, maps, teammates, and opponents.
+  Selecting multiple people matches any selected Player. Statistics compare
+  a selected date range with the immediately preceding range of equal length;
+  without a date selection, the existing month-over-month comparison remains.
 - Current and longest daily play streaks count distinct local calendar days
   with completed Matches. The current streak remains active if the last
   played day was yesterday, and resets after a missed day.
-- Monthly trends compare the current month so far with the same local calendar
+- By default, monthly trends compare the current month so far with the same local calendar
   day and time in the previous month, capped at month-end for shorter months.
   Main values remain all-time, with compact percentage-change arrows: green
   for increases and red for decreases. Unchanged values and comparisons with

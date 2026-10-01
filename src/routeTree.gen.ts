@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiBootstrapRouteImport } from './routes/api/bootstrap'
 import { Route as ApiFollowsRouteImport } from './routes/api/follows'
+import { Route as ApiHistoryRouteImport } from './routes/api/history'
 import { Route as ApiMatchesRouteImport } from './routes/api/matches'
 import { Route as ApiProfileRouteImport } from './routes/api/profile'
 import { Route as ApiStatisticsRouteImport } from './routes/api/statistics'
@@ -35,6 +36,11 @@ const ApiBootstrapRoute = ApiBootstrapRouteImport.update({
 const ApiFollowsRoute = ApiFollowsRouteImport.update({
   id: '/api/follows',
   path: '/api/follows',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiHistoryRoute = ApiHistoryRouteImport.update({
+  id: '/api/history',
+  path: '/api/history',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiMatchesRoute = ApiMatchesRouteImport.update({
@@ -88,6 +94,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/api/bootstrap': typeof ApiBootstrapRoute
   '/api/follows': typeof ApiFollowsRouteWithChildren
+  '/api/history': typeof ApiHistoryRoute
   '/api/matches': typeof ApiMatchesRouteWithChildren
   '/api/profile': typeof ApiProfileRoute
   '/api/statistics': typeof ApiStatisticsRoute
@@ -102,6 +109,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/api/bootstrap': typeof ApiBootstrapRoute
   '/api/follows': typeof ApiFollowsRouteWithChildren
+  '/api/history': typeof ApiHistoryRoute
   '/api/matches': typeof ApiMatchesRouteWithChildren
   '/api/profile': typeof ApiProfileRoute
   '/api/statistics': typeof ApiStatisticsRoute
@@ -117,6 +125,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/api/bootstrap': typeof ApiBootstrapRoute
   '/api/follows': typeof ApiFollowsRouteWithChildren
+  '/api/history': typeof ApiHistoryRoute
   '/api/matches': typeof ApiMatchesRouteWithChildren
   '/api/profile': typeof ApiProfileRoute
   '/api/statistics': typeof ApiStatisticsRoute
@@ -133,6 +142,7 @@ export interface FileRouteTypes {
     | '/'
     | '/api/bootstrap'
     | '/api/follows'
+    | '/api/history'
     | '/api/matches'
     | '/api/profile'
     | '/api/statistics'
@@ -147,6 +157,7 @@ export interface FileRouteTypes {
     | '/'
     | '/api/bootstrap'
     | '/api/follows'
+    | '/api/history'
     | '/api/matches'
     | '/api/profile'
     | '/api/statistics'
@@ -161,6 +172,7 @@ export interface FileRouteTypes {
     | '/'
     | '/api/bootstrap'
     | '/api/follows'
+    | '/api/history'
     | '/api/matches'
     | '/api/profile'
     | '/api/statistics'
@@ -176,6 +188,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ApiBootstrapRoute: typeof ApiBootstrapRoute
   ApiFollowsRoute: typeof ApiFollowsRouteWithChildren
+  ApiHistoryRoute: typeof ApiHistoryRoute
   ApiMatchesRoute: typeof ApiMatchesRouteWithChildren
   ApiProfileRoute: typeof ApiProfileRoute
   ApiStatisticsRoute: typeof ApiStatisticsRoute
@@ -203,6 +216,13 @@ declare module '@tanstack/react-router' {
       path: '/api/follows'
       fullPath: '/api/follows'
       preLoaderRoute: typeof ApiFollowsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/history': {
+      id: '/api/history'
+      path: '/api/history'
+      fullPath: '/api/history'
+      preLoaderRoute: typeof ApiHistoryRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/matches': {
@@ -314,6 +334,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ApiBootstrapRoute: ApiBootstrapRoute,
   ApiFollowsRoute: ApiFollowsRouteWithChildren,
+  ApiHistoryRoute: ApiHistoryRoute,
   ApiMatchesRoute: ApiMatchesRouteWithChildren,
   ApiProfileRoute: ApiProfileRoute,
   ApiStatisticsRoute: ApiStatisticsRoute,

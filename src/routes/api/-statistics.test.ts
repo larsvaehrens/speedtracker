@@ -114,6 +114,81 @@ describe("statistics timezone API", () => {
     expect(mocks.getCompletedMatches).not.toHaveBeenCalled();
   });
 
+  it("applies date, map, teammate, and opponent selections to statistics", async () => {
+    mocks.getMaps.mockResolvedValue([
+      { id: "map", name: "Casino", imagePath: "/map.png", order: 0 },
+    ]);
+    const matches: CompletedMatch[] = [
+      {
+        id: "included",
+        revision: 1,
+        status: "completed",
+        mapId: "map",
+        startedAt: "2026-01-02T11:00:00Z",
+        completedAt: "2026-01-02T12:00:00Z",
+        winnerCompetitorId: "own",
+        competitors: [
+          { id: "own", playerIds: ["player", "teammate"] },
+          { id: "other", playerIds: ["opponent"] },
+        ],
+        rounds: [],
+      },
+      {
+        id: "different-date",
+        revision: 1,
+        status: "completed",
+        mapId: "map",
+        startedAt: "2026-01-01T11:00:00Z",
+        completedAt: "2026-01-01T12:00:00Z",
+        winnerCompetitorId: "own",
+        competitors: [
+          { id: "own", playerIds: ["player", "teammate"] },
+          { id: "other", playerIds: ["opponent"] },
+        ],
+        rounds: [],
+      },
+    ];
+    mocks.getCompletedMatches.mockResolvedValue(matches);
+    mocks.getCompletedMatchPlayers.mockResolvedValue({
+      player: { screenName: "Player", avatar: null },
+      teammate: { screenName: "Teammate", avatar: null },
+      opponent: { screenName: "Opponent", avatar: null },
+    });
+    const response = await mocks.get({
+      request: new Request(
+        "http://localhost/api/statistics?startDate=2026-01-02&endDate=2026-01-02&mapId=map&teammateId=teammate&opponentId=opponent",
+      ),
+    });
+    expect(response.status).toBe(200);
+    expect(await response.json()).toMatchObject({
+      statistics: {
+        matchesPlayed: 1,
+        matchWins: 1,
+        monthlyComparison: {
+          current: { matchesPlayed: 1 },
+          previous: { matchesPlayed: 1 },
+        },
+      },
+      filterOptions: {
+        maps: [{ id: "map", label: "Casino", imagePath: "/map.png" }],
+        teammates: [{ id: "teammate", label: "Teammate" }],
+        opponents: [{ id: "opponent", label: "Opponent" }],
+      },
+    });
+  });
+
+  it.each(["startDate=2026-02-30", "startDate=2026-01-03&endDate=2026-01-02"])(
+    "rejects invalid filter date ranges: %s",
+    async (query) => {
+      const response = await mocks.get({
+        request: new Request(`http://localhost/api/statistics?${query}`),
+      });
+      expect(response.status).toBe(400);
+      expect(await response.json()).toEqual({ error: "Choose a valid date range." });
+      expect(mocks.getCompletedMatches).not.toHaveBeenCalled();
+    },
+  );
+
   it("requires authentication before reading statistics", async () => {
     mocks.currentUser.mockResolvedValue(null);
     const response = await mocks.get({ request: new Request("http://localhost/api/statistics") });
