@@ -1,4 +1,5 @@
 import { Skeleton } from "./Skeleton";
+import { AppFooter } from "./AppFooter";
 
 export function AppSkeleton({ label }: { label: string }) {
   return (
@@ -66,10 +67,8 @@ export function AppSkeleton({ label }: { label: string }) {
             </div>
           </section>
         </section>
-        <footer className="app-footer">
-          Scores are entered by the match creator. Match participants can view the live score.
-        </footer>
       </div>
+      <AppFooter />
     </div>
   );
 }

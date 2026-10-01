@@ -4,9 +4,10 @@ import { describe, expect, it } from "vitest";
 import { HistoryView } from "./HistoryView";
 import { Icon } from "./Icon";
 import { MapPicker } from "./MapPicker";
+import { AppFooter } from "./AppFooter";
 
 describe("interface icons", () => {
-  it.each(["chevron-down", "close", "arrow-left", "clock", "status-dot"] as const)(
+  it.each(["chevron-down", "close", "arrow-left", "clock", "status-dot", "github"] as const)(
     "renders %s as a decorative, non-focusable SVG",
     (name) => {
       const markup = renderToStaticMarkup(createElement(Icon, { name }));
@@ -48,5 +49,15 @@ describe("interface icons", () => {
     expect(markup).toContain('class="icon empty-icon"');
     expect(markup).toContain("No completed matches yet");
     expect(markup).not.toContain("◷");
+  });
+
+  it("links the footer to the repository with a GitHub icon", () => {
+    const markup = renderToStaticMarkup(createElement(AppFooter));
+    expect(markup).toContain('href="https://github.com/larsvaehrens/speedtracker"');
+    expect(markup).toContain('rel="noopener noreferrer"');
+    expect(markup).toContain('target="_blank"');
+    expect(markup).toContain("GitHub");
+    expect(markup).toContain('<svg aria-hidden="true"');
+    expect(markup).toContain('fill="currentColor" stroke="none"');
   });
 });

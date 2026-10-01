@@ -1697,6 +1697,17 @@ input[readonly] {
   text-align: center;
 }
 
+.app-footer-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: inherit;
+}
+
+.app-footer-link:hover {
+  color: var(--ink);
+}
+
 @media (min-width: 720px) {
   .map-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));

@@ -10,6 +10,7 @@ import { ProfileView } from "./ProfileView";
 import { SetupBuilder } from "./SetupBuilder";
 import { StatisticsView } from "./StatisticsView";
 import { AppSkeleton } from "./AppSkeleton";
+import { AppFooter } from "./AppFooter";
 
 type Page = "play" | "history" | "statistics" | "players" | "profile";
 
@@ -294,9 +295,7 @@ export function SpeedTrackerApp() {
       )}
       {page === "profile" && <ProfileView user={bootstrap.user} onSaved={updateProfile} />}
 
-      <footer className="app-footer">
-        Scores are entered by the match creator. Match participants can view the live score.
-      </footer>
+      <AppFooter />
     </div>
   );
 }

@@ -36,6 +36,7 @@ describe("loading skeletons", () => {
     expect(markup.match(/class="nav-tab skeleton-nav-tab"/g)).toHaveLength(5);
     expect(markup.match(/class="competitor-setup"/g)).toHaveLength(2);
     expect(markup).toContain('class="app-footer"');
+    expect(markup).toContain('href="https://github.com/larsvaehrens/speedtracker"');
     expect(markup).not.toContain("<button");
   });
 
