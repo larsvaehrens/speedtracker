@@ -8,6 +8,7 @@ import { PlayerSelect } from "./PlayerSelect";
 import { SetupBuilder } from "./SetupBuilder";
 import { ToastProvider } from "./ToastProvider";
 import { MatchBoard } from "./MatchBoard";
+import { MatchCompetitors } from "./MatchCompetitors";
 
 const players: FriendView[] = [
   { id: "me", username: "myself", screenName: "Me", avatar: "/me.png", followedAt: null },
@@ -170,14 +171,81 @@ describe("player profile pictures", () => {
           user: players[0],
           players,
           maps: [],
-          openMatches: [{ ...match, status: "active" }],
+          openMatches: [
+            {
+              ...match,
+              status: "active",
+              completedAt: null,
+              durationSeconds: null,
+              winnerCompetitorId: null,
+              competitors: match.competitors.map((competitor) => ({
+                ...competitor,
+                score: competitor.kind === "team" ? 2 : 0,
+              })),
+            },
+          ],
           onResume: () => {},
           onMatchCreated: () => {},
         }),
       }),
     );
     expect(markup).toContain('class="open-match-list"');
-    expect(markup.match(/<img /g)).toHaveLength(4);
+    expect(markup.match(/class="player-avatar"/g)).toHaveLength(4);
     expect(markup).toContain('src="/friend.png"');
+    expect(markup).toContain('class="open-match-card history-card panel"');
+    expect(markup).toContain('src="/map.png"');
+    expect(markup).toContain('class="history-competitors"');
+    expect(markup.match(/class="history-competitor"/g)).toHaveLength(2);
+    expect(markup).toContain("<strong>2</strong>");
+    expect(markup).toContain("<strong>0</strong>");
+    expect(markup).toContain("1 round credits");
+    expect(markup).not.toContain("Round breakdown");
+    expect(markup).not.toContain("View match");
+  });
+
+  it("keeps matches awaiting a map visible without a broken map image", () => {
+    const markup = renderToStaticMarkup(
+      createElement(ToastProvider, {
+        children: createElement(SetupBuilder, {
+          user: players[0],
+          players,
+          maps: [],
+          openMatches: [
+            {
+              ...match,
+              status: "awaiting-map",
+              map: null,
+              mapId: null,
+              winnerCompetitorId: null,
+            },
+          ],
+          onResume: () => {},
+          onMatchCreated: () => {},
+        }),
+      }),
+    );
+    expect(markup).toContain("Map needed");
+    expect(markup).toContain("Map not selected");
+    expect(markup).not.toContain('class="map-thumbnail"');
+    expect(markup).toContain('class="history-competitors"');
+    expect(markup).not.toContain('class="history-competitor is-winner"');
+  });
+
+  it("preserves winner highlighting and excludes undone rounds in shared competitor cards", () => {
+    const markup = renderToStaticMarkup(
+      createElement(MatchCompetitors, {
+        match: {
+          ...match,
+          rounds: [...match.rounds, { ...match.rounds[0], id: "undone-round", undone: true }],
+        },
+      }),
+    );
+    expect(markup).toContain('class="history-competitor is-winner"');
+    expect(markup.match(/1 round credits/g)).toHaveLength(2);
+    expect(markup).toContain("0 round credits");
+    expect(markup).toContain("<strong>4</strong>");
+    expect(markup).not.toContain("2 round credits");
+    expect(markup).not.toContain("<div");
+    expect(markup).not.toContain("<button");
   });
 });

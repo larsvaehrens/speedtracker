@@ -103,7 +103,8 @@ h1 {
   letter-spacing: -0.04em;
 }
 
-h2 {
+h2,
+.open-match-title {
   margin-bottom: 8px;
   font-size: clamp(1.2rem, 3vw, 1.55rem);
   letter-spacing: -0.025em;
@@ -711,7 +712,8 @@ input[readonly] {
   object-fit: cover;
 }
 
-.history-map > div {
+.history-map > div,
+.history-map > span {
   min-width: 0;
 }
 
@@ -726,19 +728,11 @@ input[readonly] {
   font-weight: 400;
 }
 
-.open-match-competitors,
 .history-round-players {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
   gap: 10px;
-}
-
-.open-match-competitor {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 9px;
 }
 
 .empty-inline {
@@ -776,16 +770,9 @@ input[readonly] {
 }
 
 .open-match-card {
-  display: grid;
+  display: block;
   width: 100%;
-  min-height: 76px;
-  gap: 6px;
-  justify-items: start;
-  padding: 15px;
-  border: 1px solid var(--line);
-  border-radius: 15px;
   color: var(--ink);
-  background: var(--surface);
   text-align: left;
   cursor: pointer;
 }
@@ -795,8 +782,13 @@ input[readonly] {
 }
 
 .open-match-title {
-  color: var(--primary);
-  font-weight: 850;
+  display: block;
+  font-weight: 700;
+}
+
+.open-match-card .result-label {
+  display: block;
+  color: var(--muted);
 }
 
 .round-credit-line {
@@ -1164,7 +1156,8 @@ input[readonly] {
   margin-bottom: 14px;
 }
 
-.history-top h2 {
+.history-top h2,
+.open-match-title {
   margin-bottom: 0;
   overflow-wrap: anywhere;
 }

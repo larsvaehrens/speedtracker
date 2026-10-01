@@ -4,7 +4,8 @@ import type { FriendView, MapView, MatchView } from "#/domain/views";
 import { apiRequest, apiMessage } from "#/lib/api";
 import { MapPicker } from "./MapPicker";
 import { PlayerSelect } from "./PlayerSelect";
-import { PlayerIdentity } from "./PlayerIdentity";
+import { MatchCompetitors } from "./MatchCompetitors";
+import { MapThumbnail } from "./MapThumbnail";
 import { useToast } from "./ToastProvider";
 
 const formats = [
@@ -46,14 +47,6 @@ function isCompetitorList(value: unknown): value is CompetitorSetup[] {
         competitor.playerIds.every((id: unknown) => typeof id === "string"),
     )
   );
-}
-
-function roundCredits(match: MatchView, playerId: string): number {
-  return match.rounds
-    .filter((round) => !round.undone)
-    .flatMap((round) => round.attributions)
-    .filter((attribution) => attribution.playerId === playerId)
-    .reduce((total, attribution) => total + attribution.points, 0);
 }
 
 export function SetupBuilder({
@@ -300,30 +293,25 @@ export function SetupBuilder({
           <div className="open-match-list">
             {openMatches.map((match) => (
               <button
-                className="open-match-card"
+                className="open-match-card history-card panel"
                 key={match.id}
                 onClick={() => onResume(match)}
                 type="button"
               >
-                <span className="open-match-title">
-                  {match.map?.name ?? "Map not selected"}
-                  {match.status === "awaiting-map" && " · Map needed"}
-                </span>
-                <span className="open-match-competitors">
-                  {match.competitors.map((competitor) => (
-                    <span className="open-match-competitor" key={competitor.id}>
-                      {competitor.players.map((player) => (
-                        <PlayerIdentity key={player.id} player={player}>
-                          {player.screenName}
-                          <small className="round-credit-line">
-                            {roundCredits(match, player.id)} pts
-                          </small>
-                        </PlayerIdentity>
-                      ))}
-                      <strong>{competitor.score}</strong>
+                <span className="history-top">
+                  <span className="history-map">
+                    {match.map && <MapThumbnail imagePath={match.map.imagePath} />}
+                    <span>
+                      <span className="result-label">
+                        {match.status === "awaiting-map" ? "Map needed" : "Active match"}
+                      </span>
+                      <span className="open-match-title">
+                        {match.map?.name ?? "Map not selected"}
+                      </span>
                     </span>
-                  ))}
+                  </span>
                 </span>
+                <MatchCompetitors match={match} />
               </button>
             ))}
           </div>

@@ -3,20 +3,13 @@ import { formatDuration } from "#/lib/time";
 import { PlayerIdentity } from "./PlayerIdentity";
 import { MapThumbnail } from "./MapThumbnail";
 import { Icon } from "./Icon";
+import { MatchCompetitors } from "./MatchCompetitors";
 
 type HistoryViewProps = {
   matches: MatchView[];
   viewerId: string;
   onOpen: (match: MatchView) => void;
 };
-
-function personalPoints(match: MatchView, playerId: string): number {
-  return match.rounds
-    .filter((round) => !round.undone)
-    .flatMap((round) => round.attributions)
-    .filter((attribution) => attribution.playerId === playerId)
-    .reduce((total, attribution) => total + attribution.points, 0);
-}
 
 export function HistoryView({ matches, viewerId, onOpen }: HistoryViewProps) {
   if (matches.length === 0) {
@@ -63,26 +56,7 @@ export function HistoryView({ matches, viewerId, onOpen }: HistoryViewProps) {
                 </div>
                 <span className="duration-pill">{formatDuration(match.durationSeconds ?? 0)}</span>
               </div>
-              <div className="history-competitors">
-                {match.competitors.map((competitor) => (
-                  <div
-                    className={`history-competitor${competitor.id === match.winnerCompetitorId ? " is-winner" : ""}`}
-                    key={competitor.id}
-                  >
-                    <span className="history-player-names">
-                      {competitor.players.map((player) => (
-                        <PlayerIdentity key={player.id} player={player}>
-                          {player.screenName}
-                          <small className="round-credit-line">
-                            {personalPoints(match, player.id)} round credits
-                          </small>
-                        </PlayerIdentity>
-                      ))}
-                    </span>
-                    <strong>{competitor.score}</strong>
-                  </div>
-                ))}
-              </div>
+              <MatchCompetitors match={match} />
               <div className="history-rounds-container">
                 <details className="history-rounds">
                   <summary>
