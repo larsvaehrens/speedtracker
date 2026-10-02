@@ -1,5 +1,6 @@
 {
   "name": "speedtracker",
+  "version": "0.1.0",
   "private": true,
   "type": "module",
   "imports": {
@@ -16,6 +17,8 @@
     "db:seed:user": "node scripts/seed-user.mjs",
     "check": "vp check",
     "test": "vp test",
+    "changeset": "changeset",
+    "release": "node scripts/create-release.mjs",
     "typecheck": "pnpm cf-typegen && tsc --noEmit",
     "cf-typegen": "wrangler types"
   },
@@ -29,7 +32,10 @@
     "react-dom": "catalog:"
   },
   "devDependencies": {
+    "@changesets/cli": "^3.0.3",
     "@cloudflare/vite-plugin": "catalog:",
+    "@commitlint/cli": "^21.2.3",
+    "@commitlint/config-conventional": "^21.2.3",
     "@tanstack/router-cli": "catalog:",
     "@types/node": "catalog:",
     "@types/react": "catalog:",
