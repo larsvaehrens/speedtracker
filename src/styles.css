@@ -330,6 +330,13 @@ h2,
   width: 100%;
 }
 
+.completed-match-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 14px;
+}
+
 .text-button {
   min-height: 38px;
   padding: 4px 7px;
@@ -2268,6 +2275,14 @@ input[readonly] {
 
   .match-clock {
     min-width: 70px;
+  }
+
+  .completed-match-actions {
+    flex-direction: column;
+  }
+
+  .completed-match-actions .button {
+    width: 100%;
   }
 
   .match-topline .button {
