@@ -77,6 +77,8 @@ export function MatchBoard({
   const [actionPending, setActionPending] = useState(false);
   const [actionError, setActionError] = useState("");
   const [now, setNow] = useState(Date.now());
+  const [canKeepScreenAwake, setCanKeepScreenAwake] = useState(false);
+  const [keepScreenAwake, setKeepScreenAwake] = useState(true);
   const toast = useToast();
 
   const isScorekeeper = match.creatorId === viewerId;
@@ -154,6 +156,59 @@ export function MatchBoard({
     const timer = window.setInterval(() => setNow(Date.now()), 1000);
     return () => window.clearInterval(timer);
   }, []);
+
+  useEffect(() => {
+    setCanKeepScreenAwake(
+      navigator.maxTouchPoints > 0 &&
+        window.matchMedia("(pointer: coarse)").matches &&
+        "wakeLock" in navigator,
+    );
+  }, []);
+
+  useEffect(() => {
+    if (!canKeepScreenAwake || !keepScreenAwake) return;
+    const wakeLockApi = navigator.wakeLock;
+    if (!wakeLockApi) return;
+
+    let wakeLock: WakeLockSentinel | null = null;
+    let cancelled = false;
+
+    async function acquireWakeLock() {
+      if (cancelled || wakeLock || document.visibilityState !== "visible") return;
+      try {
+        const acquired = await wakeLockApi.request("screen");
+        if (cancelled) {
+          await acquired.release();
+          return;
+        }
+        wakeLock = acquired;
+        acquired.addEventListener("release", () => {
+          if (wakeLock === acquired) wakeLock = null;
+        });
+      } catch (error: unknown) {
+        if (cancelled) return;
+        setKeepScreenAwake(false);
+        const reason = error instanceof Error ? ` ${error.message}` : "";
+        toast(`Your browser could not keep the screen awake.${reason}`, "warning");
+      }
+    }
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") void acquireWakeLock();
+    };
+    void acquireWakeLock();
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    return () => {
+      cancelled = true;
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      if (wakeLock) {
+        void wakeLock.release().catch(() => {
+          toast("The screen wake lock could not be released.", "warning");
+        });
+      }
+    };
+  }, [canKeepScreenAwake, keepScreenAwake, toast]);
 
   useEffect(() => {
     if (match.status === "awaiting-map" && isScorekeeper) {
@@ -401,6 +456,16 @@ export function MatchBoard({
             >
               {match.pausedAt ? "Resume match" : "Pause match"}
             </button>
+          )}
+          {canKeepScreenAwake && (match.status === "active" || match.status === "awaiting-map") && (
+            <label className="match-wake-lock">
+              <input
+                checked={keepScreenAwake}
+                onChange={(event) => setKeepScreenAwake(event.currentTarget.checked)}
+                type="checkbox"
+              />
+              Keep screen awake
+            </label>
           )}
         </div>
       </section>
