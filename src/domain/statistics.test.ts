@@ -42,6 +42,8 @@ function completedMatch(fixture: MatchFixture): CompletedMatch {
     mapId: fixture.mapId ?? "metro",
     startedAt: fixture.completedAt,
     completedAt: fixture.completedAt,
+    pausedAt: null,
+    pausedDurationSeconds: 0,
     winnerCompetitorId: `competitor-${fixture.winner}`,
     gameModes: ["Sudden Death"],
     competitors,
@@ -55,6 +57,24 @@ const mapDetails = [
 ];
 
 describe("player statistics", () => {
+  it("excludes paused time from completed match durations", () => {
+    const pausedMatch = completedMatch({
+      id: "paused-match",
+      completedAt: "2026-01-01T00:02:00Z",
+      teams: [["player"], ["opponent"]],
+      winner: 0,
+    });
+    pausedMatch.startedAt = "2026-01-01T00:00:00Z";
+    pausedMatch.pausedDurationSeconds = 30;
+
+    const stats = calculateStatistics("player", [pausedMatch], mapDetails, {
+      now: new Date("2026-01-02T00:00:00Z"),
+      timeZone: "UTC",
+    });
+
+    expect(stats.totalPlayedSeconds).toBe(90);
+  });
+
   it("sums solo and team match durations once per match, excluding unrelated matches", () => {
     const makeMatch = (id: string, teams: string[][], startedAt: string, completedAt: string) => ({
       ...completedMatch({ id, teams, completedAt, winner: 0 }),

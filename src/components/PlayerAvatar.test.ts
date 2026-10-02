@@ -37,6 +37,8 @@ const match: MatchView = {
   map: { id: "map", name: "Casino", imagePath: "/map.png", order: 1 },
   startedAt: "2026-09-30T10:00:00Z",
   completedAt: "2026-09-30T10:05:00Z",
+  pausedAt: null,
+  pausedDurationSeconds: 0,
   durationSeconds: 300,
   winnerCompetitorId: "team",
   gameModes: ["Sudden Death"],
@@ -229,6 +231,27 @@ describe("player profile pictures", () => {
     expect(css).toMatch(
       /\.round-timeline\s*\{[^}]*grid-auto-flow:\s*column;[^}]*grid-auto-columns:\s*minmax\(132px,\s*1fr\)/,
     );
+  });
+
+  it("shows the pause action while an active match is running", () => {
+    const markup = renderToStaticMarkup(
+      createElement(ToastProvider, {
+        children: createElement(MatchBoard, {
+          initialMatch: {
+            ...match,
+            status: "active",
+            completedAt: null,
+            winnerCompetitorId: null,
+            durationSeconds: null,
+          },
+          maps: [],
+          viewerId: "me",
+          onMatchChanged: () => {},
+          onDone: () => {},
+        }),
+      }),
+    );
+    expect(markup).toContain(">Pause match</button>");
   });
 
   it("defaults new matches to Sudden Death and exposes all game modes", () => {

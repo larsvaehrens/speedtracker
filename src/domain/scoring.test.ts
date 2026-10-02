@@ -18,6 +18,8 @@ function newMatch(teamSizes: number[], mapId: string | null = "metro"): MatchSta
     mapId,
     startedAt: "2026-01-01T00:00:00.000Z",
     completedAt: null,
+    pausedAt: null,
+    pausedDurationSeconds: 0,
     winnerCompetitorId: null,
     gameModes: ["Sudden Death"],
     competitors: teamSizes.map((size, competitorIndex) => ({
@@ -48,6 +50,14 @@ function score(
 }
 
 describe("round scoring", () => {
+  it("rejects scoring while the match is paused", () => {
+    const match = { ...newMatch([1, 1]), pausedAt: "2026-01-01T00:00:30.000Z" };
+    expect(score(match, "competitor-0", ["player-0"], "paused-score")).toEqual({
+      ok: false,
+      error: "match-not-editable",
+    });
+  });
+
   it.each([
     [[1, 1], "competitor-0"],
     [[1, 1, 1], "competitor-0"],

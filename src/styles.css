@@ -1135,7 +1135,7 @@ input[readonly] {
 .match-clock {
   display: grid;
   min-width: 92px;
-  gap: 4px;
+  gap: 8px;
   justify-items: end;
 }
 

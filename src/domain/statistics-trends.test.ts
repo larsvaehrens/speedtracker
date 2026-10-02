@@ -15,6 +15,8 @@ function match(
     mapId: "map",
     startedAt: new Date(Date.parse(completedAt) - duration * 1000).toISOString(),
     completedAt,
+    pausedAt: null,
+    pausedDurationSeconds: 0,
     winnerCompetitorId: won ? "own" : "opposition",
     gameModes: ["Sudden Death"],
     competitors: [
