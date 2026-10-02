@@ -274,6 +274,8 @@ describe("player profile pictures", () => {
     expect(markup).toContain("SuperSpeedRunners");
     expect(markup).toContain("SpeedRapture");
     expect(markup).toContain("Destructible Environment");
+    expect(markup).toContain('class="game-mode-selector"><summary>Game modes · 1 selected');
+    expect(markup).not.toContain('class="game-mode-selector" open');
   });
 
   it("keeps the missing map label without rendering a broken thumbnail", () => {

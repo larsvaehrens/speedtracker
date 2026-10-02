@@ -263,27 +263,29 @@ export function SetupBuilder({
           </div>
         </div>
 
-        <fieldset className="game-mode-options">
-          <legend>Game modes</legend>
-          <div className="game-mode-grid">
-            {GAME_MODES.map((mode) => (
-              <label className="game-mode-option" key={mode}>
-                <input
-                  checked={gameModes.includes(mode)}
-                  onChange={() =>
-                    setGameModes((current) =>
-                      current.includes(mode)
-                        ? current.filter((selected) => selected !== mode)
-                        : [...current, mode],
-                    )
-                  }
-                  type="checkbox"
-                />
-                <span>{mode}</span>
-              </label>
-            ))}
-          </div>
-        </fieldset>
+        <details className="game-mode-selector">
+          <summary>Game modes · {gameModes.length} selected</summary>
+          <fieldset aria-label="Game modes" className="game-mode-options">
+            <div className="game-mode-grid">
+              {GAME_MODES.map((mode) => (
+                <label className="game-mode-option" key={mode}>
+                  <input
+                    checked={gameModes.includes(mode)}
+                    onChange={() =>
+                      setGameModes((current) =>
+                        current.includes(mode)
+                          ? current.filter((selected) => selected !== mode)
+                          : [...current, mode],
+                      )
+                    }
+                    type="checkbox"
+                  />
+                  <span>{mode}</span>
+                </label>
+              ))}
+            </div>
+          </fieldset>
+        </details>
 
         <div className="competitor-setup-grid">
           {competitors.map((members, competitorIndex) => (

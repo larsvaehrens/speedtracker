@@ -123,7 +123,8 @@ manual edits.
 - Match history and statistics can be filtered by a custom local date range,
   common week/month/quarter/year presets, maps, teammates, opponents, and game
   modes. New Matches default to Sudden Death; enabled modes are saved with the
-  Match and restored by Reuse last setup.
+  Match and restored by Reuse last setup. The game-mode selector is collapsed
+  by default.
   Selecting multiple people matches any selected Player. Statistics compare
   a selected date range with the immediately preceding range of equal length;
   without a date selection, the existing month-over-month comparison remains.
