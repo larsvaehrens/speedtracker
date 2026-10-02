@@ -46,6 +46,11 @@ export type Streak = {
   lastMatchId: string | null;
 };
 
+export type ActivityDay = {
+  date: string;
+  matches: number;
+};
+
 export type PlayerStatistics = {
   matchWins: number;
   matchesPlayed: number;
@@ -61,6 +66,7 @@ export type PlayerStatistics = {
   longestWinStreak: Streak;
   longestLossStreak: Streak;
   playingDayStreak: { current: number; longest: number };
+  playingActivity: ActivityDay[];
   monthlyComparison: {
     currentMonth: string;
     previousMonth: string;
@@ -177,22 +183,9 @@ function getPlayingDayStreak(
   timeZone: string,
   now: Date,
 ): PlayerStatistics["playingDayStreak"] {
-  const formatter = new Intl.DateTimeFormat("en-US", {
-    timeZone,
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  });
-  function calendarDay(date: Date): number {
-    const parts = Object.fromEntries(
-      formatter.formatToParts(date).map(({ type, value }) => [type, value]),
-    );
-    return Date.UTC(Number(parts.year), Number(parts.month) - 1, Number(parts.day)) / 86400000;
-  }
-
-  const days = [...new Set(matches.map((match) => calendarDay(new Date(match.completedAt))))].sort(
-    (left, right) => left - right,
-  );
+  const days = [
+    ...new Set(matches.map((match) => localCalendarDay(new Date(match.completedAt), timeZone))),
+  ].sort((left, right) => left - right);
   let current = 0;
   let longest = 0;
   let previous: number | undefined;
@@ -202,9 +195,41 @@ function getPlayingDayStreak(
     previous = day;
   }
 
-  const today = calendarDay(now);
+  const today = localCalendarDay(now, timeZone);
   if (previous !== today && previous !== today - 1) current = 0;
   return { current, longest };
+}
+
+function localCalendarDay(date: Date, timeZone: string): number {
+  const formatter = new Intl.DateTimeFormat("en-US", {
+    timeZone,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  });
+  const parts = Object.fromEntries(
+    formatter.formatToParts(date).map(({ type, value }) => [type, value]),
+  );
+  return Date.UTC(Number(parts.year), Number(parts.month) - 1, Number(parts.day)) / 86400000;
+}
+
+function getPlayingActivity(matches: CompletedMatch[], timeZone: string, now: Date): ActivityDay[] {
+  const counts = new Map<number, number>();
+  for (const match of matches) {
+    const day = localCalendarDay(new Date(match.completedAt), timeZone);
+    counts.set(day, (counts.get(day) ?? 0) + 1);
+  }
+
+  const lastDay = localCalendarDay(now, timeZone);
+  const firstDay = lastDay - 364;
+  const gridStart = firstDay - new Date(firstDay * 86400000).getUTCDay();
+  return Array.from({ length: lastDay - gridStart + 1 }, (_, index) => {
+    const day = gridStart + index;
+    return {
+      date: new Date(day * 86400000).toISOString().slice(0, 10),
+      matches: counts.get(day) ?? 0,
+    };
+  });
 }
 
 function getPartnershipStats(playerId: string, matches: CompletedMatch[]): PartnershipStat[] {
@@ -376,6 +401,7 @@ function calculateBaseStatistics(
     longestWinStreak: streakFrom(outcomes, true),
     longestLossStreak: streakFrom(outcomes, false),
     playingDayStreak: getPlayingDayStreak(matches, options.timeZone, options.now ?? new Date()),
+    playingActivity: getPlayingActivity(matches, options.timeZone, options.now ?? new Date()),
   };
 }
 

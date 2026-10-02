@@ -1623,6 +1623,59 @@ input[readonly] {
   margin-bottom: 14px;
 }
 
+.activity-panel {
+  min-width: 0;
+  margin-bottom: 14px;
+  padding: clamp(15px, 3vw, 22px);
+}
+
+.activity-grid-scroll {
+  overflow-x: auto;
+  padding: 2px 0 10px;
+}
+
+.activity-grid {
+  display: grid;
+  width: max-content;
+  grid-auto-flow: column;
+  grid-template-rows: repeat(7, 12px);
+  grid-auto-columns: 12px;
+  gap: 4px;
+}
+
+.activity-day {
+  width: 12px;
+  height: 12px;
+  border: 1px solid rgb(255 255 255 / 8%);
+  border-radius: 3px;
+  background: var(--surface-soft);
+}
+
+.activity-day[data-level="1"] {
+  background: #0e4429;
+}
+
+.activity-day[data-level="2"] {
+  background: #006d32;
+}
+
+.activity-day[data-level="3"] {
+  background: #26a641;
+}
+
+.activity-day[data-level="4"] {
+  background: #39d353;
+}
+
+.activity-legend {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 5px;
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+
 .stat-card {
   display: grid;
   min-width: 0;
