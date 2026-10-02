@@ -99,6 +99,8 @@ manual edits.
   authoritative. Pending saves and connection errors remain visible, retries
   reuse an idempotency key, and clients refresh authoritative state after
   reconnecting. Offline-first play is not supported.
+- Supported mobile browsers offer a checked-by-default Keep screen awake
+  option while a Match is open. Uncheck it to release the screen wake lock.
 - Initial session/Match loading and statistics use layout-matched skeletons.
   Background refreshes keep existing content visible, and skeleton animation
   is disabled when reduced motion is requested.
