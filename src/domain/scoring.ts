@@ -75,7 +75,7 @@ export function recordRound(
   match: MatchState,
   input: RoundInput,
   expectedRevision: number,
-  completedAt: string,
+  scoredAt: string,
 ): ScoreResult {
   if (match.status !== "active") {
     return { ok: false, error: "match-not-editable" };
@@ -106,6 +106,7 @@ export function recordRound(
     submissionId: input.submissionId,
     sequence:
       match.rounds.reduce((lastSequence, item) => Math.max(lastSequence, item.sequence), 0) + 1,
+    scoredAt,
     winnerCompetitorId: competitor.id,
     survivingPlayerIds: [...survivors],
     attributions: buildAttributions([...survivors]),
@@ -121,7 +122,7 @@ export function recordRound(
       ...match,
       revision: match.revision + 1,
       status,
-      completedAt: status === "completed" ? completedAt : null,
+      completedAt: status === "completed" ? scoredAt : null,
       winnerCompetitorId: winner?.id ?? null,
       rounds: [...match.rounds, round],
     },

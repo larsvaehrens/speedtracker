@@ -29,6 +29,7 @@ describe("monthly trends across statistics views", () => {
           id: completedAt,
           submissionId: completedAt,
           sequence: 1,
+          scoredAt: completedAt,
           winnerCompetitorId: "own",
           survivingPlayerIds: ["player"],
           attributions: [{ playerId: "player", points }],

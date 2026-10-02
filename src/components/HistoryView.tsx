@@ -20,6 +20,14 @@ type HistoryViewProps = {
   onOpen: (match: MatchView) => void;
 };
 
+function formatRoundTime(scoredAt: string): string {
+  return new Date(scoredAt).toLocaleTimeString(undefined, {
+    hour: "numeric",
+    minute: "2-digit",
+    second: "2-digit",
+  });
+}
+
 export function HistoryView({ matches, viewerId, onOpen }: HistoryViewProps) {
   const [allMatches, setAllMatches] = useState(matches);
   const [filters, setFilters] = useState<MatchFiltersValue>(EMPTY_MATCH_FILTERS);
@@ -178,6 +186,13 @@ export function HistoryView({ matches, viewerId, onOpen }: HistoryViewProps) {
                                 </PlayerIdentity>
                               ))}
                               <span>won</span>
+                              <time
+                                className="muted"
+                                dateTime={round.scoredAt}
+                                title={new Date(round.scoredAt).toLocaleString()}
+                              >
+                                {formatRoundTime(round.scoredAt)}
+                              </time>
                             </span>
                             {round.undone && <span className="muted">Undone</span>}
                           </li>

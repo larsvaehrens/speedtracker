@@ -27,6 +27,7 @@ function completedMatch(fixture: MatchFixture): CompletedMatch {
       id: `${fixture.id}-round-${index + 1}`,
       submissionId: `${fixture.id}-submission-${index + 1}`,
       sequence: index + 1,
+      scoredAt: fixture.completedAt,
       winnerCompetitorId: winnerCompetitor?.id ?? `competitor-${fixture.winner}`,
       survivingPlayerIds: attributions.map(({ playerId }) => playerId),
       attributions,

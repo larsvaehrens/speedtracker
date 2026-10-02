@@ -62,6 +62,7 @@ const match: MatchView = {
       id: "round",
       submissionId: "submission",
       sequence: 1,
+      scoredAt: "2026-09-30T10:02:03Z",
       winnerCompetitorId: "team",
       survivingPlayerIds: ["me", "friend"],
       attributions: [
@@ -154,6 +155,7 @@ describe("player profile pictures", () => {
     expect(markup).toContain("Lethal Spikes");
     expect(markup).toContain('aria-label="Enabled game modes"');
     expect(markup).toContain("Round breakdown");
+    expect(markup).toContain('dateTime="2026-09-30T10:02:03Z"');
   });
 
   it("defaults new matches to Sudden Death and exposes all game modes", () => {

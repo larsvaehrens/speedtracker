@@ -41,6 +41,7 @@ type RoundRow = {
   id: string;
   submission_id: string;
   sequence: number;
+  scored_at: string;
   winner_competitor_id: string;
   undone: number;
   player_id: string | null;
@@ -155,7 +156,8 @@ export async function getMatch(matchId: string, viewerId: string): Promise<Match
   }
 
   const roundResult = await env.DB.prepare(
-    `SELECT r.id, r.submission_id, r.sequence, r.winner_competitor_id,
+    `SELECT r.id, r.submission_id, r.sequence, r.created_at AS scored_at,
+            r.winner_competitor_id,
             r.undone, pa.player_id, pa.points
      FROM rounds r
      LEFT JOIN point_attributions pa ON pa.round_id = r.id
@@ -171,6 +173,7 @@ export async function getMatch(matchId: string, viewerId: string): Promise<Match
       id: string;
       submissionId: string;
       sequence: number;
+      scoredAt: string;
       winnerCompetitorId: string;
       survivingPlayerIds: string[];
       attributions: PointAttribution[];
@@ -183,6 +186,7 @@ export async function getMatch(matchId: string, viewerId: string): Promise<Match
       id: row.id,
       submissionId: row.submission_id,
       sequence: row.sequence,
+      scoredAt: row.scored_at,
       winnerCompetitorId: row.winner_competitor_id,
       survivingPlayerIds: [],
       attributions: [],
