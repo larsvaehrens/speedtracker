@@ -125,13 +125,14 @@ export function HistoryView({ matches, viewerId, onOpen }: HistoryViewProps) {
           </h2>
           <p className="muted">
             {allMatches.length === 0
-              ? "Completed matches will show the map, final scores, duration, match outcome, and every credited round here."
+              ? "Completed matches will show the map, final scores, duration, match outcome, and every scored round here."
               : "Try adjusting or clearing your selected filters."}
           </p>
         </div>
       ) : (
         <div className="history-list">
           {filteredMatches.map((match) => {
+            const pointCount = match.rounds.filter((round) => !round.undone).length;
             const ownCompetitor = match.competitors.find(({ playerIds }) =>
               playerIds.includes(viewerId),
             );
@@ -159,8 +160,7 @@ export function HistoryView({ matches, viewerId, onOpen }: HistoryViewProps) {
                 <div className="history-rounds-container">
                   <details className="history-rounds">
                     <summary>
-                      Round breakdown · {match.rounds.filter((round) => !round.undone).length}{" "}
-                      credited
+                      Round breakdown · {pointCount} {pointCount === 1 ? "point" : "points"}
                     </summary>
                     <RoundTimeline
                       competitors={match.competitors}

@@ -61,8 +61,8 @@ describe("monthly statistics comparisons", () => {
     expect(stats.monthlyComparison).toMatchObject({
       currentMonth: "September 2026",
       previousMonth: "August 2026",
-      current: { matchesPlayed: 2, matchWinRate: 0.5, roundCredits: 3, totalPlayedSeconds: 180 },
-      previous: { matchesPlayed: 2, matchWinRate: 1, roundCredits: 2, totalPlayedSeconds: 120 },
+      current: { matchesPlayed: 2, matchWinRate: 0.5, roundPoints: 3, totalPlayedSeconds: 180 },
+      previous: { matchesPlayed: 2, matchWinRate: 1, roundPoints: 2, totalPlayedSeconds: 120 },
     });
     expect(stats.monthlyComparison.current.maps[0]).toMatchObject({
       mapId: "map",
@@ -154,7 +154,7 @@ describe("monthly statistics comparisons", () => {
     expect(stats.monthlyComparison.current).toMatchObject({
       matchesPlayed: 0,
       matchWinRate: null,
-      roundCredits: 0,
+      roundPoints: 0,
       totalPlayedSeconds: 0,
     });
     expect(stats.monthlyComparison.previous).toMatchObject({
@@ -165,11 +165,11 @@ describe("monthly statistics comparisons", () => {
     expect(stats.monthlyComparison.previous.opponents).toEqual([]);
   });
 
-  it("excludes undone round credits from both comparison periods", () => {
+  it("excludes undone round points from both comparison periods", () => {
     const current = match("2026-09-01T00:00:00Z", { points: 2 });
     current.rounds[0].undone = true;
     const stats = statistics([current, match("2026-08-01T00:00:00Z")], "2026-09-15T12:00:00Z");
-    expect(stats.monthlyComparison.current.roundCredits).toBe(0);
-    expect(stats.monthlyComparison.previous.roundCredits).toBe(1);
+    expect(stats.monthlyComparison.current.roundPoints).toBe(0);
+    expect(stats.monthlyComparison.previous.roundPoints).toBe(1);
   });
 });

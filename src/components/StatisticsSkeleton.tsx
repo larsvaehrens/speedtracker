@@ -149,7 +149,7 @@ export function StatisticsSkeleton({
         <div className="stats-overview">
           {[
             "Match win rate",
-            "Individual round credits",
+            "Individual points",
             "Flawless wins",
             "Shutout losses",
             "Total time played",
@@ -207,7 +207,7 @@ export function StatisticsSkeleton({
                 />
                 <StatisticsPanelSkeleton
                   title="With teammates"
-                  description="Match results and individual points credited to each player"
+                  description="Match results and individual points scored by each player"
                   partnership
                 />
               </div>

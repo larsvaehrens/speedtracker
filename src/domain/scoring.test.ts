@@ -79,7 +79,7 @@ describe("round scoring", () => {
     expect(getCompetitorScore(result.match, winner.id)).toBe(1);
   });
 
-  it("credits one surviving teammate one point and the team one point", () => {
+  it("awards one point to a surviving teammate and team", () => {
     const match = newMatch([2, 2]);
     const result = score(match, "competitor-0", ["player-0"], "round-1");
 
@@ -90,7 +90,7 @@ describe("round scoring", () => {
     expect(getPlayerPoints(result.match, "player-1")).toBe(0);
   });
 
-  it("credits both surviving teammates one point each and the team two points", () => {
+  it("awards one point to each surviving teammate and two to the team", () => {
     const match = newMatch([2, 2]);
     const result = score(match, "competitor-0", ["player-0", "player-1"], "round-1");
 

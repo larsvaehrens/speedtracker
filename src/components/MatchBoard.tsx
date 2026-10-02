@@ -49,6 +49,18 @@ function formatElapsed(match: MatchView, now: number): string {
   return formatDuration(Math.max(0, Math.floor(elapsedMilliseconds / 1000)));
 }
 
+function roundDescription(match: MatchView, round: RoundView): string {
+  const competitor = match.competitors.find(({ id }) => id === round.winnerCompetitorId);
+  const winner = competitor?.players.map(({ screenName }) => screenName).join(" + ");
+  const pointsScored = round.attributions
+    .map((attribution) => {
+      const player = competitor?.players.find(({ id }) => id === attribution.playerId);
+      return `${player?.screenName ?? "Player"} +${attribution.points}`;
+    })
+    .join(", ");
+  return `${winner ?? "Competitor"} won · ${pointsScored}`;
+}
+
 function matchFromPayload(payload: Record<string, unknown>): MatchView | null {
   const match = payload.match;
   return typeof match === "object" && match !== null ? (match as MatchView) : null;
@@ -515,7 +527,7 @@ export function MatchBoard({
       )}
       {match.status === "completed" && (
         <div className="notice notice-success">
-          <strong>{winnerName(match)}</strong> won the match. Round credits are kept separately from
+          <strong>{winnerName(match)}</strong> won the match. Round points are kept separately from
           match wins.
         </div>
       )}
@@ -680,7 +692,7 @@ export function MatchBoard({
           <span>Round results</span>
           <span className="muted">
             {activeRoundCount(match.rounds)} round
-            {activeRoundCount(match.rounds) === 1 ? "" : "s"} credited
+            {activeRoundCount(match.rounds) === 1 ? "" : "s"} scored
           </span>
         </summary>
         {match.rounds.length === 0 ? (

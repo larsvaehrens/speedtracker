@@ -1004,7 +1004,7 @@ input[readonly] {
   overflow-wrap: anywhere;
 }
 
-.player-identity .round-credit-line {
+.player-identity .round-point-line {
   display: block;
   margin-top: 4px;
   font-weight: 400;
@@ -1073,7 +1073,7 @@ input[readonly] {
   color: var(--muted);
 }
 
-.round-credit-line {
+.round-point-line {
   color: var(--muted);
   font-size: 0.77rem;
   line-height: 1.5;
@@ -1589,7 +1589,7 @@ input[readonly] {
   font-weight: 800;
 }
 
-.history-competitor .round-credit-line {
+.history-competitor .round-point-line {
   grid-column: 1 / -1;
 }
 

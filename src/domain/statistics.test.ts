@@ -177,7 +177,7 @@ describe("player statistics", () => {
     });
   });
 
-  it("keeps match wins separate from point credits earned in losses", () => {
+  it("keeps match wins separate from points earned in losses", () => {
     const matches = [
       completedMatch({
         id: "win",
@@ -201,25 +201,25 @@ describe("player statistics", () => {
     expect(stats.matchWins).toBe(1);
     expect(stats.matchesPlayed).toBe(2);
     expect(stats.matchWinRate).toBe(0.5);
-    expect(stats.roundCredits).toBe(2);
+    expect(stats.roundPoints).toBe(2);
   });
 
-  it("counts flawless wins and shutout losses using full competitor credits", () => {
+  it("counts flawless wins and shutout losses using full competitor points", () => {
     let day = 1;
-    const scoreMatch = (id: string, winner: number, ownCredits: number, opponentCredits: number) =>
+    const scoreMatch = (id: string, winner: number, ownPoints: number, opponentPoints: number) =>
       completedMatch({
         id,
         teams: [["player", "teammate"], ["opponent"]],
         winner,
         completedAt: `2026-01-${String(day++).padStart(2, "0")}T00:00:00.000Z`,
         rounds: [
-          ...Array.from({ length: ownCredits }, () => [{ playerId: "teammate", points: 1 }]),
-          ...Array.from({ length: opponentCredits }, () => [{ playerId: "opponent", points: 1 }]),
+          ...Array.from({ length: ownPoints }, () => [{ playerId: "teammate", points: 1 }]),
+          ...Array.from({ length: opponentPoints }, () => [{ playerId: "opponent", points: 1 }]),
         ],
       });
-    const flawlessWinWithUndoneOpponentCredit = scoreMatch("flawless", 0, 3, 1);
-    const undoneRoundIndex = flawlessWinWithUndoneOpponentCredit.rounds.length - 1;
-    flawlessWinWithUndoneOpponentCredit.rounds = flawlessWinWithUndoneOpponentCredit.rounds.map(
+    const flawlessWinWithUndoneOpponentPoint = scoreMatch("flawless", 0, 3, 1);
+    const undoneRoundIndex = flawlessWinWithUndoneOpponentPoint.rounds.length - 1;
+    flawlessWinWithUndoneOpponentPoint.rounds = flawlessWinWithUndoneOpponentPoint.rounds.map(
       (round, index) => (index === undoneRoundIndex ? { ...round, undone: true } : round),
     );
     const stats = calculateStatistics(
@@ -227,7 +227,7 @@ describe("player statistics", () => {
       [
         scoreMatch("win", 0, 3, 0),
         scoreMatch("contested-win", 0, 3, 1),
-        flawlessWinWithUndoneOpponentCredit,
+        flawlessWinWithUndoneOpponentPoint,
         scoreMatch("shutout-loss", 1, 0, 3),
         scoreMatch("contested-loss", 1, 1, 3),
       ],
