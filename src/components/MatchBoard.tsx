@@ -5,6 +5,7 @@ import { formatDuration } from "#/lib/time";
 import { MapPicker } from "./MapPicker";
 import { ScoreEmblems } from "./ScoreEmblems";
 import { Icon } from "./Icon";
+import { RoundTimeline } from "./RoundTimeline";
 
 type PendingScore = {
   revision: number;
@@ -38,18 +39,6 @@ function formatElapsed(match: MatchView, now: number): string {
   if (match.durationSeconds !== null) return formatDuration(match.durationSeconds);
   const startedAt = Date.parse(match.startedAt);
   return formatDuration(Math.floor((now - startedAt) / 1000));
-}
-
-function roundDescription(match: MatchView, round: RoundView): string {
-  const competitor = match.competitors.find(({ id }) => id === round.winnerCompetitorId);
-  const winner = competitor?.players.map(({ screenName }) => screenName).join(" + ");
-  const credited = round.attributions
-    .map((attribution) => {
-      const player = competitor?.players.find(({ id }) => id === attribution.playerId);
-      return `${player?.screenName ?? "Player"} +${attribution.points}`;
-    })
-    .join(", ");
-  return `${winner ?? "Competitor"} won · ${credited}`;
 }
 
 function matchFromPayload(payload: Record<string, unknown>): MatchView | null {
@@ -536,15 +525,12 @@ export function MatchBoard({
         {match.rounds.length === 0 ? (
           <p className="empty-inline">No round has been recorded yet.</p>
         ) : (
-          <ol className="round-list">
-            {match.rounds.map((round) => (
-              <li className={round.undone ? "round-undone" : ""} key={round.id}>
-                <span className="round-number">R{round.sequence}</span>
-                <span>{roundDescription(match, round)}</span>
-                {round.undone && <span className="muted">Undone</span>}
-              </li>
-            ))}
-          </ol>
+          <RoundTimeline
+            competitors={match.competitors}
+            endLabel={formatElapsed(match, now)}
+            rounds={match.rounds}
+            startedAt={match.startedAt}
+          />
         )}
       </details>
 

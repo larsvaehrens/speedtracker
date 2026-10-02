@@ -1,6 +1,7 @@
 import { createElement } from "react";
+import { readFileSync } from "node:fs";
 import { renderToStaticMarkup } from "react-dom/server";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import type { FriendView, MatchView } from "#/domain/views";
 import { HistoryView } from "./HistoryView";
 import { PlayerAvatar } from "./PlayerAvatar";
@@ -62,6 +63,7 @@ const match: MatchView = {
       id: "round",
       submissionId: "submission",
       sequence: 1,
+      scoredAt: "2026-09-30T10:02:03Z",
       winnerCompetitorId: "team",
       survivingPlayerIds: ["me", "friend"],
       attributions: [
@@ -121,6 +123,39 @@ describe("player profile pictures", () => {
     });
   });
 
+  it("keeps the live timeline end time synchronized with the elapsed match clock", () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-09-30T10:05:00Z"));
+    const liveMatch: MatchView = {
+      ...match,
+      status: "active",
+      completedAt: null,
+      winnerCompetitorId: null,
+      durationSeconds: null,
+    };
+    const renderLiveMatch = () =>
+      renderToStaticMarkup(
+        createElement(ToastProvider, {
+          children: createElement(MatchBoard, {
+            initialMatch: liveMatch,
+            maps: [],
+            viewerId: "me",
+            onMatchChanged: () => {},
+            onDone: () => {},
+          }),
+        }),
+      );
+
+    try {
+      expect(renderLiveMatch()).toContain("5:00 · Match end");
+      vi.setSystemTime(new Date("2026-09-30T10:05:01Z"));
+      expect(renderLiveMatch()).toContain("5:01 · Match end");
+      expect(renderLiveMatch()).toMatch(/<time class="round-timeline-time"[^>]*>2:03<\/time>/);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
   it("shows a placeholder without an unrelated avatar for an empty setup slot", () => {
     const markup = renderToStaticMarkup(
       createElement(PlayerSelect, {
@@ -154,6 +189,44 @@ describe("player profile pictures", () => {
     expect(markup).toContain("Lethal Spikes");
     expect(markup).toContain('aria-label="Enabled game modes"');
     expect(markup).toContain("Round breakdown");
+    expect(markup).toContain('dateTime="2026-09-30T10:02:03Z"');
+  });
+
+  it("shows elapsed scoring times on an evenly spaced match timeline", () => {
+    const timelineMatch: MatchView = {
+      ...match,
+      rounds: [
+        ...match.rounds,
+        {
+          ...match.rounds[0],
+          id: "round-two",
+          submissionId: "submission-two",
+          sequence: 2,
+          scoredAt: "2026-09-30T10:03:41Z",
+        },
+      ],
+    };
+    const markup = renderToStaticMarkup(
+      createElement(HistoryView, {
+        matches: [timelineMatch],
+        viewerId: "me",
+        onOpen: () => {},
+      }),
+    );
+
+    expect(markup).toContain('class="round-timeline"');
+    expect(markup.match(/class="round-timeline-event/g)).toHaveLength(2);
+    expect(markup).toMatch(/<time class="round-timeline-time"[^>]*>2:03<\/time>/);
+    expect(markup).toMatch(/<time class="round-timeline-time"[^>]*>3:41<\/time>/);
+    expect(markup).toContain("0:00 · Match start");
+    expect(markup).toContain("5:00 · Match end");
+  });
+
+  it("uses equal-width timeline columns regardless of round elapsed times", () => {
+    const css = readFileSync(new URL("../styles.css", import.meta.url), "utf8");
+    expect(css).toMatch(
+      /\.round-timeline\s*\{[^}]*grid-auto-flow:\s*column;[^}]*grid-auto-columns:\s*minmax\(132px,\s*1fr\)/,
+    );
   });
 
   it("defaults new matches to Sudden Death and exposes all game modes", () => {

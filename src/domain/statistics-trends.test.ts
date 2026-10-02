@@ -26,6 +26,7 @@ function match(
         id: `round-${completedAt}`,
         submissionId: completedAt,
         sequence: 1,
+        scoredAt: completedAt,
         winnerCompetitorId: "own",
         survivingPlayerIds: [player],
         attributions: [{ playerId: player, points }],

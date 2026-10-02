@@ -20,6 +20,7 @@ export type RoundView = {
   id: string;
   submissionId: string;
   sequence: number;
+  scoredAt: string;
   winnerCompetitorId: string;
   survivingPlayerIds: string[];
   attributions: PointAttribution[];

@@ -65,6 +65,7 @@ describe("round scoring", () => {
     expect(result.ok).toBe(true);
     if (!result.ok) return;
     expect(result.round?.winnerCompetitorId).toBe(winner.id);
+    expect(result.round?.scoredAt).toBe("2026-01-01T00:01:00.000Z");
     expect(getCompetitorScore(result.match, winner.id)).toBe(1);
   });
 
