@@ -1313,6 +1313,86 @@ input[readonly] {
   text-decoration: line-through;
 }
 
+.round-timeline-scroll {
+  overflow-x: auto;
+  padding: 12px 0;
+}
+
+.round-timeline-endpoints {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.round-timeline {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(132px, 1fr);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.round-timeline-event {
+  display: grid;
+  min-width: 0;
+  align-content: start;
+  justify-items: center;
+  gap: 8px;
+  padding: 0 8px;
+  text-align: center;
+}
+
+.round-timeline-time {
+  color: var(--secondary);
+  font-size: 0.78rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.round-timeline-track {
+  display: flex;
+  width: calc(100% + 16px);
+  height: 12px;
+  align-items: center;
+  justify-content: center;
+  margin-inline: -8px;
+  background: linear-gradient(var(--line), var(--line)) center / 100% 2px no-repeat;
+}
+
+.round-timeline-event:first-child .round-timeline-track {
+  background-size: 50% 2px;
+  background-position: right center;
+}
+
+.round-timeline-event:last-child .round-timeline-track {
+  background-size: 50% 2px;
+  background-position: left center;
+}
+
+.round-timeline-event:only-child .round-timeline-track {
+  background: none;
+}
+
+.round-timeline-marker {
+  width: 10px;
+  height: 10px;
+  border: 2px solid var(--primary);
+  border-radius: 50%;
+  background: var(--surface);
+}
+
+.round-timeline-event .round-number {
+  color: var(--muted);
+}
+
+.round-timeline-event .history-round-players {
+  justify-content: center;
+}
+
 .map-modal {
   width: min(1180px, calc(100% - 24px));
   max-width: 1180px;

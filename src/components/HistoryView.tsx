@@ -20,12 +20,9 @@ type HistoryViewProps = {
   onOpen: (match: MatchView) => void;
 };
 
-function formatRoundTime(scoredAt: string): string {
-  return new Date(scoredAt).toLocaleTimeString(undefined, {
-    hour: "numeric",
-    minute: "2-digit",
-    second: "2-digit",
-  });
+function formatRoundTime(scoredAt: string, startedAt: string): string {
+  const elapsedSeconds = (Date.parse(scoredAt) - Date.parse(startedAt)) / 1000;
+  return formatDuration(elapsedSeconds);
 }
 
 export function HistoryView({ matches, viewerId, onOpen }: HistoryViewProps) {
@@ -170,35 +167,42 @@ export function HistoryView({ matches, viewerId, onOpen }: HistoryViewProps) {
                       Round breakdown · {match.rounds.filter((round) => !round.undone).length}{" "}
                       credited
                     </summary>
-                    <ol className="round-list">
-                      {match.rounds.map((round) => {
-                        const winner = match.competitors.find(
-                          ({ id }) => id === round.winnerCompetitorId,
-                        );
-                        return (
-                          <li className={round.undone ? "round-undone" : ""} key={round.id}>
-                            <span className="round-number">R{round.sequence}</span>
-                            <span className="history-round-players">
-                              {winner?.players.map((player) => (
-                                <PlayerIdentity key={player.id} player={player}>
-                                  {player.screenName}
-                                  {` +${round.attributions.find(({ playerId }) => playerId === player.id)?.points ?? 0}`}
-                                </PlayerIdentity>
-                              ))}
-                              <span>won</span>
-                              <time
-                                className="muted"
-                                dateTime={round.scoredAt}
-                                title={new Date(round.scoredAt).toLocaleString()}
-                              >
-                                {formatRoundTime(round.scoredAt)}
+                    <div className="round-timeline-endpoints">
+                      <span>0:00 · Match start</span>
+                      <span>{formatDuration(match.durationSeconds ?? 0)} · Match end</span>
+                    </div>
+                    <div className="round-timeline-scroll">
+                      <ol className="round-timeline">
+                        {match.rounds.map((round) => {
+                          const winner = match.competitors.find(
+                            ({ id }) => id === round.winnerCompetitorId,
+                          );
+                          return (
+                            <li
+                              className={`round-timeline-event${round.undone ? " round-undone" : ""}`}
+                              key={round.id}
+                            >
+                              <time className="round-timeline-time" dateTime={round.scoredAt}>
+                                {formatRoundTime(round.scoredAt, match.startedAt)}
                               </time>
-                            </span>
-                            {round.undone && <span className="muted">Undone</span>}
-                          </li>
-                        );
-                      })}
-                    </ol>
+                              <span aria-hidden="true" className="round-timeline-track">
+                                <span className="round-timeline-marker" />
+                              </span>
+                              <span className="round-number">R{round.sequence}</span>
+                              <span className="history-round-players">
+                                {winner?.players.map((player) => (
+                                  <PlayerIdentity key={player.id} player={player}>
+                                    {player.screenName}
+                                    {` +${round.attributions.find(({ playerId }) => playerId === player.id)?.points ?? 0}`}
+                                  </PlayerIdentity>
+                                ))}
+                              </span>
+                              {round.undone && <span className="muted">Undone</span>}
+                            </li>
+                          );
+                        })}
+                      </ol>
+                    </div>
                   </details>
                   <button
                     className="button button-quiet history-open"

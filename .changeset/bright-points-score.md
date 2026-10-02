@@ -2,4 +2,4 @@
 "speedtracker": patch
 ---
 
-Show when each point was scored in match history.
+Show point-scoring times as elapsed time on an evenly spaced match timeline.

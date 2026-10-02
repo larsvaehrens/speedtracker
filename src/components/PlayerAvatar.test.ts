@@ -1,4 +1,5 @@
 import { createElement } from "react";
+import { readFileSync } from "node:fs";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import type { FriendView, MatchView } from "#/domain/views";
@@ -156,6 +157,43 @@ describe("player profile pictures", () => {
     expect(markup).toContain('aria-label="Enabled game modes"');
     expect(markup).toContain("Round breakdown");
     expect(markup).toContain('dateTime="2026-09-30T10:02:03Z"');
+  });
+
+  it("shows elapsed scoring times on an evenly spaced match timeline", () => {
+    const timelineMatch: MatchView = {
+      ...match,
+      rounds: [
+        ...match.rounds,
+        {
+          ...match.rounds[0],
+          id: "round-two",
+          submissionId: "submission-two",
+          sequence: 2,
+          scoredAt: "2026-09-30T10:03:41Z",
+        },
+      ],
+    };
+    const markup = renderToStaticMarkup(
+      createElement(HistoryView, {
+        matches: [timelineMatch],
+        viewerId: "me",
+        onOpen: () => {},
+      }),
+    );
+
+    expect(markup).toContain('class="round-timeline"');
+    expect(markup.match(/class="round-timeline-event/g)).toHaveLength(2);
+    expect(markup).toMatch(/<time class="round-timeline-time"[^>]*>2:03<\/time>/);
+    expect(markup).toMatch(/<time class="round-timeline-time"[^>]*>3:41<\/time>/);
+    expect(markup).toContain("0:00 · Match start");
+    expect(markup).toContain("5:00 · Match end");
+  });
+
+  it("uses equal-width timeline columns regardless of round elapsed times", () => {
+    const css = readFileSync(new URL("../styles.css", import.meta.url), "utf8");
+    expect(css).toMatch(
+      /\.round-timeline\s*\{[^}]*grid-auto-flow:\s*column;[^}]*grid-auto-columns:\s*minmax\(132px,\s*1fr\)/,
+    );
   });
 
   it("defaults new matches to Sudden Death and exposes all game modes", () => {
