@@ -7,23 +7,18 @@ import {
 } from "#/domain/match-filters";
 import { apiMessage, apiRequest } from "#/lib/api";
 import { formatDuration } from "#/lib/time";
-import { PlayerIdentity } from "./PlayerIdentity";
 import { MapThumbnail } from "./MapThumbnail";
 import { Icon } from "./Icon";
 import { MatchCompetitors } from "./MatchCompetitors";
 import { MatchFilters } from "./MatchFilters";
 import { GameModeBadges } from "./GameModeBadges";
+import { RoundTimeline } from "./RoundTimeline";
 
 type HistoryViewProps = {
   matches: MatchView[];
   viewerId: string;
   onOpen: (match: MatchView) => void;
 };
-
-function formatRoundTime(scoredAt: string, startedAt: string): string {
-  const elapsedSeconds = (Date.parse(scoredAt) - Date.parse(startedAt)) / 1000;
-  return formatDuration(elapsedSeconds);
-}
 
 export function HistoryView({ matches, viewerId, onOpen }: HistoryViewProps) {
   const [allMatches, setAllMatches] = useState(matches);
@@ -167,42 +162,12 @@ export function HistoryView({ matches, viewerId, onOpen }: HistoryViewProps) {
                       Round breakdown · {match.rounds.filter((round) => !round.undone).length}{" "}
                       credited
                     </summary>
-                    <div className="round-timeline-endpoints">
-                      <span>0:00 · Match start</span>
-                      <span>{formatDuration(match.durationSeconds ?? 0)} · Match end</span>
-                    </div>
-                    <div className="round-timeline-scroll">
-                      <ol className="round-timeline">
-                        {match.rounds.map((round) => {
-                          const winner = match.competitors.find(
-                            ({ id }) => id === round.winnerCompetitorId,
-                          );
-                          return (
-                            <li
-                              className={`round-timeline-event${round.undone ? " round-undone" : ""}`}
-                              key={round.id}
-                            >
-                              <time className="round-timeline-time" dateTime={round.scoredAt}>
-                                {formatRoundTime(round.scoredAt, match.startedAt)}
-                              </time>
-                              <span aria-hidden="true" className="round-timeline-track">
-                                <span className="round-timeline-marker" />
-                              </span>
-                              <span className="round-number">R{round.sequence}</span>
-                              <span className="history-round-players">
-                                {winner?.players.map((player) => (
-                                  <PlayerIdentity key={player.id} player={player}>
-                                    {player.screenName}
-                                    {` +${round.attributions.find(({ playerId }) => playerId === player.id)?.points ?? 0}`}
-                                  </PlayerIdentity>
-                                ))}
-                              </span>
-                              {round.undone && <span className="muted">Undone</span>}
-                            </li>
-                          );
-                        })}
-                      </ol>
-                    </div>
+                    <RoundTimeline
+                      competitors={match.competitors}
+                      endLabel={formatDuration(match.durationSeconds ?? 0)}
+                      rounds={match.rounds}
+                      startedAt={match.startedAt}
+                    />
                   </details>
                   <button
                     className="button button-quiet history-open"

@@ -2,4 +2,4 @@
 "speedtracker": patch
 ---
 
-Show point-scoring times as elapsed time on an evenly spaced match timeline.
+Show points as elapsed time on evenly spaced timelines in history and live matches.

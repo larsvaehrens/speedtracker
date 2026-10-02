@@ -1,7 +1,7 @@
 import { createElement } from "react";
 import { readFileSync } from "node:fs";
 import { renderToStaticMarkup } from "react-dom/server";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import type { FriendView, MatchView } from "#/domain/views";
 import { HistoryView } from "./HistoryView";
 import { PlayerAvatar } from "./PlayerAvatar";
@@ -121,6 +121,39 @@ describe("player profile pictures", () => {
       expect(markup).not.toContain("←");
       expect(markup).not.toContain("●");
     });
+  });
+
+  it("keeps the live timeline end time synchronized with the elapsed match clock", () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-09-30T10:05:00Z"));
+    const liveMatch: MatchView = {
+      ...match,
+      status: "active",
+      completedAt: null,
+      winnerCompetitorId: null,
+      durationSeconds: null,
+    };
+    const renderLiveMatch = () =>
+      renderToStaticMarkup(
+        createElement(ToastProvider, {
+          children: createElement(MatchBoard, {
+            initialMatch: liveMatch,
+            maps: [],
+            viewerId: "me",
+            onMatchChanged: () => {},
+            onDone: () => {},
+          }),
+        }),
+      );
+
+    try {
+      expect(renderLiveMatch()).toContain("5:00 · Match end");
+      vi.setSystemTime(new Date("2026-09-30T10:05:01Z"));
+      expect(renderLiveMatch()).toContain("5:01 · Match end");
+      expect(renderLiveMatch()).toMatch(/<time class="round-timeline-time"[^>]*>2:03<\/time>/);
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it("shows a placeholder without an unrelated avatar for an empty setup slot", () => {
