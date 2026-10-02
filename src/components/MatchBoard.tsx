@@ -336,6 +336,35 @@ export function MatchBoard({
     }
   }
 
+  async function repeatMatchWithoutMap() {
+    if (!isScorekeeper || match.status !== "completed" || actionPending || saveState !== "idle") {
+      return;
+    }
+    setActionPending(true);
+    setActionError("");
+    try {
+      const result = await apiRequest<{ match: MatchView }>("/api/matches", {
+        method: "POST",
+        body: JSON.stringify({
+          competitors: match.competitors.map(({ playerIds }) => ({ playerIds })),
+          mapId: null,
+          gameModes: match.gameModes,
+        }),
+      });
+      applyMatch(result.match);
+    } catch (error) {
+      setActionError(apiMessage(error));
+      if (error instanceof ApiError) {
+        const latest = matchFromPayload(error.payload);
+        if (latest) applyMatch(latest);
+      } else {
+        setConnection(online ? "error" : "offline");
+      }
+    } finally {
+      setActionPending(false);
+    }
+  }
+
   async function undoLast(correction = false) {
     setCorrectionPromptOpen(false);
     setActionPending(true);
@@ -667,14 +696,26 @@ export function MatchBoard({
       </details>
 
       {match.status === "completed" && (
-        <button
-          className="button button-primary button-full"
-          disabled={actionPending || saveState !== "idle"}
-          onClick={onDone}
-          type="button"
-        >
-          Done
-        </button>
+        <div className="completed-match-actions">
+          {isScorekeeper && (
+            <button
+              className="button button-quiet"
+              disabled={actionPending || saveState !== "idle"}
+              onClick={() => void repeatMatchWithoutMap()}
+              type="button"
+            >
+              Repeat setup without map
+            </button>
+          )}
+          <button
+            className="button button-primary"
+            disabled={actionPending || saveState !== "idle"}
+            onClick={onDone}
+            type="button"
+          >
+            Done
+          </button>
+        </div>
       )}
 
       <MapPicker

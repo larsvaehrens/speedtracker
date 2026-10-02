@@ -88,6 +88,8 @@ manual edits.
 - A Match may start without a map. The map is required to finalize a threshold
   victory. A pending winning Round remains recorded while the scorekeeper
   selects one.
+- After a completed Match, the scorekeeper can repeat its player and game-mode
+  setup in a new Match without choosing a map.
 - The creator is the scorekeeper. Match participants can view live and
   completed state; unrelated users cannot access private Matches. Following
   someone makes them selectable in Setup and lets you view their statistics

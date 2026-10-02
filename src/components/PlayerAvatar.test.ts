@@ -120,6 +120,8 @@ describe("player profile pictures", () => {
         }),
       );
       expect(markup).toContain("Matches</button>");
+      expect(markup).toContain("Repeat setup without map");
+      expect(markup).toContain(">Done</button>");
       expect(markup).toContain("All changes saved");
       expect(markup).toContain('fill="currentColor" r="8" stroke="none"');
       expect(markup).not.toContain("←");
