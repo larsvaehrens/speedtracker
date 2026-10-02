@@ -4,7 +4,7 @@ import { describe, expect, it } from "vitest";
 import { ScoreEmblems } from "./ScoreEmblems";
 
 describe("scoring button emblems", () => {
-  it.each([0, 1, 2, 3])("shows the next credit for a single point at score %i", (score) => {
+  it.each([0, 1, 2, 3])("shows the next point for a single point at score %i", (score) => {
     const markup = renderToStaticMarkup(createElement(ScoreEmblems, { score, points: 1 }));
 
     expect(markup.match(/<img /g)).toHaveLength(1);

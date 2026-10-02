@@ -75,9 +75,9 @@ describe("monthly trends across statistics views", () => {
     expect(markup).toContain('class="activity-grid"');
     expect(markup).toContain("completed matches shown");
     expect(markup).toContain("Flawless wins");
-    expect(markup).toContain("Won without conceding a credit");
+    expect(markup).toContain("Won without conceding a point");
     expect(markup).toContain("Shutout losses");
-    expect(markup).toContain("Lost without scoring a credit");
+    expect(markup).toContain("Lost without scoring a point");
     expect(markup.indexOf("<h2>Streaks</h2>")).toBeLessThan(markup.indexOf("<h2>By map</h2>"));
     expect(markup.indexOf('class="stats-side-panels"')).toBeLessThan(
       markup.indexOf("<h2>Against opponents</h2>"),
@@ -105,7 +105,7 @@ describe("monthly trends across statistics views", () => {
       }),
     );
     expect(followedMarkup).toContain("Followed&#x27;s statistics");
-    expect(followedMarkup).toContain("Points credited to this player");
+    expect(followedMarkup).toContain("Points earned by this player");
     expect(followedMarkup).toContain("Followed&#x27;s points");
     expect(followedMarkup).not.toContain("Your points");
     expect(followedMarkup).toContain("Back to players");

@@ -515,7 +515,7 @@ export function MatchBoard({
       )}
       {match.status === "completed" && (
         <div className="notice notice-success">
-          <strong>{winnerName(match)}</strong> won the match. Round credits are kept separately from
+          <strong>{winnerName(match)}</strong> won the match. Round points are kept separately from
           match wins.
         </div>
       )}
@@ -680,7 +680,7 @@ export function MatchBoard({
           <span>Round results</span>
           <span className="muted">
             {activeRoundCount(match.rounds)} round
-            {activeRoundCount(match.rounds) === 1 ? "" : "s"} credited
+            {activeRoundCount(match.rounds) === 1 ? "" : "s"} scored
           </span>
         </summary>
         {match.rounds.length === 0 ? (

@@ -204,27 +204,27 @@ export function StatisticsContent({
           </span>
         </article>
         <article className="stat-card">
-          <span className="muted">Individual round credits</span>
+          <span className="muted">Individual points</span>
           <strong className="stat-value">
-            {stats.roundCredits}
+            {stats.roundPoints}
             <StatTrend
               {...trendPeriod}
-              current={comparison.current.roundCredits}
-              previous={comparison.previous.roundCredits}
+              current={comparison.current.roundPoints}
+              previous={comparison.previous.roundPoints}
               unit="count"
             />
           </strong>
-          <span>{player ? "Points credited to this player" : "Points credited to you"}</span>
+          <span>{player ? "Points earned by this player" : "Points earned by you"}</span>
         </article>
         <article className="stat-card stat-card-positive">
           <span className="muted">Flawless wins</span>
           <strong>{stats.flawlessWins}</strong>
-          <span>Won without conceding a credit</span>
+          <span>Won without conceding a point</span>
         </article>
         <article className="stat-card stat-card-negative">
           <span className="muted">Shutout losses</span>
           <strong>{stats.shutoutLosses}</strong>
-          <span>Lost without scoring a credit</span>
+          <span>Lost without scoring a point</span>
         </article>
         <article className="stat-card">
           <span className="muted">Total time played</span>
@@ -442,7 +442,7 @@ export function StatisticsContent({
                   <div>
                     <h2>With teammates</h2>
                     <p className="muted">
-                      Match results and individual points credited to each player
+                      Match results and individual points scored by each player
                     </p>
                   </div>
                 </div>

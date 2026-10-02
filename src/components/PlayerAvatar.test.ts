@@ -190,7 +190,7 @@ describe("player profile pictures", () => {
     expect(markup).toContain('src="/me.png"');
     expect(markup).toContain('src="/friend.png"');
     expect(markup).toContain('src="/ressources/heroes/SpeedRunner/SpeedRunner_Original.png"');
-    expect(markup).toContain("1 round credits");
+    expect(markup).toContain("1 point");
     expect(markup).toContain("Sudden Death");
     expect(markup).toContain("Lethal Spikes");
     expect(markup).toContain('aria-label="Enabled game modes"');
@@ -327,7 +327,7 @@ describe("player profile pictures", () => {
     expect(markup).toContain("<strong>2</strong>");
     expect(markup).toContain("<strong>0</strong>");
     expect(markup).toContain("Sudden Death");
-    expect(markup).toContain("1 round credits");
+    expect(markup).toContain("1 point");
     expect(markup).not.toContain("Round breakdown");
     expect(markup).not.toContain("View match");
   });
@@ -370,10 +370,10 @@ describe("player profile pictures", () => {
       }),
     );
     expect(markup).toContain('class="history-competitor is-winner"');
-    expect(markup.match(/1 round credits/g)).toHaveLength(2);
-    expect(markup).toContain("0 round credits");
+    expect(markup.match(/1 point/g)).toHaveLength(2);
+    expect(markup).toContain("0 points");
     expect(markup).toContain("<strong>4</strong>");
-    expect(markup).not.toContain("2 round credits");
+    expect(markup).not.toContain("2 points");
     expect(markup).not.toContain("<div");
     expect(markup).not.toContain("<button");
   });

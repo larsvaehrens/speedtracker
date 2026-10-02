@@ -55,7 +55,7 @@ export type PlayerStatistics = {
   matchWins: number;
   matchesPlayed: number;
   matchWinRate: number | null;
-  roundCredits: number;
+  roundPoints: number;
   totalPlayedSeconds: number;
   flawlessWins: number;
   shutoutLosses: number;
@@ -79,7 +79,7 @@ export type MonthlyStatistics = Pick<
   PlayerStatistics,
   | "matchWinRate"
   | "matchesPlayed"
-  | "roundCredits"
+  | "roundPoints"
   | "totalPlayedSeconds"
   | "maps"
   | "opponents"
@@ -376,7 +376,7 @@ function calculateBaseStatistics(
     matchWins,
     matchesPlayed: matches.length,
     matchWinRate: winRate(matchWins, matches.length),
-    roundCredits: sumPlayerPoints(matches, playerId),
+    roundPoints: sumPlayerPoints(matches, playerId),
     totalPlayedSeconds: matches.reduce((total, match) => total + getMatchDurationSeconds(match), 0),
     flawlessWins,
     shutoutLosses,
@@ -534,7 +534,7 @@ export function calculateStatistics(
     return {
       matchWinRate: stats.matchWinRate,
       matchesPlayed: stats.matchesPlayed,
-      roundCredits: stats.roundCredits,
+      roundPoints: stats.roundPoints,
       totalPlayedSeconds: stats.totalPlayedSeconds,
       maps: stats.maps,
       opponents: stats.opponents,
