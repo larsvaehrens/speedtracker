@@ -9,7 +9,7 @@ import {
 } from "react";
 import { Icon } from "./Icon";
 
-type ToastKind = "info" | "success" | "warning";
+type ToastKind = "info" | "success" | "warning" | "error";
 type Toast = { id: number; message: string; kind: ToastKind };
 type Notify = (message: string, kind?: ToastKind) => void;
 
@@ -26,7 +26,7 @@ function ToastMessage({ toast, dismiss }: { toast: Toast; dismiss: (id: number) 
   const [focused, setFocused] = useState(false);
 
   useEffect(() => {
-    if (hovered || focused || toast.kind === "warning") return;
+    if (hovered || focused || toast.kind === "warning" || toast.kind === "error") return;
     const timer = window.setTimeout(() => dismiss(toast.id), 6000);
     return () => window.clearTimeout(timer);
   }, [dismiss, focused, hovered, toast.id, toast.kind]);
@@ -41,7 +41,7 @@ function ToastMessage({ toast, dismiss }: { toast: Toast; dismiss: (id: number) 
       onBlur={(event) => {
         if (!event.currentTarget.contains(event.relatedTarget)) setFocused(false);
       }}
-      role={toast.kind === "warning" ? "alert" : "status"}
+      role={toast.kind === "warning" || toast.kind === "error" ? "alert" : "status"}
     >
       <p>{toast.message}</p>
       <button

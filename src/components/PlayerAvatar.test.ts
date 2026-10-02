@@ -107,12 +107,14 @@ describe("player profile pictures", () => {
   describe("match navigation icons", () => {
     it("uses SVG icons while preserving the back button and connection status labels", () => {
       const markup = renderToStaticMarkup(
-        createElement(MatchBoard, {
-          initialMatch: match,
-          maps: [],
-          viewerId: "me",
-          onMatchChanged: () => {},
-          onDone: () => {},
+        createElement(ToastProvider, {
+          children: createElement(MatchBoard, {
+            initialMatch: match,
+            maps: [],
+            viewerId: "me",
+            onMatchChanged: () => {},
+            onDone: () => {},
+          }),
         }),
       );
       expect(markup).toContain("Matches</button>");
