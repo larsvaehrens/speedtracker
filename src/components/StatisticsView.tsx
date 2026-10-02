@@ -40,6 +40,10 @@ function displayName(names: Record<string, string>, id: string): string {
   return names[id] ?? "Player";
 }
 
+function activityLevel(matches: number, maximum: number): number {
+  return matches === 0 || maximum === 0 ? 0 : Math.ceil((matches / maximum) * 4);
+}
+
 export function StatisticsView({ playerNames, hasMatches, player, onBack }: StatisticsViewProps) {
   const [stats, setStats] = useState<PlayerStatistics | null>(null);
   const [names, setNames] = useState(playerNames);
@@ -151,6 +155,8 @@ export function StatisticsContent({
     filters.opponentIds.length ||
     filters.gameModes.length,
   );
+  const activityMatches = stats.playingActivity.reduce((total, day) => total + day.matches, 0);
+  const activityMaximum = Math.max(...stats.playingActivity.map((day) => day.matches), 0);
 
   return (
     <section className="page-section">
@@ -234,6 +240,40 @@ export function StatisticsContent({
           <span style={{ visibility: "hidden" }}>Time in completed matches</span>
         </article>
       </div>
+
+      {stats.matchesPlayed > 0 && (
+        <section className="panel activity-panel">
+          <div className="panel-heading">
+            <div>
+              <h2>Match activity</h2>
+            </div>
+          </div>
+          <div
+            aria-label={`${activityMatches} completed matches shown`}
+            className="activity-grid-scroll"
+            role="img"
+          >
+            <div className="activity-grid">
+              {stats.playingActivity.map((day) => (
+                <span
+                  aria-hidden="true"
+                  className="activity-day"
+                  data-level={activityLevel(day.matches, activityMaximum)}
+                  key={day.date}
+                  title={`${day.date}: ${day.matches} ${day.matches === 1 ? "match" : "matches"}`}
+                />
+              ))}
+            </div>
+          </div>
+          <div aria-hidden="true" className="activity-legend">
+            <span>Less</span>
+            {[0, 1, 2, 3, 4].map((level) => (
+              <span className="activity-day" data-level={level} key={level} />
+            ))}
+            <span>More</span>
+          </div>
+        </section>
+      )}
 
       {stats.matchesPlayed === 0 ? (
         <div className="empty-state panel">
