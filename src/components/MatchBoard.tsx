@@ -6,6 +6,7 @@ import { MapPicker } from "./MapPicker";
 import { ScoreEmblems } from "./ScoreEmblems";
 import { Icon } from "./Icon";
 import { RoundTimeline } from "./RoundTimeline";
+import { useToast } from "./ToastProvider";
 
 type PendingScore = {
   revision: number;
@@ -13,6 +14,8 @@ type PendingScore = {
   winnerCompetitorId: string;
   survivingPlayerIds: string[];
 };
+
+const SCORE_COOLDOWN_MS = 5_000;
 
 type MatchBoardProps = {
   initialMatch: MatchView;
@@ -56,6 +59,7 @@ export function MatchBoard({
   const [match, setMatch] = useState(initialMatch);
   const matchRef = useRef(initialMatch);
   const pendingScoreRef = useRef<PendingScore | null>(null);
+  const nextScoreAllowedAt = useRef(0);
   const postInFlight = useRef(false);
   const pollInFlight = useRef(false);
   const [connection, setConnection] = useState<"saved" | "checking" | "offline" | "error">("saved");
@@ -68,6 +72,7 @@ export function MatchBoard({
   const [actionPending, setActionPending] = useState(false);
   const [actionError, setActionError] = useState("");
   const [now, setNow] = useState(Date.now());
+  const toast = useToast();
 
   const isScorekeeper = match.creatorId === viewerId;
   const editable = match.status === "active" || match.status === "awaiting-map";
@@ -180,6 +185,7 @@ export function MatchBoard({
           void refresh();
         } else {
           pendingScoreRef.current = null;
+          nextScoreAllowedAt.current = 0;
           setSaveState("idle");
           setConnection("saved");
         }
@@ -195,10 +201,20 @@ export function MatchBoard({
   }
 
   function awardRound(competitorId: string, survivingPlayerIds: string[]) {
-    if (!isScorekeeper || matchRef.current.status !== "active" || pendingScoreRef.current) {
+    if (!isScorekeeper || matchRef.current.status !== "active") {
       return;
     }
+    const now = Date.now();
+    if (now < nextScoreAllowedAt.current) {
+      toast(
+        "Double scoring was prevented. Wait 5 seconds before recording another point.",
+        "error",
+      );
+      return;
+    }
+    if (pendingScoreRef.current) return;
 
+    nextScoreAllowedAt.current = now + SCORE_COOLDOWN_MS;
     pendingScoreRef.current = {
       revision: matchRef.current.revision,
       submissionId: crypto.randomUUID(),

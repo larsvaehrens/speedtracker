@@ -461,6 +461,10 @@ input[readonly] {
   border-left-color: var(--secondary);
 }
 
+.toast-error {
+  border-left-color: var(--danger);
+}
+
 .toast-close {
   display: grid;
   width: var(--touch);
