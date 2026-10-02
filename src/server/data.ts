@@ -20,6 +20,8 @@ type MatchRow = {
   game_modes: string;
   started_at: string;
   completed_at: string | null;
+  paused_at: string | null;
+  paused_duration_seconds: number;
 };
 
 type CompetitorRow = {
@@ -77,6 +79,7 @@ export async function getMatch(matchId: string, viewerId: string): Promise<Match
   const match = await env.DB.prepare(
     `SELECT m.id, m.creator_id, m.map_id, m.status, m.revision,
             m.winner_competitor_id, m.game_modes, m.started_at, m.completed_at,
+            m.paused_at, m.paused_duration_seconds,
             p.name AS map_name, p.image_path AS map_image_path,
             p.sort_order AS map_sort_order,
             EXISTS (
@@ -208,6 +211,8 @@ export async function getMatch(matchId: string, viewerId: string): Promise<Match
     mapId: match.map_id,
     startedAt: match.started_at,
     completedAt: match.completed_at,
+    pausedAt: match.paused_at,
+    pausedDurationSeconds: match.paused_duration_seconds,
     winnerCompetitorId: match.winner_competitor_id,
     gameModes: parseGameModes(match.game_modes),
     competitors: competitors.map(({ id, playerIds }) => ({ id, playerIds })),
@@ -217,7 +222,12 @@ export async function getMatch(matchId: string, viewerId: string): Promise<Match
   const durationSeconds = match.completed_at
     ? Math.max(
         0,
-        Math.floor((Date.parse(match.completed_at) - Date.parse(match.started_at)) / 1000),
+        Math.floor(
+          (Date.parse(match.completed_at) -
+            Date.parse(match.started_at) -
+            match.paused_duration_seconds * 1000) /
+            1000,
+        ),
       )
     : null;
 
@@ -376,6 +386,8 @@ export async function getCompletedMatches(playerId: string): Promise<MatchState[
         mapId: match.mapId,
         startedAt: match.startedAt,
         completedAt: match.completedAt,
+        pausedAt: match.pausedAt,
+        pausedDurationSeconds: match.pausedDurationSeconds,
         winnerCompetitorId: match.winnerCompetitorId,
         gameModes: match.gameModes,
         competitors: match.competitors.map(({ id, playerIds }) => ({

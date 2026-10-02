@@ -121,7 +121,12 @@ function sumPlayerPoints(matches: CompletedMatch[], playerId: string): number {
 function getMatchDurationSeconds(match: CompletedMatch): number {
   return Math.max(
     0,
-    Math.floor((Date.parse(match.completedAt) - Date.parse(match.startedAt)) / 1000),
+    Math.floor(
+      (Date.parse(match.completedAt) -
+        Date.parse(match.startedAt) -
+        match.pausedDurationSeconds * 1000) /
+        1000,
+    ),
   );
 }
 

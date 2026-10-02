@@ -30,6 +30,8 @@ export type MatchState = {
   mapId: string | null;
   startedAt: string;
   completedAt: string | null;
+  pausedAt: string | null;
+  pausedDurationSeconds: number;
   winnerCompetitorId: string | null;
   gameModes: GameMode[];
   competitors: Competitor[];

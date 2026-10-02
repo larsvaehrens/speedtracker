@@ -77,7 +77,7 @@ export function recordRound(
   expectedRevision: number,
   scoredAt: string,
 ): ScoreResult {
-  if (match.status !== "active") {
+  if (match.status !== "active" || match.pausedAt !== null) {
     return { ok: false, error: "match-not-editable" };
   }
   if (match.revision !== expectedRevision) {
@@ -130,7 +130,7 @@ export function recordRound(
 }
 
 export function selectMap(match: MatchState, mapId: string, completedAt: string): ScoreResult {
-  if (match.status === "completed" || match.status === "abandoned") {
+  if (match.status === "completed" || match.status === "abandoned" || match.pausedAt !== null) {
     return { ok: false, error: "match-not-editable" };
   }
 
@@ -157,7 +157,7 @@ export function undoLastRound(
   match: MatchState,
   options: { reopenCompleted?: boolean } = {},
 ): ScoreResult {
-  if (match.status === "abandoned") {
+  if (match.status === "abandoned" || match.pausedAt !== null) {
     return { ok: false, error: "match-not-editable" };
   }
   if (match.status === "completed" && !options.reopenCompleted) {
@@ -185,7 +185,7 @@ export function undoLastRound(
 }
 
 export function abandonMatch(match: MatchState): ScoreResult {
-  if (match.status === "completed" || match.status === "abandoned") {
+  if (match.status === "completed" || match.status === "abandoned" || match.pausedAt !== null) {
     return { ok: false, error: "match-not-editable" };
   }
 

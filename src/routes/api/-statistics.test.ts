@@ -55,6 +55,8 @@ describe("statistics timezone API", () => {
         mapId: "map",
         startedAt: completedAt,
         completedAt,
+        pausedAt: null,
+        pausedDurationSeconds: 0,
         winnerCompetitorId: "own",
         gameModes: ["Sudden Death"],
         competitors: [
@@ -127,6 +129,8 @@ describe("statistics timezone API", () => {
         mapId: "map",
         startedAt: "2026-01-02T11:00:00Z",
         completedAt: "2026-01-02T12:00:00Z",
+        pausedAt: null,
+        pausedDurationSeconds: 0,
         winnerCompetitorId: "own",
         gameModes: ["Lethal Spikes"],
         competitors: [
@@ -142,6 +146,8 @@ describe("statistics timezone API", () => {
         mapId: "map",
         startedAt: "2026-01-01T11:00:00Z",
         completedAt: "2026-01-01T12:00:00Z",
+        pausedAt: null,
+        pausedDurationSeconds: 0,
         winnerCompetitorId: "own",
         gameModes: ["Sudden Death"],
         competitors: [
@@ -217,6 +223,8 @@ describe("statistics timezone API", () => {
       mapId: "map",
       startedAt: "2026-01-01T12:00:00Z",
       completedAt: "2026-01-01T12:05:00Z",
+      pausedAt: null,
+      pausedDurationSeconds: 0,
       winnerCompetitorId: "followed-competitor",
       gameModes: ["Sudden Death"],
       competitors: [

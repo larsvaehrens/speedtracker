@@ -24,6 +24,8 @@ function toState(match: MatchView): MatchState {
     mapId: match.mapId,
     startedAt: match.startedAt,
     completedAt: match.completedAt,
+    pausedAt: match.pausedAt,
+    pausedDurationSeconds: match.pausedDurationSeconds,
     winnerCompetitorId: match.winnerCompetitorId,
     gameModes: match.gameModes,
     competitors: match.competitors.map(({ id, playerIds }) => ({
@@ -112,6 +114,60 @@ export async function createMatch(
   }
 
   return { ok: true, match };
+}
+
+export async function setMatchPaused(
+  matchId: string,
+  creatorId: string,
+  revision: number,
+  paused: boolean,
+): Promise<MatchMutation> {
+  if (!(await isCreator(matchId, creatorId))) {
+    return { ok: false, status: 404, error: "Match not found." };
+  }
+  const current = await getMatch(matchId, creatorId);
+  if (!current) return { ok: false, status: 404, error: "Match not found." };
+  const pausedAt = current.pausedAt;
+  if (
+    current.status !== "active" ||
+    current.revision !== revision ||
+    (paused ? pausedAt !== null : pausedAt === null)
+  ) {
+    return {
+      ok: false,
+      status: 409,
+      error: "The match changed. Refresh its current state before pausing or resuming.",
+      match: current,
+    };
+  }
+
+  const now = new Date().toISOString();
+  const pausedDurationSeconds = paused
+    ? current.pausedDurationSeconds
+    : current.pausedDurationSeconds +
+      Math.max(0, Math.floor((Date.parse(now) - Date.parse(pausedAt ?? now)) / 1000));
+  const update = await env.DB.prepare(
+    `UPDATE matches
+     SET paused_at = ?, paused_duration_seconds = ?, revision = revision + 1
+     WHERE id = ? AND revision = ? AND status = 'active'
+       AND paused_at IS ?`,
+  )
+    .bind(paused ? now : null, pausedDurationSeconds, matchId, revision, current.pausedAt)
+    .run();
+
+  if (update.meta.changes !== 1) {
+    const latest = await getMatch(matchId, creatorId);
+    return {
+      ok: false,
+      status: 409,
+      error: "The match changed. Refresh its current state before pausing or resuming.",
+      match: latest ?? current,
+    };
+  }
+
+  const updated = await getMatch(matchId, creatorId);
+  if (!updated) throw new Error("The updated match could not be read.");
+  return { ok: true, match: updated };
 }
 
 function submissionHash(winnerCompetitorId: string, survivingPlayerIds: string[]): string {

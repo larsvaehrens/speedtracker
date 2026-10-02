@@ -27,6 +27,8 @@ function match({
     mapId,
     startedAt: completedAt,
     completedAt,
+    pausedAt: null,
+    pausedDurationSeconds: 0,
     winnerCompetitorId: "own",
     gameModes: ["Sudden Death"],
     competitors,

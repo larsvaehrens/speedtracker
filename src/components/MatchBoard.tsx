@@ -40,8 +40,13 @@ function winnerName(match: MatchView): string {
 
 function formatElapsed(match: MatchView, now: number): string {
   if (match.durationSeconds !== null) return formatDuration(match.durationSeconds);
-  const startedAt = Date.parse(match.startedAt);
-  return formatDuration(Math.floor((now - startedAt) / 1000));
+  const pausedAt = match.pausedAt ? Date.parse(match.pausedAt) : now;
+  const elapsedMilliseconds =
+    now -
+    Date.parse(match.startedAt) -
+    match.pausedDurationSeconds * 1000 -
+    (match.pausedAt ? now - pausedAt : 0);
+  return formatDuration(Math.max(0, Math.floor(elapsedMilliseconds / 1000)));
 }
 
 function matchFromPayload(payload: Record<string, unknown>): MatchView | null {
@@ -75,7 +80,8 @@ export function MatchBoard({
   const toast = useToast();
 
   const isScorekeeper = match.creatorId === viewerId;
-  const editable = match.status === "active" || match.status === "awaiting-map";
+  const editable =
+    (match.status === "active" && match.pausedAt === null) || match.status === "awaiting-map";
 
   const applyMatch = useCallback(
     (nextMatch: MatchView) => {
@@ -249,6 +255,32 @@ export function MatchBoard({
     }
   }
 
+  async function togglePause() {
+    setActionPending(true);
+    setActionError("");
+    try {
+      const result = await apiRequest<{ match: MatchView }>(`/api/matches/${match.id}/pause`, {
+        method: "POST",
+        body: JSON.stringify({
+          paused: match.pausedAt === null,
+          revision: match.revision,
+        }),
+      });
+      applyMatch(result.match);
+    } catch (error) {
+      setActionError(apiMessage(error));
+      if (error instanceof ApiError) {
+        const latest = matchFromPayload(error.payload);
+        if (latest) applyMatch(latest);
+      } else {
+        setConnection(online ? "error" : "offline");
+        void refresh();
+      }
+    } finally {
+      setActionPending(false);
+    }
+  }
+
   async function undoLast(correction = false) {
     setCorrectionPromptOpen(false);
     setActionPending(true);
@@ -360,9 +392,25 @@ export function MatchBoard({
         <div className="match-clock">
           <span className="muted">Elapsed</span>
           <strong>{formatElapsed(match, now)}</strong>
+          {isScorekeeper && match.status === "active" && (
+            <button
+              className="button button-quiet"
+              disabled={actionPending || saveState !== "idle"}
+              onClick={() => void togglePause()}
+              type="button"
+            >
+              {match.pausedAt ? "Resume match" : "Pause match"}
+            </button>
+          )}
         </div>
       </section>
 
+      {match.pausedAt && (
+        <div className="notice notice-warning" role="status">
+          The match is paused.{" "}
+          {isScorekeeper ? "Resume it to continue scoring." : "Scoring is paused."}
+        </div>
+      )}
       {match.status === "awaiting-map" && (
         <div className="notice notice-warning" role="alert">
           The winning round is saved.{" "}
@@ -427,7 +475,7 @@ export function MatchBoard({
                   <div className="match-player-meta">
                     <strong>{player.screenName}</strong>
                   </div>
-                  {isScorekeeper && match.status === "active" && (
+                  {isScorekeeper && match.status === "active" && !match.pausedAt && (
                     <button
                       aria-label={
                         competitor.kind === "team"
@@ -447,24 +495,27 @@ export function MatchBoard({
                 </div>
               ))}
             </div>
-            {competitor.kind === "team" && isScorekeeper && match.status === "active" && (
-              <button
-                aria-label={`${competitor.players.map(({ screenName }) => screenName).join(" and ")} both survive · +1 each / +2 team points`}
-                className="button button-team"
-                disabled={
-                  actionPending || saveState !== "idle" || !online || connection === "offline"
-                }
-                onClick={() =>
-                  awardRound(
-                    competitor.id,
-                    competitor.players.map(({ id }) => id),
-                  )
-                }
-                type="button"
-              >
-                <ScoreEmblems score={competitor.score} points={2} />
-              </button>
-            )}
+            {competitor.kind === "team" &&
+              isScorekeeper &&
+              match.status === "active" &&
+              !match.pausedAt && (
+                <button
+                  aria-label={`${competitor.players.map(({ screenName }) => screenName).join(" and ")} both survive · +1 each / +2 team points`}
+                  className="button button-team"
+                  disabled={
+                    actionPending || saveState !== "idle" || !online || connection === "offline"
+                  }
+                  onClick={() =>
+                    awardRound(
+                      competitor.id,
+                      competitor.players.map(({ id }) => id),
+                    )
+                  }
+                  type="button"
+                >
+                  <ScoreEmblems score={competitor.score} points={2} />
+                </button>
+              )}
             {competitor.id === match.winnerCompetitorId && (
               <span className="winner-tag">Match winner</span>
             )}

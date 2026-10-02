@@ -107,9 +107,10 @@ manual edits.
   auto-dismiss after six seconds, pausing while hovered or focused. Setup
   warnings require dismissal; form errors and persistent Match status remain
   inline. Toast animations respect reduced motion.
-- Match duration is elapsed wall-clock time from Match start to completion.
-  Abandoned Matches are retained for reference but excluded from completed
-  history and statistics.
+- Match duration is elapsed wall-clock time from Match start to completion,
+  excluding time spent paused. The scorekeeper can pause and resume an active
+  Match. Abandoned Matches are retained for reference but excluded from
+  completed history and statistics.
 - The statistics page shows match win rates, flawless wins and shutout losses,
   map and opponent performance, teammate partnerships and point contribution,
   streaks, and total time in

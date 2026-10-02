@@ -20,6 +20,7 @@ import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as ApiFollowsPlayerIdRouteImport } from './routes/api/follows/$playerId'
 import { Route as ApiMatchesMatchIdRouteImport } from './routes/api/matches/$matchId'
 import { Route as ApiMatchesMatchIdAbandonRouteImport } from './routes/api/matches/$matchId/abandon'
+import { Route as ApiMatchesMatchIdPauseRouteImport } from './routes/api/matches/$matchId/pause'
 import { Route as ApiMatchesMatchIdRoundsRouteImport } from './routes/api/matches/$matchId/rounds'
 import { Route as ApiMatchesMatchIdUndoRouteImport } from './routes/api/matches/$matchId/undo'
 
@@ -79,6 +80,11 @@ const ApiMatchesMatchIdAbandonRoute =
     path: '/abandon',
     getParentRoute: () => ApiMatchesMatchIdRoute,
   } as any)
+const ApiMatchesMatchIdPauseRoute = ApiMatchesMatchIdPauseRouteImport.update({
+  id: '/pause',
+  path: '/pause',
+  getParentRoute: () => ApiMatchesMatchIdRoute,
+} as any)
 const ApiMatchesMatchIdRoundsRoute = ApiMatchesMatchIdRoundsRouteImport.update({
   id: '/rounds',
   path: '/rounds',
@@ -102,6 +108,7 @@ export interface FileRoutesByFullPath {
   '/api/follows/$playerId': typeof ApiFollowsPlayerIdRoute
   '/api/matches/$matchId': typeof ApiMatchesMatchIdRouteWithChildren
   '/api/matches/$matchId/abandon': typeof ApiMatchesMatchIdAbandonRoute
+  '/api/matches/$matchId/pause': typeof ApiMatchesMatchIdPauseRoute
   '/api/matches/$matchId/rounds': typeof ApiMatchesMatchIdRoundsRoute
   '/api/matches/$matchId/undo': typeof ApiMatchesMatchIdUndoRoute
 }
@@ -117,6 +124,7 @@ export interface FileRoutesByTo {
   '/api/follows/$playerId': typeof ApiFollowsPlayerIdRoute
   '/api/matches/$matchId': typeof ApiMatchesMatchIdRouteWithChildren
   '/api/matches/$matchId/abandon': typeof ApiMatchesMatchIdAbandonRoute
+  '/api/matches/$matchId/pause': typeof ApiMatchesMatchIdPauseRoute
   '/api/matches/$matchId/rounds': typeof ApiMatchesMatchIdRoundsRoute
   '/api/matches/$matchId/undo': typeof ApiMatchesMatchIdUndoRoute
 }
@@ -133,6 +141,7 @@ export interface FileRoutesById {
   '/api/follows/$playerId': typeof ApiFollowsPlayerIdRoute
   '/api/matches/$matchId': typeof ApiMatchesMatchIdRouteWithChildren
   '/api/matches/$matchId/abandon': typeof ApiMatchesMatchIdAbandonRoute
+  '/api/matches/$matchId/pause': typeof ApiMatchesMatchIdPauseRoute
   '/api/matches/$matchId/rounds': typeof ApiMatchesMatchIdRoundsRoute
   '/api/matches/$matchId/undo': typeof ApiMatchesMatchIdUndoRoute
 }
@@ -150,6 +159,7 @@ export interface FileRouteTypes {
     | '/api/follows/$playerId'
     | '/api/matches/$matchId'
     | '/api/matches/$matchId/abandon'
+    | '/api/matches/$matchId/pause'
     | '/api/matches/$matchId/rounds'
     | '/api/matches/$matchId/undo'
   fileRoutesByTo: FileRoutesByTo
@@ -165,6 +175,7 @@ export interface FileRouteTypes {
     | '/api/follows/$playerId'
     | '/api/matches/$matchId'
     | '/api/matches/$matchId/abandon'
+    | '/api/matches/$matchId/pause'
     | '/api/matches/$matchId/rounds'
     | '/api/matches/$matchId/undo'
   id:
@@ -180,6 +191,7 @@ export interface FileRouteTypes {
     | '/api/follows/$playerId'
     | '/api/matches/$matchId'
     | '/api/matches/$matchId/abandon'
+    | '/api/matches/$matchId/pause'
     | '/api/matches/$matchId/rounds'
     | '/api/matches/$matchId/undo'
   fileRoutesById: FileRoutesById
@@ -274,6 +286,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiMatchesMatchIdAbandonRouteImport
       parentRoute: typeof ApiMatchesMatchIdRoute
     }
+    '/api/matches/$matchId/pause': {
+      id: '/api/matches/$matchId/pause'
+      path: '/pause'
+      fullPath: '/api/matches/$matchId/pause'
+      preLoaderRoute: typeof ApiMatchesMatchIdPauseRouteImport
+      parentRoute: typeof ApiMatchesMatchIdRoute
+    }
     '/api/matches/$matchId/rounds': {
       id: '/api/matches/$matchId/rounds'
       path: '/rounds'
@@ -305,12 +324,14 @@ const ApiFollowsRouteWithChildren = ApiFollowsRoute._addFileChildren(
 
 interface ApiMatchesMatchIdRouteChildren {
   ApiMatchesMatchIdAbandonRoute: typeof ApiMatchesMatchIdAbandonRoute
+  ApiMatchesMatchIdPauseRoute: typeof ApiMatchesMatchIdPauseRoute
   ApiMatchesMatchIdRoundsRoute: typeof ApiMatchesMatchIdRoundsRoute
   ApiMatchesMatchIdUndoRoute: typeof ApiMatchesMatchIdUndoRoute
 }
 
 const ApiMatchesMatchIdRouteChildren: ApiMatchesMatchIdRouteChildren = {
   ApiMatchesMatchIdAbandonRoute: ApiMatchesMatchIdAbandonRoute,
+  ApiMatchesMatchIdPauseRoute: ApiMatchesMatchIdPauseRoute,
   ApiMatchesMatchIdRoundsRoute: ApiMatchesMatchIdRoundsRoute,
   ApiMatchesMatchIdUndoRoute: ApiMatchesMatchIdUndoRoute,
 }
