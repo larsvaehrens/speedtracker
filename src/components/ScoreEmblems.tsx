@@ -1,5 +1,3 @@
-import { TEAM_VICTORY_THRESHOLD } from "#/domain/scoring";
-
 export function ScoreEmblems({ score, points }: { score: number; points: 1 | 2 }) {
   return (
     <span aria-hidden="true" className="score-emblems">
@@ -9,7 +7,7 @@ export function ScoreEmblems({ score, points }: { score: number; points: 1 | 2 }
           className="score-emblem"
           height={128}
           key={index}
-          src={`/ressources/emblems/emblem-${Math.min(score + index + 1, TEAM_VICTORY_THRESHOLD)}.svg`}
+          src={`/ressources/emblems/emblem-${score + index + 1}.png`}
           width={128}
         />
       ))}
