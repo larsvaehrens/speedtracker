@@ -719,7 +719,6 @@ export function MatchBoard({
       )}
 
       <MapPicker
-        allowMissing={match.status !== "awaiting-map"}
         maps={maps}
         onClose={() => setMapPickerOpen(false)}
         onSelect={(mapId) => {

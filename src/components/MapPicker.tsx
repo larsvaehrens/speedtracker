@@ -6,19 +6,11 @@ type MapPickerProps = {
   maps: MapView[];
   selectedMapId: string | null;
   open: boolean;
-  allowMissing?: boolean;
   onSelect: (mapId: string | null) => void;
   onClose: () => void;
 };
 
-export function MapPicker({
-  maps,
-  selectedMapId,
-  open,
-  allowMissing = true,
-  onSelect,
-  onClose,
-}: MapPickerProps) {
+export function MapPicker({ maps, selectedMapId, open, onSelect, onClose }: MapPickerProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
 
   useEffect(() => {
@@ -40,10 +32,7 @@ export function MapPicker({
       ref={dialogRef}
     >
       <div className="modal-heading">
-        <div>
-          <p className="eyebrow">Map select</p>
-          <h2 id="map-picker-title">Choose a map</h2>
-        </div>
+        <h2 id="map-picker-title">Choose a map</h2>
         <button
           aria-label="Close map selector"
           className="icon-button"
@@ -67,15 +56,6 @@ export function MapPicker({
           </button>
         ))}
       </div>
-      {allowMissing && (
-        <button
-          className="button button-quiet map-clear"
-          onClick={() => onSelect(null)}
-          type="button"
-        >
-          No map selected
-        </button>
-      )}
     </dialog>
   );
 }
