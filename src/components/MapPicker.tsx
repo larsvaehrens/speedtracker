@@ -6,19 +6,11 @@ type MapPickerProps = {
   maps: MapView[];
   selectedMapId: string | null;
   open: boolean;
-  allowMissing?: boolean;
   onSelect: (mapId: string | null) => void;
   onClose: () => void;
 };
 
-export function MapPicker({
-  maps,
-  selectedMapId,
-  open,
-  allowMissing = true,
-  onSelect,
-  onClose,
-}: MapPickerProps) {
+export function MapPicker({ maps, selectedMapId, open, onSelect, onClose }: MapPickerProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
 
   useEffect(() => {
