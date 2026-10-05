@@ -1,5 +1,5 @@
-import { Skeleton } from "./Skeleton";
 import { AppFooter } from "./AppFooter";
+import { Skeleton } from "./Skeleton";
 
 export function AppSkeleton({ label }: { label: string }) {
   return (
@@ -11,7 +11,7 @@ export function AppSkeleton({ label }: { label: string }) {
               alt=""
               className="brand-title"
               height={255}
-              src="/ressources/speedtracker-title.svg"
+              src="/resources/speedtracker-title.svg"
               width={1100}
             />
           </div>

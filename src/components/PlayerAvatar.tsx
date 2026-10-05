@@ -3,7 +3,7 @@ export function PlayerAvatar({ avatar }: { avatar: string | null }) {
     <img
       alt=""
       className="player-avatar"
-      src={avatar ?? "/ressources/heroes/SpeedRunner/SpeedRunner_Original.png"}
+      src={avatar ?? "/resources/heroes/SpeedRunner/SpeedRunner_Original.png"}
     />
   );
 }

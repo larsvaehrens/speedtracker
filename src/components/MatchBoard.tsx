@@ -1,11 +1,11 @@
-import { useCallback, useEffect, useRef, useState } from "react";
 import type { MapView, MatchView, RoundView } from "#/domain/views";
-import { apiMessage, apiRequest, ApiError } from "#/lib/api";
+import { ApiError, apiMessage, apiRequest } from "#/lib/api";
 import { formatDuration } from "#/lib/time";
-import { MapPicker } from "./MapPicker";
-import { ScoreEmblems } from "./ScoreEmblems";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Icon } from "./Icon";
+import { MapPicker } from "./MapPicker";
 import { RoundTimeline } from "./RoundTimeline";
+import { ScoreEmblems } from "./ScoreEmblems";
 import { useToast } from "./ToastProvider";
 
 type PendingScore = {
@@ -564,7 +564,7 @@ export function MatchBoard({
                   <img
                     alt=""
                     className="player-avatar"
-                    src={player.avatar ?? "/ressources/heroes/SpeedRunner/SpeedRunner_Original.png"}
+                    src={player.avatar ?? "/resources/heroes/SpeedRunner/SpeedRunner_Original.png"}
                   />
                   <div className="match-player-meta">
                     <strong>{player.screenName}</strong>

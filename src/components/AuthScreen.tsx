@@ -60,7 +60,7 @@ export function AuthScreen() {
           alt="SpeedTracker"
           className="brand-title"
           height={255}
-          src="/ressources/speedtracker-title.svg"
+          src="/resources/speedtracker-title.svg"
           width={1100}
         />
       </div>
