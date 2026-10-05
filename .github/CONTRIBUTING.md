@@ -44,8 +44,8 @@ compatible during deployment.
 
 ## Commits, Changesets, and pull requests
 
-Use [Conventional Commits](https://www.conventionalcommits.org/) for every
-commit. CI checks commit messages. Examples:
+Use [Conventional Commits](https://www.conventionalcommits.org/) for the pull
+request title. CI validates the title. Examples:
 
 ```text
 feat: show round scoring times
