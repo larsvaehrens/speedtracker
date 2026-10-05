@@ -80,8 +80,7 @@ manual edits.
   one individual point and the team one point; if both survive, each gets one
   individual point and the team gets two points.
 - Scoring buttons show the next numbered emblem based on the Competitor's
-  current score. A team double win shows two consecutive emblems; at three
-  points, it shows emblem-4 twice.
+  current score.
 - Round winners, survival/individual point attribution, undo history, and
   revision/idempotency data are persisted. Scores and outcomes are derived from
   the Round records. Match statistics count completed Matches, not Rounds.

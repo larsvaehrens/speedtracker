@@ -8,7 +8,7 @@ describe("scoring button emblems", () => {
     const markup = renderToStaticMarkup(createElement(ScoreEmblems, { score, points: 1 }));
 
     expect(markup.match(/<img /g)).toHaveLength(1);
-    expect(markup).toContain(`src="/ressources/emblems/emblem-${score + 1}.svg"`);
+    expect(markup).toContain(`src="/ressources/emblems/emblem-${score + 1}.png"`);
     expect(markup).toContain('aria-hidden="true"');
     expect(markup).toContain('alt=""');
   });
@@ -17,11 +17,11 @@ describe("scoring button emblems", () => {
     { score: 0, emblems: [1, 2] },
     { score: 1, emblems: [2, 3] },
     { score: 2, emblems: [3, 4] },
-    { score: 3, emblems: [4, 4] },
+    { score: 3, emblems: [4, 5] },
   ])("shows $emblems for a double win at score $score", ({ score, emblems }) => {
     const markup = renderToStaticMarkup(createElement(ScoreEmblems, { score, points: 2 }));
     const sources = [...markup.matchAll(/<img [^>]*src="([^"]+)"/g)].map((match) => match[1]);
 
-    expect(sources).toEqual(emblems.map((emblem) => `/ressources/emblems/emblem-${emblem}.svg`));
+    expect(sources).toEqual(emblems.map((emblem) => `/ressources/emblems/emblem-${emblem}.png`));
   });
 });
