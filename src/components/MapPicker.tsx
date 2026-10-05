@@ -64,15 +64,6 @@ export function MapPicker({
           </button>
         ))}
       </div>
-      {allowMissing && (
-        <button
-          className="button button-quiet map-clear"
-          onClick={() => onSelect(null)}
-          type="button"
-        >
-          No map selected
-        </button>
-      )}
     </dialog>
   );
 }
