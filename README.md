@@ -220,4 +220,4 @@ again so session cookies and trusted origins use the canonical domain.
 - `src/components/`: responsive match, setup, map, history, statistics,
   friends, and profile views.
 - `migrations/`: versioned D1 schema and map seed data.
-- `public/ressources/`: static map and hero artwork.
+- `public/resources/`: static map and hero artwork.

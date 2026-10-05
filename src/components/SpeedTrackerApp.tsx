@@ -1,7 +1,9 @@
-import { useCallback, useEffect, useState } from "react";
-import { authClient } from "#/server/auth-client";
 import type { FriendView, MapView, MatchView } from "#/domain/views";
 import { apiMessage, apiRequest } from "#/lib/api";
+import { authClient } from "#/server/auth-client";
+import { useCallback, useEffect, useState } from "react";
+import { AppFooter } from "./AppFooter";
+import { AppSkeleton } from "./AppSkeleton";
 import { AuthScreen } from "./AuthScreen";
 import { FriendsView } from "./FriendsView";
 import { HistoryView } from "./HistoryView";
@@ -9,8 +11,6 @@ import { MatchBoard } from "./MatchBoard";
 import { ProfileView } from "./ProfileView";
 import { SetupBuilder } from "./SetupBuilder";
 import { StatisticsView } from "./StatisticsView";
-import { AppSkeleton } from "./AppSkeleton";
-import { AppFooter } from "./AppFooter";
 
 type Page = "play" | "history" | "statistics" | "players" | "profile";
 
@@ -190,7 +190,7 @@ export function SpeedTrackerApp() {
             alt="SpeedTracker"
             className="brand-title"
             height={255}
-            src="/ressources/speedtracker-title.svg"
+            src="/resources/speedtracker-title.svg"
             width={1100}
           />
         </a>
@@ -198,7 +198,7 @@ export function SpeedTrackerApp() {
           <img
             alt=""
             className="signed-in-avatar"
-            src={bootstrap.user.avatar ?? "/ressources/heroes/SpeedRunner/SpeedRunner_Original.png"}
+            src={bootstrap.user.avatar ?? "/resources/heroes/SpeedRunner/SpeedRunner_Original.png"}
           />
           <span>{bootstrap.user.screenName}</span>
           <button

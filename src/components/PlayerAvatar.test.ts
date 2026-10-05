@@ -1,15 +1,15 @@
-import { createElement } from "react";
+import type { FriendView, MatchView } from "#/domain/views";
 import { readFileSync } from "node:fs";
+import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it, vi } from "vitest";
-import type { FriendView, MatchView } from "#/domain/views";
 import { HistoryView } from "./HistoryView";
+import { MatchBoard } from "./MatchBoard";
+import { MatchCompetitors } from "./MatchCompetitors";
 import { PlayerAvatar } from "./PlayerAvatar";
 import { PlayerSelect } from "./PlayerSelect";
 import { SetupBuilder } from "./SetupBuilder";
 import { ToastProvider } from "./ToastProvider";
-import { MatchBoard } from "./MatchBoard";
-import { MatchCompetitors } from "./MatchCompetitors";
 
 const players: FriendView[] = [
   { id: "me", username: "myself", screenName: "Me", avatar: "/me.png", followedAt: null },
@@ -83,7 +83,7 @@ describe("player profile pictures", () => {
       'src="/friend.png"',
     );
     const fallback = renderToStaticMarkup(createElement(PlayerAvatar, { avatar: null }));
-    expect(fallback).toContain('src="/ressources/heroes/SpeedRunner/SpeedRunner_Original.png"');
+    expect(fallback).toContain('src="/resources/heroes/SpeedRunner/SpeedRunner_Original.png"');
     expect(fallback).toContain('alt=""');
   });
 
@@ -189,7 +189,7 @@ describe("player profile pictures", () => {
     expect(markup).toContain('src="/map.png"');
     expect(markup).toContain('src="/me.png"');
     expect(markup).toContain('src="/friend.png"');
-    expect(markup).toContain('src="/ressources/heroes/SpeedRunner/SpeedRunner_Original.png"');
+    expect(markup).toContain('src="/resources/heroes/SpeedRunner/SpeedRunner_Original.png"');
     expect(markup).toContain("1 point");
     expect(markup).toContain("Sudden Death");
     expect(markup).toContain("Lethal Spikes");

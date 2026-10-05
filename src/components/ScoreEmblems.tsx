@@ -7,7 +7,7 @@ export function ScoreEmblems({ score, points }: { score: number; points: 1 | 2 }
           className="score-emblem"
           height={128}
           key={index}
-          src={`/ressources/emblems/emblem-${score + index + 1}.png`}
+          src={`/resources/emblems/emblem-${score + index + 1}.png`}
           width={128}
         />
       ))}
