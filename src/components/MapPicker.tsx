@@ -40,10 +40,7 @@ export function MapPicker({
       ref={dialogRef}
     >
       <div className="modal-heading">
-        <div>
-          <p className="eyebrow">Map select</p>
-          <h2 id="map-picker-title">Choose a map</h2>
-        </div>
+        <h2 id="map-picker-title">Choose a map</h2>
         <button
           aria-label="Close map selector"
           className="icon-button"
