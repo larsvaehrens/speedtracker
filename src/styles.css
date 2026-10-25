@@ -2392,11 +2392,28 @@ input[readonly] {
   }
 
   .match-banner {
-    align-items: flex-start;
+    align-items: stretch;
+    flex-direction: column;
   }
 
   .match-clock {
-    min-width: 70px;
+    width: 100%;
+    min-width: 0;
+    justify-items: start;
+  }
+
+  .match-wake-lock {
+    white-space: normal;
+  }
+
+  .score-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .score-actions > .button {
+    min-width: 0;
+    padding-inline: 8px;
   }
 
   .completed-match-actions {
