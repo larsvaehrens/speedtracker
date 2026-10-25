@@ -54,6 +54,18 @@ The script accepts only a localhost URL. Set `SPEEDTRACKER_BASE_URL` if the
 local app is on a different port. Do not use real or production credentials as
 development seed values.
 
+## Install on a phone
+
+SpeedTracker is installable as a Progressive Web App (PWA). Open the live HTTPS
+site on your phone, sign in, and open **Profile** for device-specific install
+instructions. On iPhone or iPad, use Safari's **Share → Add to Home Screen**.
+On Android, use Chrome's **Install app** action (or **Add to Home screen**) or
+the install button shown in Profile when the browser offers it. Launch the app
+from the new Home Screen icon to open it in standalone mode without the browser
+address bar. PWA installation requires HTTPS (localhost is accepted for local
+development). The installed app still needs an internet connection to load and
+sync match data; it does not cache match data for offline use.
+
 ## Checks and tests
 
 ```sh
