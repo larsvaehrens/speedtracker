@@ -1,5 +1,5 @@
 import type { CompletedMatch } from "#/domain/types";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vite-plus/test";
 
 const mocks = vi.hoisted(() => ({
   currentUser: vi.fn(),

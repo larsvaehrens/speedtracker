@@ -2,7 +2,7 @@ import type { FriendView, MatchView } from "#/domain/views";
 import { readFileSync } from "node:fs";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi } from "vite-plus/test";
 import { HistoryView } from "./HistoryView";
 import { MatchBoard } from "./MatchBoard";
 import { MatchCompetitors } from "./MatchCompetitors";
