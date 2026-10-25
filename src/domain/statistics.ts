@@ -214,13 +214,13 @@ function localCalendarDay(date: Date, timeZone: string): number {
 }
 
 function getPlayingActivity(matches: CompletedMatch[], timeZone: string, now: Date): ActivityDay[] {
+  const lastDay = localCalendarDay(now, timeZone);
   const counts = new Map<number, number>();
   for (const match of matches) {
     const day = localCalendarDay(new Date(match.completedAt), timeZone);
     counts.set(day, (counts.get(day) ?? 0) + 1);
   }
 
-  const lastDay = localCalendarDay(now, timeZone);
   const firstDay = lastDay - 364;
   const gridStart = firstDay - new Date(firstDay * 86400000).getUTCDay();
   return Array.from({ length: lastDay - gridStart + 1 }, (_, index) => {

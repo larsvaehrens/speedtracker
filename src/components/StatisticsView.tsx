@@ -44,6 +44,33 @@ function activityLevel(matches: number, maximum: number): number {
   return matches === 0 || maximum === 0 ? 0 : Math.ceil((matches / maximum) * 4);
 }
 
+function recentActivityDays(days: PlayerStatistics["playingActivity"]) {
+  const latestDate = new Date(`${days.at(-1)?.date}T00:00:00Z`);
+  if (Number.isNaN(latestDate.getTime())) return days;
+
+  const targetMonth = new Date(
+    Date.UTC(latestDate.getUTCFullYear(), latestDate.getUTCMonth() - 3, 1),
+  );
+  const lastDateInTargetMonth = new Date(
+    Date.UTC(targetMonth.getUTCFullYear(), targetMonth.getUTCMonth() + 1, 0),
+  ).getUTCDate();
+  const cutoff = new Date(
+    Date.UTC(
+      targetMonth.getUTCFullYear(),
+      targetMonth.getUTCMonth(),
+      Math.min(latestDate.getUTCDate(), lastDateInTargetMonth),
+    ),
+  );
+  const gridStart = new Date(cutoff);
+  gridStart.setUTCDate(cutoff.getUTCDate() - cutoff.getUTCDay());
+  const cutoffDate = cutoff.toISOString().slice(0, 10);
+  const gridStartDate = gridStart.toISOString().slice(0, 10);
+
+  return days
+    .filter(({ date }) => date >= gridStartDate)
+    .map((day) => (day.date < cutoffDate ? { ...day, matches: 0 } : day));
+}
+
 export function StatisticsView({ playerNames, hasMatches, player, onBack }: StatisticsViewProps) {
   const [stats, setStats] = useState<PlayerStatistics | null>(null);
   const [names, setNames] = useState(playerNames);
@@ -157,6 +184,9 @@ export function StatisticsContent({
   );
   const activityMatches = stats.playingActivity.reduce((total, day) => total + day.matches, 0);
   const activityMaximum = Math.max(...stats.playingActivity.map((day) => day.matches), 0);
+  const mobileActivity = recentActivityDays(stats.playingActivity);
+  const mobileActivityMatches = mobileActivity.reduce((total, day) => total + day.matches, 0);
+  const mobileActivityMaximum = Math.max(...mobileActivity.map((day) => day.matches), 0);
 
   return (
     <section className="page-section">
@@ -250,7 +280,7 @@ export function StatisticsContent({
           </div>
           <div
             aria-label={`${activityMatches} completed matches shown`}
-            className="activity-grid-scroll"
+            className="activity-grid-scroll activity-grid-desktop"
             role="img"
           >
             <div className="activity-grid">
@@ -259,6 +289,23 @@ export function StatisticsContent({
                   aria-hidden="true"
                   className="activity-day"
                   data-level={activityLevel(day.matches, activityMaximum)}
+                  key={day.date}
+                  title={`${day.date}: ${day.matches} ${day.matches === 1 ? "match" : "matches"}`}
+                />
+              ))}
+            </div>
+          </div>
+          <div
+            aria-label={`${mobileActivityMatches} completed matches shown`}
+            className="activity-grid-scroll activity-grid-mobile"
+            role="img"
+          >
+            <div className="activity-grid">
+              {mobileActivity.map((day) => (
+                <span
+                  aria-hidden="true"
+                  className="activity-day"
+                  data-level={activityLevel(day.matches, mobileActivityMaximum)}
                   key={day.date}
                   title={`${day.date}: ${day.matches} ${day.matches === 1 ? "match" : "matches"}`}
                 />

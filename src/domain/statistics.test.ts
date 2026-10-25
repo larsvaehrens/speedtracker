@@ -57,9 +57,13 @@ const mapDetails = [
 ];
 
 describe("player statistics", () => {
-  it("counts completed matches by local calendar day for the activity grid", () => {
-    const matches = ["2026-01-02T01:00:00Z", "2026-01-02T02:00:00Z", "2026-01-03T12:00:00Z"].map(
-      (completedAt, index) =>
+  it("counts completed matches by local calendar day for the full-year activity grid", () => {
+    const matches = [
+      "2025-09-25T12:00:00Z",
+      "2026-01-02T01:00:00Z",
+      "2026-01-02T02:00:00Z",
+      "2026-01-03T12:00:00Z",
+    ].map((completedAt, index) =>
         completedMatch({
           id: `activity-${index}`,
           completedAt,
@@ -74,6 +78,8 @@ describe("player statistics", () => {
 
     expect(stats.playingActivity.find(({ date }) => date === "2026-01-01")?.matches).toBe(2);
     expect(stats.playingActivity.find(({ date }) => date === "2026-01-03")?.matches).toBe(1);
+    expect(stats.playingActivity.find(({ date }) => date === "2025-09-25")?.matches).toBe(1);
+    expect(stats.playingActivity.reduce((total, day) => total + day.matches, 0)).toBe(4);
     expect(stats.playingActivity.length).toBeGreaterThanOrEqual(365);
     expect(stats.playingActivity.length).toBeLessThanOrEqual(371);
   });
