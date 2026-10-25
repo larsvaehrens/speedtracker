@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it } from "vite-plus/test";
 import { EMPTY_MATCH_FILTERS } from "./match-filters";
 import { calculateStatistics } from "./statistics";
 import type { CompletedMatch, PointAttribution } from "./types";

@@ -1,6 +1,6 @@
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi } from "vite-plus/test";
 import { EMPTY_MATCH_FILTERS } from "#/domain/match-filters";
 import { MatchFilters } from "./MatchFilters";
 

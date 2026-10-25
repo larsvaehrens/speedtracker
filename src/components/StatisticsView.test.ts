@@ -2,7 +2,7 @@ import { calculateStatistics } from "#/domain/statistics";
 import type { CompletedMatch } from "#/domain/types";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it } from "vite-plus/test";
 import { StatisticsContent } from "./StatisticsView";
 
 describe("monthly trends across statistics views", () => {
