@@ -35,7 +35,6 @@ export function RoundTimeline({ rounds, competitors, startedAt, endLabel }: Roun
                 <span aria-hidden="true" className="round-timeline-track">
                   <span className="round-timeline-marker" />
                 </span>
-                <span className="round-number">R{round.sequence}</span>
                 <span className="history-round-players">
                   {winner?.players.map((player) => (
                     <PlayerIdentity key={player.id} player={player}>
