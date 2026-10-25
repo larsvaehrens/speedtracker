@@ -24,6 +24,12 @@ export function RoundTimeline({ rounds, competitors, startedAt, endLabel }: Roun
         <ol className="round-timeline">
           {rounds.map((round) => {
             const winner = competitors.find(({ id }) => id === round.winnerCompetitorId);
+            const pointsByPlayer = new Map(
+              round.attributions.map(({ playerId, points }) => [playerId, points]),
+            );
+            const scorers = winner?.players.filter(
+              (player) => (pointsByPlayer.get(player.id) ?? 0) > 0,
+            );
             return (
               <li
                 className={`round-timeline-event${round.undone ? " round-undone" : ""}`}
@@ -35,12 +41,11 @@ export function RoundTimeline({ rounds, competitors, startedAt, endLabel }: Roun
                 <span aria-hidden="true" className="round-timeline-track">
                   <span className="round-timeline-marker" />
                 </span>
-                <span className="round-number">R{round.sequence}</span>
                 <span className="history-round-players">
-                  {winner?.players.map((player) => (
+                  {scorers?.map((player) => (
                     <PlayerIdentity key={player.id} player={player}>
                       {player.screenName}
-                      {` +${round.attributions.find(({ playerId }) => playerId === player.id)?.points ?? 0}`}
+                      {` +${pointsByPlayer.get(player.id)}`}
                     </PlayerIdentity>
                   ))}
                 </span>
