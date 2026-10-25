@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { HERO_AVATARS } from "#/domain/assets";
 import type { FriendView } from "#/domain/views";
 import { apiMessage, apiRequest } from "#/lib/api";
+import { InstallAppCard } from "./InstallAppCard";
 import { useToast } from "./ToastProvider";
 
 type ProfileViewProps = {
@@ -110,6 +111,8 @@ export function ProfileView({ user, onSaved }: ProfileViewProps) {
       <p className="recovery-note">
         There is no email address or account recovery flow. Keep your username and password safe.
       </p>
+
+      <InstallAppCard />
     </section>
   );
 }
