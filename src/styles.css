@@ -1674,6 +1674,10 @@ input[readonly] {
   padding: 2px 0 10px;
 }
 
+.activity-grid-mobile {
+  display: none;
+}
+
 .activity-grid {
   display: grid;
   width: max-content;
@@ -2301,6 +2305,14 @@ input[readonly] {
 }
 
 @media (max-width: 640px) {
+  .activity-grid-desktop {
+    display: none;
+  }
+
+  .activity-grid-mobile {
+    display: block;
+  }
+
   .app-shell {
     padding-right: max(13px, env(safe-area-inset-right));
     padding-left: max(13px, env(safe-area-inset-left));

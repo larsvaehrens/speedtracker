@@ -73,7 +73,9 @@ describe("monthly trends across statistics views", () => {
     expect(markup).toContain("1:30");
     expect(markup).toContain("<h2>Match activity</h2>");
     expect(markup).toContain('class="activity-grid"');
-    expect(markup).toContain("completed matches shown");
+    expect(markup).toContain('class="activity-grid-scroll activity-grid-desktop"');
+    expect(markup).toContain('class="activity-grid-scroll activity-grid-mobile"');
+    expect(markup).toContain('aria-label="3 completed matches shown"');
     expect(markup).toContain("Flawless wins");
     expect(markup).toContain("Won without conceding a point");
     expect(markup).toContain("Shutout losses");
