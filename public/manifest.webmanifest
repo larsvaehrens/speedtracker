@@ -1,0 +1,28 @@
+{
+  "id": "/",
+  "name": "SpeedTracker",
+  "short_name": "SpeedTracker",
+  "description": "A scorekeeper and match tracker for local SpeedRunners games.",
+  "lang": "en",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "any",
+  "theme_color": "#101319",
+  "background_color": "#101319",
+  "icons": [
+    {
+      "src": "/resources/icons/speedtracker-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/resources/icons/speedtracker-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
