@@ -43,10 +43,18 @@ describe("installable app metadata", () => {
   it("declares Apple installation and safe-area viewport support", async () => {
     const root = await readFile("src/routes/__root.tsx", "utf8");
     const css = await readFile("src/styles.css", "utf8");
+    const [titleLogo, appIcon] = await Promise.all([
+      readFile("public/resources/speedtracker-title.svg", "utf8"),
+      readFile("public/resources/icons/speedtracker.svg", "utf8"),
+    ]);
 
     expect(root).toContain('name: "apple-mobile-web-app-capable"');
     expect(root).toContain("viewport-fit=cover");
     expect(root).toContain('rel: "apple-touch-icon"');
     expect(css).toContain("env(safe-area-inset-top)");
+    expect(appIcon.match(/<defs>[\s\S]*?<\/defs>/)?.[0]).toBe(
+      titleLogo.match(/<defs>[\s\S]*?<\/defs>/)?.[0],
+    );
+    expect(appIcon).toContain('href="#lettering"');
   });
 });
