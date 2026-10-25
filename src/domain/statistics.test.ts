@@ -64,12 +64,12 @@ describe("player statistics", () => {
       "2026-01-02T02:00:00Z",
       "2026-01-03T12:00:00Z",
     ].map((completedAt, index) =>
-        completedMatch({
-          id: `activity-${index}`,
-          completedAt,
-          teams: [["player"], ["opponent"]],
-          winner: 0,
-        }),
+      completedMatch({
+        id: `activity-${index}`,
+        completedAt,
+        teams: [["player"], ["opponent"]],
+        winner: 0,
+      }),
     );
     const stats = calculateStatistics("player", matches, mapDetails, {
       now: new Date("2026-01-04T12:00:00Z"),
