@@ -18,6 +18,7 @@ describe("followed player statistics links", () => {
               followedAt: "2026-01-01",
             },
           ],
+          recommendations: [],
           onChanged: () => {},
           onViewStatistics: () => {},
         }),
@@ -29,5 +30,23 @@ describe("followed player statistics links", () => {
     expect(markup).toContain("@friend");
     expect(markup.match(/<button /g)).toHaveLength(3);
     expect(markup).toContain("Unfollow");
+  });
+
+  it("renders recommended players with a mutual friend count and an Add button", () => {
+    const markup = renderToStaticMarkup(
+      createElement(ToastProvider, {
+        children: createElement(FriendsView, {
+          friends: [],
+          recommendations: [
+            { id: "rec", username: "rec", screenName: "Rec", avatar: null, mutualCount: 2 },
+          ],
+          onChanged: () => {},
+          onViewStatistics: () => {},
+        }),
+      }),
+    );
+    expect(markup).toContain("Recommended players");
+    expect(markup).toContain("2 mutual friends");
+    expect(markup).toContain("Add</button>");
   });
 });

@@ -1,38 +1,49 @@
 import { useState, type FormEvent } from "react";
-import type { FriendView } from "#/domain/views";
+import type { FriendView, RecommendedFriendView } from "#/domain/views";
 import { apiMessage, apiRequest } from "#/lib/api";
 import { PlayerAvatar } from "./PlayerAvatar";
 import { useToast } from "./ToastProvider";
 
 type FriendsViewProps = {
   friends: FriendView[];
+  recommendations: RecommendedFriendView[];
   onChanged: () => void;
   onViewStatistics: (player: FriendView) => void;
 };
 
-export function FriendsView({ friends, onChanged, onViewStatistics }: FriendsViewProps) {
+export function FriendsView({
+  friends,
+  recommendations,
+  onChanged,
+  onViewStatistics,
+}: FriendsViewProps) {
   const [username, setUsername] = useState("");
   const [pending, setPending] = useState(false);
   const [error, setError] = useState("");
   const toast = useToast();
 
-  async function addFollow(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
+  async function postFollow(target: string): Promise<boolean> {
     setPending(true);
     setError("");
     try {
       await apiRequest<{ follows: FriendView[] }>("/api/follows", {
         method: "POST",
-        body: JSON.stringify({ username }),
+        body: JSON.stringify({ username: target }),
       });
-      setUsername("");
       toast("Player added. They can now be selected for your setups.", "success");
       onChanged();
+      return true;
     } catch (addError) {
       setError(apiMessage(addError));
+      return false;
     } finally {
       setPending(false);
     }
+  }
+
+  async function addFollow(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (await postFollow(username)) setUsername("");
   }
 
   async function removeFollow(player: FriendView) {
@@ -85,6 +96,41 @@ export function FriendsView({ friends, onChanged, onViewStatistics }: FriendsVie
           </p>
         )}
       </section>
+
+      {recommendations.length > 0 && (
+        <section className="subsection">
+          <div className="section-heading compact-heading">
+            <div>
+              <h2>Recommended players</h2>
+              <p className="muted">Friends of your friends.</p>
+            </div>
+          </div>
+          <ul className="friend-list">
+            {recommendations.map((player) => (
+              <li className="friend-row panel" key={player.id}>
+                <div className="friend-profile">
+                  <PlayerAvatar avatar={player.avatar} />
+                  <span className="friend-name">
+                    <strong>{player.screenName}</strong>
+                    <small>
+                      @{player.username} · {player.mutualCount} mutual{" "}
+                      {player.mutualCount === 1 ? "friend" : "friends"}
+                    </small>
+                  </span>
+                </div>
+                <button
+                  className="button button-primary"
+                  disabled={pending}
+                  onClick={() => void postFollow(player.username)}
+                  type="button"
+                >
+                  Add
+                </button>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       <section className="subsection">
         <div className="section-heading compact-heading">

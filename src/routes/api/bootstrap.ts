@@ -1,6 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { currentUser, json, unauthorized } from "#/server/http";
-import { getEligiblePlayers, getMaps, getOpenMatches, getRecentMatches } from "#/server/data";
+import {
+  getEligiblePlayers,
+  getMaps,
+  getOpenMatches,
+  getRecentMatches,
+  getRecommendedFriends,
+} from "#/server/data";
 
 export const Route = createFileRoute("/api/bootstrap")({
   server: {
@@ -9,8 +15,9 @@ export const Route = createFileRoute("/api/bootstrap")({
         const user = await currentUser(request);
         if (!user) return unauthorized();
 
-        const [players, maps, openMatches, recentMatches] = await Promise.all([
+        const [players, recommendations, maps, openMatches, recentMatches] = await Promise.all([
           getEligiblePlayers(user.id),
+          getRecommendedFriends(user.id),
           getMaps(),
           getOpenMatches(user.id),
           getRecentMatches(user.id, 30),
@@ -24,6 +31,7 @@ export const Route = createFileRoute("/api/bootstrap")({
             avatar: user.image ?? null,
           },
           players,
+          recommendations,
           maps,
           openMatches,
           recentMatches,

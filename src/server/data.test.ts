@@ -9,7 +9,24 @@ const { all, bind, prepare } = vi.hoisted(() => {
 
 vi.mock("cloudflare:workers", () => ({ env: { DB: { prepare } } }));
 
-import { getCompletedMatchPlayers } from "./data";
+import { getCompletedMatchPlayers, getRecommendedFriends } from "./data";
+
+describe("recommended friends", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it("maps friends-of-friends rows with mutual counts, excluding self and existing friends in SQL", async () => {
+    all.mockResolvedValue({
+      results: [{ id: "rec", username: "rec", screen_name: "Rec", avatar: null, mutual_count: 3 }],
+    });
+    expect(await getRecommendedFriends("viewer", 5)).toEqual([
+      { id: "rec", username: "rec", screenName: "Rec", avatar: null, mutualCount: 3 },
+    ]);
+    expect(bind).toHaveBeenCalledWith("viewer", "viewer", "viewer", 5);
+    expect(prepare).toHaveBeenCalledWith(expect.stringContaining("NOT EXISTS"));
+  });
+});
 
 describe("statistics participant profiles", () => {
   beforeEach(() => {
