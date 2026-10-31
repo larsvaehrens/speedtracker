@@ -36,12 +36,15 @@ export const Route = createFileRoute("/api/follows")({
           return json({ error: "You already have yourself in your setup." }, 400);
         }
 
-        await env.DB.prepare(
+        const createdAt = new Date().toISOString();
+        const insert = env.DB.prepare(
           `INSERT OR IGNORE INTO follows (follower_id, followed_id, created_at)
            VALUES (?, ?, ?)`,
-        )
-          .bind(user.id, followed.id, new Date().toISOString())
-          .run();
+        );
+        await env.DB.batch([
+          insert.bind(user.id, followed.id, createdAt),
+          insert.bind(followed.id, user.id, createdAt),
+        ]);
 
         return json({ follows: await getFollows(user.id) });
       },

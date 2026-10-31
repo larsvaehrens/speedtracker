@@ -107,6 +107,19 @@ export async function createMatch(
     }
   }
 
+  const participantIds = [...new Set(competitors.flatMap((competitor) => competitor.playerIds))];
+  for (const playerId of participantIds) {
+    for (const otherId of participantIds) {
+      if (playerId === otherId) continue;
+      matchStatements.push(
+        env.DB.prepare(
+          `INSERT OR IGNORE INTO follows (follower_id, followed_id, created_at)
+           VALUES (?, ?, ?)`,
+        ).bind(playerId, otherId, startedAt),
+      );
+    }
+  }
+
   await env.DB.batch(matchStatements);
   const match = await getMatch(matchId, creatorId);
   if (!match) {
