@@ -985,6 +985,18 @@ input[readonly] {
   min-width: 0;
 }
 
+.stat-player-link {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+
+.stat-player-link:hover .stat-row-title strong {
+  color: var(--primary);
+}
+
 .map-thumbnail {
   width: 80px;
   height: 50px;

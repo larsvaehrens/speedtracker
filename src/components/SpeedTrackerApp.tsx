@@ -273,6 +273,19 @@ export function SpeedTrackerApp() {
           playerNames={playerNames}
           player={statisticsPlayer ?? undefined}
           onFriendsChanged={refreshBootstrap}
+          onViewPlayer={(playerId) => {
+            if (playerId === bootstrap.user.id) {
+              setStatisticsPlayer(null);
+            } else {
+              const target = bootstrap.players.find(({ id }) => id === playerId);
+              if (!target) {
+                setLoadError("That player's profile is no longer available.");
+                return;
+              }
+              setStatisticsPlayer(target);
+            }
+            setPage("statistics");
+          }}
           onBack={
             statisticsPlayer
               ? () => {

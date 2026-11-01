@@ -18,6 +18,7 @@ type StatisticsViewProps = {
   hasMatches: boolean;
   player?: StatisticsPlayer;
   onFriendsChanged?: () => Promise<void>;
+  onViewPlayer?: (playerId: string) => void;
   onBack?: () => void;
 };
 
@@ -39,6 +40,42 @@ function percent(value: number | null): string {
 
 function displayName(names: Record<string, string>, id: string): string {
   return names[id] ?? "Player";
+}
+
+function StatisticsPlayerLink({
+  playerId,
+  name,
+  description,
+  avatar,
+  onViewPlayer,
+}: {
+  playerId: string;
+  name: string;
+  description: string;
+  avatar: string | null;
+  onViewPlayer?: (playerId: string) => void;
+}) {
+  const content = (
+    <>
+      <PlayerAvatar avatar={avatar} />
+      <span className="stat-row-title">
+        <strong>{name}</strong>
+        <small>{description}</small>
+      </span>
+    </>
+  );
+  return onViewPlayer ? (
+    <button
+      aria-label={`View ${name}'s statistics`}
+      className="stat-player stat-player-link"
+      onClick={() => onViewPlayer(playerId)}
+      type="button"
+    >
+      {content}
+    </button>
+  ) : (
+    <span className="stat-player">{content}</span>
+  );
 }
 
 function activityLevel(matches: number, maximum: number): number {
@@ -77,6 +114,7 @@ export function StatisticsView({
   hasMatches,
   player,
   onFriendsChanged,
+  onViewPlayer,
   onBack,
 }: StatisticsViewProps) {
   const [stats, setStats] = useState<PlayerStatistics | null>(null);
@@ -194,6 +232,7 @@ export function StatisticsView({
       isFriend={isFriend}
       friendPending={friendPending}
       onToggleFriend={toggleFriend}
+      onViewPlayer={onViewPlayer}
     />
   );
 }
@@ -211,6 +250,7 @@ export function StatisticsContent({
   isFriend,
   friendPending = false,
   onToggleFriend,
+  onViewPlayer,
 }: {
   stats: PlayerStatistics;
   names: Record<string, string>;
@@ -224,6 +264,7 @@ export function StatisticsContent({
   isFriend?: boolean;
   friendPending?: boolean;
   onToggleFriend?: () => void;
+  onViewPlayer?: (playerId: string) => void;
 }) {
   const comparison = stats.monthlyComparison;
   const trendPeriod = {
@@ -518,16 +559,13 @@ export function StatisticsContent({
                   <div className="stat-list">
                     {stats.opponents.map((opponent) => (
                       <div className="stat-row" key={opponent.playerId}>
-                        <span className="stat-player">
-                          <PlayerAvatar avatar={avatars[opponent.playerId] ?? null} />
-                          <span className="stat-row-title">
-                            <strong>{displayName(names, opponent.playerId)}</strong>
-                            <small>
-                              {opponent.wins} wins · {opponent.losses} losses · {opponent.matches}{" "}
-                              played
-                            </small>
-                          </span>
-                        </span>
+                        <StatisticsPlayerLink
+                          avatar={avatars[opponent.playerId] ?? null}
+                          description={`${opponent.wins} wins · ${opponent.losses} losses · ${opponent.matches} played`}
+                          name={displayName(names, opponent.playerId)}
+                          onViewPlayer={onViewPlayer}
+                          playerId={opponent.playerId}
+                        />
                         <div className="stat-row-metric">
                           <strong>{percent(opponent.winRate)}</strong>
                           <WinRateTrend
@@ -564,15 +602,13 @@ export function StatisticsContent({
                     {stats.partnerships.map((pair) => (
                       <div className="partnership-row" key={pair.teammateId}>
                         <div className="stat-row">
-                          <span className="stat-player">
-                            <PlayerAvatar avatar={avatars[pair.teammateId] ?? null} />
-                            <span className="stat-row-title">
-                              <strong>{displayName(names, pair.teammateId)}</strong>
-                              <small>
-                                {pair.wins} team wins · {pair.matches} matches
-                              </small>
-                            </span>
-                          </span>
+                          <StatisticsPlayerLink
+                            avatar={avatars[pair.teammateId] ?? null}
+                            description={`${pair.wins} team wins · ${pair.matches} matches`}
+                            name={displayName(names, pair.teammateId)}
+                            onViewPlayer={onViewPlayer}
+                            playerId={pair.teammateId}
+                          />
                           <div className="stat-row-metric">
                             <strong>{percent(pair.winRate)}</strong>
                             <WinRateTrend
