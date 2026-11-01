@@ -2,8 +2,9 @@ const token = process.env.GITHUB_TOKEN;
 const repository = process.env.GITHUB_REPOSITORY;
 const headRef = process.env.PR_HEAD_REF;
 const pullRequestNumber = process.env.PR_NUMBER;
+const pullRequestTitle = process.env.PR_TITLE;
 
-if (!token || !repository || !headRef || !pullRequestNumber) {
+if (!token || !repository || !headRef || !pullRequestNumber || !pullRequestTitle) {
   throw new Error("Missing required GitHub environment values for dependency changeset creation.");
 }
 
@@ -65,8 +66,8 @@ if (
   process.exit(0);
 }
 
-const content = `---\n"speedtracker": patch\n---\n\nUpdate dependencies in the pnpm workspace.\n`;
-const path = `.changeset/dependencies-GH-${pullRequestNumber}.md`;
+const content = `---\n"speedtracker": patch\n---\n\n${pullRequestTitle}\n`;
+const path = `.changeset/renovate-pr-${pullRequestNumber}.md`;
 await githubRequest(`/repos/${owner}/${repo}/contents/${path}`, {
   method: "PUT",
   headers: { "Content-Type": "application/json" },
