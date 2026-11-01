@@ -1,0 +1,5 @@
+Contact: https://github.com/larsvaehrens/speedtracker/security/advisories/new
+Expires: 2027-11-01T00:00:00.000Z
+Preferred-Languages: en
+Canonical: https://speedtracker.vaehrens.dev/.well-known/security.txt
+Policy: https://github.com/larsvaehrens/speedtracker/blob/main/SECURITY.md
