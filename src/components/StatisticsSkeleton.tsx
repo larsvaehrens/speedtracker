@@ -2,7 +2,13 @@ import { Skeleton } from "./Skeleton";
 import type { StatisticsPlayer } from "#/domain/views";
 import { PlayerAvatar } from "./PlayerAvatar";
 
-type PlayerHeadingProps = { player?: StatisticsPlayer; onBack?: () => void };
+type PlayerHeadingProps = {
+  player?: StatisticsPlayer;
+  onBack?: () => void;
+  isFriend?: boolean;
+  friendPending?: boolean;
+  onToggleFriend?: () => void;
+};
 
 function StatisticsPanelSkeleton({
   title,
@@ -94,7 +100,13 @@ function StatisticsPanelSkeleton({
   );
 }
 
-export function StatisticsHeading({ player, onBack }: PlayerHeadingProps) {
+export function StatisticsHeading({
+  player,
+  onBack,
+  isFriend,
+  friendPending,
+  onToggleFriend,
+}: PlayerHeadingProps) {
   return (
     <div className="section-heading statistics-heading">
       <div>
@@ -107,6 +119,16 @@ export function StatisticsHeading({ player, onBack }: PlayerHeadingProps) {
           <h1>Statistics</h1>
         )}
       </div>
+      {player && onToggleFriend && (
+        <button
+          className={isFriend ? "button button-quiet" : "button button-primary"}
+          disabled={friendPending}
+          onClick={onToggleFriend}
+          type="button"
+        >
+          {friendPending ? "Updating…" : isFriend ? "Remove friend" : "Add friend"}
+        </button>
+      )}
       {onBack && (
         <button className="button button-quiet" onClick={onBack} type="button">
           Back to players
@@ -120,6 +142,9 @@ export function StatisticsSkeleton({
   hasMatches,
   player,
   onBack,
+  isFriend,
+  friendPending,
+  onToggleFriend,
 }: { hasMatches: boolean } & PlayerHeadingProps) {
   return (
     <section
@@ -128,7 +153,13 @@ export function StatisticsSkeleton({
       className="page-section"
       role="status"
     >
-      <StatisticsHeading player={player} onBack={onBack} />
+      <StatisticsHeading
+        player={player}
+        onBack={onBack}
+        isFriend={isFriend}
+        friendPending={friendPending}
+        onToggleFriend={onToggleFriend}
+      />
       <div aria-hidden="true">
         <div className="match-filters panel">
           <div className="match-filter-controls">

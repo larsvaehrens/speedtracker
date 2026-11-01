@@ -102,7 +102,14 @@ describe("monthly trends across statistics views", () => {
         stats,
         names: { teammate: "Teammate", opponent: "Opponent" },
         avatars: {},
-        player: { id: "player", screenName: "Followed", avatar: "/followed.png" },
+        player: {
+          id: "player",
+          username: "followed",
+          screenName: "Followed",
+          avatar: "/followed.png",
+        },
+        isFriend: true,
+        onToggleFriend: () => {},
         onBack: () => {},
       }),
     );
@@ -111,5 +118,6 @@ describe("monthly trends across statistics views", () => {
     expect(followedMarkup).toContain("Followed&#x27;s points");
     expect(followedMarkup).not.toContain("Your points");
     expect(followedMarkup).toContain("Back to players");
+    expect(followedMarkup).toContain("Remove friend");
   });
 });

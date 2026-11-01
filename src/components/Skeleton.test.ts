@@ -99,7 +99,12 @@ describe("loading skeletons", () => {
       createElement(StatisticsView, {
         playerNames: {},
         hasMatches: true,
-        player: { id: "friend", screenName: "Friend", avatar: "/friend.png" },
+        player: {
+          id: "friend",
+          username: "friend",
+          screenName: "Friend",
+          avatar: "/friend.png",
+        },
         onBack: () => {},
       }),
     );

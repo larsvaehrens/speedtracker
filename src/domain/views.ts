@@ -7,7 +7,7 @@ export type PlayerView = {
   avatar: string | null;
 };
 
-export type StatisticsPlayer = Pick<PlayerView, "id" | "screenName" | "avatar">;
+export type StatisticsPlayer = Pick<PlayerView, "id" | "username" | "screenName" | "avatar">;
 
 export type MapView = {
   id: string;
