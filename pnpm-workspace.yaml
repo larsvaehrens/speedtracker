@@ -42,3 +42,11 @@ minimumReleaseAgeExclude:
   - miniflare@5.20260926.1-alpha
   - tinyrainbow@3.2.0
   - wrangler@4.144.0
+  - "@better-auth/core@1.7.15"
+  - "@better-auth/drizzle-adapter@1.7.15"
+  - "@better-auth/kysely-adapter@1.7.15"
+  - "@better-auth/memory-adapter@1.7.15"
+  - "@better-auth/mongo-adapter@1.7.15"
+  - "@better-auth/prisma-adapter@1.7.15"
+  - "@better-auth/telemetry@1.7.15"
+  - better-auth@1.7.15
