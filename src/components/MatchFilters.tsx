@@ -19,6 +19,7 @@ type MatchFiltersProps = {
 };
 
 const datePresets: { id: DatePreset; label: string }[] = [
+  { id: "today", label: "Today" },
   { id: "this-week", label: "This week" },
   { id: "last-week", label: "Last week" },
   { id: "this-month", label: "This month" },

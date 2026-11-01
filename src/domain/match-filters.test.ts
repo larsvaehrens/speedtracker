@@ -112,6 +112,7 @@ describe("match filters", () => {
   it("creates calendar-based week, month, quarter, and year suggestions", () => {
     const now = new Date(2026, 0, 1, 12);
     const expected: Record<DatePreset, { startDate: string; endDate: string }> = {
+      today: { startDate: "2026-01-01", endDate: "2026-01-01" },
       "this-week": { startDate: "2025-12-29", endDate: "2026-01-01" },
       "last-week": { startDate: "2025-12-22", endDate: "2025-12-28" },
       "this-month": { startDate: "2026-01-01", endDate: "2026-01-01" },
