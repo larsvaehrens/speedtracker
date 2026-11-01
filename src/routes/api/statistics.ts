@@ -27,6 +27,7 @@ export const Route = createFileRoute("/api/statistics")({
         const playerId = searchParams.get("playerId") ?? user.id;
         let player: StatisticsPlayer = {
           id: user.id,
+          username: user.username ?? "",
           screenName: user.name ?? "",
           avatar: user.image ?? null,
         };

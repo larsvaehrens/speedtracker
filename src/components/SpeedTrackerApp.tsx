@@ -272,6 +272,7 @@ export function SpeedTrackerApp() {
           hasMatches={statisticsPlayer !== null || bootstrap.recentMatches.length > 0}
           playerNames={playerNames}
           player={statisticsPlayer ?? undefined}
+          onFriendsChanged={refreshBootstrap}
           onBack={
             statisticsPlayer
               ? () => {

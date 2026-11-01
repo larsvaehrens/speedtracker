@@ -17,6 +17,7 @@ type StatisticsViewProps = {
   playerNames: Record<string, string>;
   hasMatches: boolean;
   player?: StatisticsPlayer;
+  onFriendsChanged?: () => Promise<void>;
   onBack?: () => void;
 };
 
@@ -71,13 +72,21 @@ function recentActivityDays(days: PlayerStatistics["playingActivity"]) {
     .map((day) => (day.date < cutoffDate ? { ...day, matches: 0 } : day));
 }
 
-export function StatisticsView({ playerNames, hasMatches, player, onBack }: StatisticsViewProps) {
+export function StatisticsView({
+  playerNames,
+  hasMatches,
+  player,
+  onFriendsChanged,
+  onBack,
+}: StatisticsViewProps) {
   const [stats, setStats] = useState<PlayerStatistics | null>(null);
   const [names, setNames] = useState(playerNames);
   const [avatars, setAvatars] = useState<Record<string, string | null>>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [subject, setSubject] = useState(player);
+  const [isFriend, setIsFriend] = useState(player !== undefined);
+  const [friendPending, setFriendPending] = useState(false);
   const [filters, setFilters] = useState<MatchFiltersValue>(EMPTY_MATCH_FILTERS);
   const [filterOptions, setFilterOptions] = useState<StatisticsResponse["filterOptions"]>({
     maps: [],
@@ -85,6 +94,29 @@ export function StatisticsView({ playerNames, hasMatches, player, onBack }: Stat
     opponents: [],
   });
   const playerId = player?.id;
+
+  async function toggleFriend() {
+    if (!player) return;
+    setFriendPending(true);
+    setError("");
+    try {
+      if (isFriend) {
+        await apiRequest(`/api/follows/${player.id}`, { method: "DELETE" });
+      } else {
+        await apiRequest("/api/follows", {
+          method: "POST",
+          body: JSON.stringify({ username: player.username }),
+        });
+      }
+      setIsFriend(!isFriend);
+      await onFriendsChanged?.();
+    } catch (friendError) {
+      setError(apiMessage(friendError));
+    } finally {
+      setFriendPending(false);
+    }
+  }
+
   useEffect(() => {
     let cancelled = false;
     setError("");
@@ -120,11 +152,26 @@ export function StatisticsView({ playerNames, hasMatches, player, onBack }: Stat
   }, [filters, playerId]);
 
   if (loading)
-    return <StatisticsSkeleton hasMatches={hasMatches} player={player} onBack={onBack} />;
+    return (
+      <StatisticsSkeleton
+        hasMatches={hasMatches}
+        player={player}
+        onBack={onBack}
+        isFriend={isFriend}
+        friendPending={friendPending}
+        onToggleFriend={toggleFriend}
+      />
+    );
   if (error && !stats) {
     return (
       <section className="page-section">
-        <StatisticsHeading player={player} onBack={onBack} />
+        <StatisticsHeading
+          player={player}
+          onBack={onBack}
+          isFriend={isFriend}
+          friendPending={friendPending}
+          onToggleFriend={toggleFriend}
+        />
         <p className="form-error" role="alert">
           {error}
         </p>
@@ -144,6 +191,9 @@ export function StatisticsView({ playerNames, hasMatches, player, onBack }: Stat
       onFiltersChange={setFilters}
       filterOptions={filterOptions}
       error={error}
+      isFriend={isFriend}
+      friendPending={friendPending}
+      onToggleFriend={toggleFriend}
     />
   );
 }
@@ -158,6 +208,9 @@ export function StatisticsContent({
   onFiltersChange,
   filterOptions = { maps: [], teammates: [], opponents: [] },
   error = "",
+  isFriend,
+  friendPending = false,
+  onToggleFriend,
 }: {
   stats: PlayerStatistics;
   names: Record<string, string>;
@@ -168,6 +221,9 @@ export function StatisticsContent({
   onFiltersChange?: (filters: MatchFiltersValue) => void;
   filterOptions?: StatisticsResponse["filterOptions"];
   error?: string;
+  isFriend?: boolean;
+  friendPending?: boolean;
+  onToggleFriend?: () => void;
 }) {
   const comparison = stats.monthlyComparison;
   const trendPeriod = {
@@ -190,7 +246,13 @@ export function StatisticsContent({
 
   return (
     <section className="page-section">
-      <StatisticsHeading player={player} onBack={onBack} />
+      <StatisticsHeading
+        player={player}
+        onBack={onBack}
+        isFriend={isFriend}
+        friendPending={friendPending}
+        onToggleFriend={onToggleFriend}
+      />
 
       <MatchFilters
         isActive={filtersActive}
