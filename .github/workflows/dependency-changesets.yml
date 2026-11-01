@@ -1,0 +1,32 @@
+name: Add changesets to dependency updates
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, labeled]
+
+permissions:
+  contents: write
+  pull-requests: read
+
+concurrency:
+  group: dependency-changesets-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  changeset:
+    if: contains(github.event.pull_request.labels.*.name, 'dependencies')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out trusted base-branch scripts
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          persist-credentials: false
+
+      - name: Add changeset for dependency updates
+        run: node scripts/create-dependency-changeset.mjs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          PR_HEAD_REF: ${{ github.event.pull_request.head.ref }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
