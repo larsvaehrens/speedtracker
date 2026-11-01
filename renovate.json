@@ -2,6 +2,6 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:recommended"],
   "minimumReleaseAge": "1 day",
-  "minimumReleaseAgeBehaviour": "strict",
+  "minimumReleaseAgeBehaviour": "timestamp-required",
   "schedule": ["every weekend"]
 }
