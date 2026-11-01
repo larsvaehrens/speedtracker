@@ -19,7 +19,7 @@ describe("followed player statistics links", () => {
             },
           ],
           recommendations: [],
-          onChanged: () => {},
+          onChanged: async () => {},
           onViewStatistics: () => {},
         }),
       }),
@@ -40,7 +40,7 @@ describe("followed player statistics links", () => {
           recommendations: [
             { id: "rec", username: "rec", screenName: "Rec", avatar: null, mutualCount: 2 },
           ],
-          onChanged: () => {},
+          onChanged: async () => {},
           onViewStatistics: () => {},
         }),
       }),
