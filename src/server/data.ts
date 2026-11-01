@@ -1,6 +1,12 @@
 import { env } from "cloudflare:workers";
 import { canViewMatch } from "#/domain/permissions";
-import type { FriendView, MapView, MatchView, PlayerView } from "#/domain/views";
+import type {
+  FriendView,
+  MapView,
+  MatchView,
+  PlayerView,
+  RecommendedFriendView,
+} from "#/domain/views";
 import type { MatchStatus, PointAttribution } from "#/domain/types";
 import { getCompetitorScore } from "#/domain/scoring";
 import type { MatchState } from "#/domain/types";
@@ -306,6 +312,44 @@ export async function getFollows(currentPlayerId: string): Promise<FriendView[]>
     screenName: row.screen_name,
     avatar: row.avatar,
     followedAt: row.followed_at,
+  }));
+}
+
+export async function getRecommendedFriends(
+  currentPlayerId: string,
+  limit = 10,
+): Promise<RecommendedFriendView[]> {
+  const { results } = await env.DB.prepare(
+    `SELECT u.id, u.username, u.name AS screen_name, u.image AS avatar,
+            COUNT(*) AS mutual_count
+     FROM follows mine
+     JOIN follows theirs ON theirs.follower_id = mine.followed_id
+     JOIN user u ON u.id = theirs.followed_id
+     WHERE mine.follower_id = ?
+       AND theirs.followed_id <> ?
+       AND NOT EXISTS (
+         SELECT 1 FROM follows existing
+         WHERE existing.follower_id = ? AND existing.followed_id = theirs.followed_id
+       )
+     GROUP BY u.id
+     ORDER BY mutual_count DESC, u.username COLLATE NOCASE
+     LIMIT ?`,
+  )
+    .bind(currentPlayerId, currentPlayerId, currentPlayerId, limit)
+    .all<{
+      id: string;
+      username: string;
+      screen_name: string;
+      avatar: string | null;
+      mutual_count: number;
+    }>();
+
+  return results.map((row) => ({
+    id: row.id,
+    username: row.username,
+    screenName: row.screen_name,
+    avatar: row.avatar,
+    mutualCount: row.mutual_count,
   }));
 }
 

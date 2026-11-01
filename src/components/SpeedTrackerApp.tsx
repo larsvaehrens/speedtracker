@@ -1,4 +1,4 @@
-import type { FriendView, MapView, MatchView } from "#/domain/views";
+import type { FriendView, MapView, MatchView, RecommendedFriendView } from "#/domain/views";
 import { apiMessage, apiRequest } from "#/lib/api";
 import { authClient } from "#/server/auth-client";
 import { useCallback, useEffect, useState } from "react";
@@ -17,6 +17,7 @@ type Page = "play" | "history" | "statistics" | "players" | "profile";
 type BootstrapData = {
   user: FriendView;
   players: FriendView[];
+  recommendations: RecommendedFriendView[];
   maps: MapView[];
   openMatches: MatchView[];
   recentMatches: MatchView[];
@@ -286,6 +287,7 @@ export function SpeedTrackerApp() {
           friends={bootstrap.players.filter(
             (player) => player.id !== bootstrap.user.id && player.followedAt !== null,
           )}
+          recommendations={bootstrap.recommendations}
           onChanged={() => void refreshBootstrap()}
           onViewStatistics={(player) => {
             setStatisticsPlayer(player);

@@ -45,3 +45,5 @@ export type MatchView = Omit<MatchState, "competitors" | "rounds"> & {
 };
 
 export type FriendView = PlayerView & { followedAt: string | null };
+
+export type RecommendedFriendView = PlayerView & { mutualCount: number };
