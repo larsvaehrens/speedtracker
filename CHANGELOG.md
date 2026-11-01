@@ -1,5 +1,21 @@
 # speedtracker
 
+## 0.3.0
+
+### Minor Changes
+
+- 4bd4bd5: Recommend players on the Players page based on friends of friends, with a one-click Add button and a mutual friend count.
+- da0eeea: Make opponent and teammate names clickable to open their statistics profiles.
+- 42c5457: Make friendships mutual: adding a friend adds you to theirs, and players who play a match together become friends. A migration backfills existing friendships and past matches.
+- b3420ad: Add a friend toggle to another player's statistics profile.
+
+### Patch Changes
+
+- 76871f5: Count multiplayer opponent results against the winner, without attributing results between other losing competitors.
+- 8b9d521: Refetch the friend list after adding or removing a friend.
+- 5ebd151: Add a Today preset to the match date filter for filtering today's matches and statistics.
+- fcc1f5e: Fix match history layout on small screens so the round timeline can use the full card width.
+
 ## 0.2.0
 
 ### Minor Changes
