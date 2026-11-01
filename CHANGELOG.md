@@ -1,5 +1,36 @@
 # speedtracker
 
+## 0.3.1
+
+### Patch Changes
+
+- a4bd4d5: Correct Renovate's minimum release age behavior setting.
+- db2ee56: Add a security policy and a web security.txt file with private vulnerability reporting instructions.
+- 952141a: Use the Renovate pull request title as the generated changeset message.
+- 3deba52: Update the release workflow to use the current Changesets action input names.
+- 76c3079: chore(deps): update dependency @better-auth/drizzle-adapter to v1.7.7
+- 76c3079: chore(deps): update dependency better-auth to v1.7.7
+- 76c3079: chore(deps): update better-auth monorepo to v1.7.15
+- 76c3079: chore(deps): update commitlint monorepo to v21.2.4
+- 76c3079: chore(deps): update dependency @types/node to v22.20.5
+- 76c3079: chore(deps): update dependency @vitejs/plugin-react to v6.1.2
+- 76c3079: chore(deps): update dependency drizzle-orm to v0.45.4
+- 76c3079: chore(deps): update react monorepo to v19.3.1
+- 76c3079: chore(deps): update tanstack-router monorepo
+- 76c3079: chore(deps): update dependency @cloudflare/vite-plugin to v1.66.0
+- 76c3079: chore(deps): update pnpm to v10.34.9
+- 76c3079: chore(deps): update actions/checkout action to v7
+- 76c3079: chore(deps): update actions/setup-node action to v7
+- 76c3079: chore(deps): update dependency wrangler to v4.156.0
+- 76c3079: chore(deps): update changesets/action action to v2
+- 76c3079: chore(deps): update dependency node to v26
+- 76c3079: chore(deps): update pnpm to v12
+- 76c3079: chore(deps): update pnpm/action-setup action to v6
+- 957bcff: Configure Renovate to propose dependency updates weekly.
+- 1aaccda: Add reference to contributions guidelines in README.
+- c9f5201: Automatically add changesets to Renovate dependency update pull requests.
+- 56af8e0: Add minimum release age to Renovate config.
+
 ## 0.3.0
 
 ### Minor Changes
