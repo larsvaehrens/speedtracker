@@ -327,6 +327,31 @@ describe("player statistics", () => {
     ]);
   });
 
+  it("counts multiplayer results against the winner, not other losing competitors", () => {
+    const match = completedMatch({
+      id: "free-for-all",
+      completedAt: "2026-01-01T00:00:00.000Z",
+      teams: [["player-a"], ["player-b"], ["player-c"]],
+      winner: 0,
+    });
+
+    const winnerStats = calculateStatistics("player-a", [match], mapDetails);
+    expect(winnerStats.opponents).toEqual([
+      { playerId: "player-b", wins: 1, losses: 0, matches: 1, winRate: 1 },
+      { playerId: "player-c", wins: 1, losses: 0, matches: 1, winRate: 1 },
+    ]);
+
+    const secondPlaceStats = calculateStatistics("player-b", [match], mapDetails);
+    expect(secondPlaceStats.opponents).toEqual([
+      { playerId: "player-a", wins: 0, losses: 1, matches: 1, winRate: 0 },
+    ]);
+
+    const thirdPlaceStats = calculateStatistics("player-c", [match], mapDetails);
+    expect(thirdPlaceStats.opponents).toEqual([
+      { playerId: "player-a", wins: 0, losses: 1, matches: 1, winRate: 0 },
+    ]);
+  });
+
   it("ranks partnerships by match win rate and calculates contribution shares", () => {
     const matches = [
       completedMatch({
