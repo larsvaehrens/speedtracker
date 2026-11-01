@@ -233,3 +233,8 @@ again so session cookies and trusted origins use the canonical domain.
   friends, and profile views.
 - `migrations/`: versioned D1 schema and map seed data.
 - `public/resources/`: static map and hero artwork.
+
+## Contributing
+
+Contributions are welcome. See [CONTRIBUTING.md](.github/CONTRIBUTING.md) for local
+development setup, testing, migration, commit, and pull request guidance.
