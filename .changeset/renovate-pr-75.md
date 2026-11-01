@@ -1,0 +1,5 @@
+---
+"speedtracker": patch
+---
+
+chore(deps): update actions/checkout action to v7
