@@ -50,6 +50,7 @@ describe("monthly trends across statistics views", () => {
         stats,
         names: { teammate: "Teammate", opponent: "Opponent" },
         avatars: { teammate: "/teammate.png", opponent: "/opponent.png" },
+        onViewPlayer: () => {},
       }),
     );
 
@@ -62,6 +63,8 @@ describe("monthly trends across statistics views", () => {
     expect(markup).not.toContain("monthly-comparison-note");
     expect(markup).toContain('src="/teammate.png"');
     expect(markup).toContain('src="/opponent.png"');
+    expect(markup).toContain('aria-label="View Teammate&#x27;s statistics"');
+    expect(markup).toContain('aria-label="View Opponent&#x27;s statistics"');
     expect(markup).toContain('src="/resources/maps/12_Casino.png"');
     expect(markup).toContain("Total time");
     expect(markup).toContain("2.5 minutes");
