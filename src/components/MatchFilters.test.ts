@@ -31,6 +31,7 @@ describe("match filter controls", () => {
     expect(markup).not.toContain('class="modal date-range-modal" open');
     expect(markup).toContain('aria-labelledby="date-range-title"');
     expect(markup).toContain('aria-label="Date range preset"');
+    expect(markup).toContain(">Today</option>");
     expect(markup).toContain(">This week</option>");
     expect(markup).toContain(">Last week</option>");
     expect(markup).toContain(">This month</option>");

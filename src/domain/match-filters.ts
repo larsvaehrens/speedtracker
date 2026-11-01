@@ -12,6 +12,7 @@ export type MatchFilters = {
 
 export type MatchDateRange = { startDate: string; endDate: string };
 export type DatePreset =
+  | "today"
   | "this-week"
   | "last-week"
   | "this-month"
@@ -61,6 +62,10 @@ export function getDatePresetRange(preset: DatePreset, now = new Date()): MatchD
   let end: Date;
 
   switch (preset) {
+    case "today":
+      start = today;
+      end = today;
+      break;
     case "this-week":
       start = shiftDate(today, -dayOfWeek);
       end = today;
