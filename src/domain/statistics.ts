@@ -341,7 +341,13 @@ function calculateBaseStatistics(
     }
 
     for (const competitor of match.competitors) {
-      if (competitor.id === ownCompetitor.id) continue;
+      if (
+        competitor.id === ownCompetitor.id ||
+        (ownCompetitor.id !== match.winnerCompetitorId &&
+          competitor.id !== match.winnerCompetitorId)
+      ) {
+        continue;
+      }
       for (const opponentId of competitor.playerIds) {
         const stat = opponentStats.get(opponentId) ?? {
           wins: 0,
