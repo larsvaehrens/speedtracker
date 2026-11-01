@@ -7,7 +7,7 @@ import { useToast } from "./ToastProvider";
 type FriendsViewProps = {
   friends: FriendView[];
   recommendations: RecommendedFriendView[];
-  onChanged: () => void;
+  onChanged: () => Promise<void>;
   onViewStatistics: (player: FriendView) => void;
 };
 
@@ -31,7 +31,7 @@ export function FriendsView({
         body: JSON.stringify({ username: target }),
       });
       toast("Player added. They can now be selected for your setups.", "success");
-      onChanged();
+      await onChanged();
       return true;
     } catch (addError) {
       setError(apiMessage(addError));
@@ -52,7 +52,7 @@ export function FriendsView({
       await apiRequest<{ follows: FriendView[] }>(`/api/follows/${player.id}`, {
         method: "DELETE",
       });
-      onChanged();
+      await onChanged();
     } catch (removeError) {
       setError(apiMessage(removeError));
     }

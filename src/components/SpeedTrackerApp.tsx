@@ -47,7 +47,7 @@ export function SpeedTrackerApp() {
     setLoading(true);
     setLoadError("");
     try {
-      const result = await apiRequest<BootstrapData>("/api/bootstrap");
+      const result = await apiRequest<BootstrapData>("/api/bootstrap", { cache: "no-store" });
       setBootstrap(result);
     } catch (error) {
       setLoadError(apiMessage(error));
@@ -67,7 +67,7 @@ export function SpeedTrackerApp() {
 
     setLoading(true);
     setLoadError("");
-    apiRequest<BootstrapData>("/api/bootstrap")
+    apiRequest<BootstrapData>("/api/bootstrap", { cache: "no-store" })
       .then((result) => {
         if (!cancelled) setBootstrap(result);
       })
@@ -288,7 +288,7 @@ export function SpeedTrackerApp() {
             (player) => player.id !== bootstrap.user.id && player.followedAt !== null,
           )}
           recommendations={bootstrap.recommendations}
-          onChanged={() => void refreshBootstrap()}
+          onChanged={refreshBootstrap}
           onViewStatistics={(player) => {
             setStatisticsPlayer(player);
             setPage("statistics");
