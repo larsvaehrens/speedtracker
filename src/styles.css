@@ -2488,8 +2488,16 @@ input[readonly] {
     min-width: 0;
   }
 
+  .history-rounds-container {
+    flex-direction: column;
+  }
+
   .history-rounds {
     flex: 1 1 0;
+  }
+
+  .history-open {
+    align-self: flex-end;
   }
 
   .round-timeline-endpoints {
