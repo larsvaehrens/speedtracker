@@ -1,5 +1,24 @@
 # speedtracker
 
+## 0.3.2
+
+### Patch Changes
+
+- 8df9b78: chore(deps): update dependency @cloudflare/vite-plugin to v1.69.1
+  chore(deps): update dependency wrangler to v4.165.0
+- 5c171fa: chore(deps): update dependency wrangler to v4.161.0
+- 608c82a: chore(deps): update vite-plus monorepo
+- 178b43b: chore(deps): update pnpm to v12.21.0
+- 64f95eb: chore(deps): update better-auth monorepo to v1.7.18
+- 52bb487: chore(deps): update dependency @cloudflare/vite-plugin to v1.68.0
+- f749442: chore(deps): update dependency @vitejs/plugin-react to v6.2.1
+- 5eca21d: chore(deps): update dependency wrangler to v4.158.0
+- 364a3a4: chore(deps): update pnpm to v12.18.0
+- b9e4f2f: chore(deps): update vite-plus monorepo to v1.5.0
+- 146a3b8: chore(deps): update better-auth monorepo to v1.7.19
+- c8a2e27: chore(deps): update tanstack-router monorepo
+- dac6465: chore(deps): update better-auth monorepo to v1.7.22
+
 ## 0.3.1
 
 ### Patch Changes
